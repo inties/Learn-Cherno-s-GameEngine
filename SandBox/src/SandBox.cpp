@@ -1,4 +1,5 @@
-#include<Engine.h>
+#include <Engine.h>
+#include <Engine/EntryPoint.h>
 
 class SandBox : public Engine::Application
 {
