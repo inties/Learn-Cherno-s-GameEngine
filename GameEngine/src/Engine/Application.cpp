@@ -1,5 +1,4 @@
 #include "Application.h"
-
 namespace Engine {
 	
 	Application::Application() {
@@ -12,6 +11,7 @@ namespace Engine {
 	
 	void Application::run() {
 		// Main loop code here
+
 		while (true) {
 			// Update and render logic
 		}

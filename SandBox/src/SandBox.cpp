@@ -1,17 +1,18 @@
-#include <Engine.h>
-#include <Engine/EntryPoint.h>
+#include <Engine.h>  
+#include <iostream> // Ensure this is included for std::cout  
 
-class SandBox : public Engine::Application
-{
-public:
-	SandBox() {
+class SandBox : public Engine::Application  
+{  
+public:  
+SandBox() {  
 
-	}
+}  
 
-	~SandBox() {
-	}
-};
+~SandBox() {  
+}  
 
-Engine::Application* Engine::createApplication() {
-	return new SandBox();
+};  
+
+Engine::Application* Engine::createApplication() {  
+return new SandBox();  
 }

@@ -6,6 +6,7 @@
 #include "Engine/core.h"
 #include "Engine/Application.h"
 #include "Engine/log.h"
+#include"Engine/Event.h"
 
-// 注意：EntryPoint.h 不应该在这里包含
-// EntryPoint.h 应该只在客户端应用程序的源文件中包含
+
+#include"Engine/EntryPoint.h"
