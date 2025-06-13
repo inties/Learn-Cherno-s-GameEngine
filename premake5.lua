@@ -10,7 +10,8 @@ project "GameEngine"
 
     targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
     objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
- 
+    pchheader "pch.h"
+    pchsource "GameEngine/src/pch.cpp"
     files {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp"
