@@ -3,6 +3,7 @@
 // EntryPoint.h 应该只在客户端应用程序中使用
 // 这个头文件提供 main 函数的实现，客户端只需要实现 createApplication
 
+#include"Engine.h"
 #include "Application.h"
 #include "log.h"
 
