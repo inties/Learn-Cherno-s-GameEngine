@@ -100,9 +100,15 @@ project "SandBox"
         "./GameEngine/dependency/glad/include",
         "./GameEngine/src"
     }
-    
+    libdirs {
+        "./GameEngine/dependency/GLFW_3_4/lib",
+        "./GameEngine/dependency/glew",
+        "./GameEngine/dependency/libs"
+    }
     links {
-        "GameEngine"
+        "GameEngine",
+        "Glad",
+        "glfw3"
     }
 
     filter "system:windows"

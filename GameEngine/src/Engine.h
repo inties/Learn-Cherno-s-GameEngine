@@ -8,12 +8,15 @@
 #include "Engine/Application.h"
 #include "Engine/log.h"
 #include "Engine/Event.h"
+#include "Engine/Windows.h"
+#include "Engine/WindowWindows.h"
 
-// OpenGL相关依赖
-#include <glad/glad.h>
-//#define GLEW_STATIC
-//#include <GLEW/glew.h>
-#include <GLFW/glfw3.h>
+
+//// OpenGL相关依赖
+//#include <glad/glad.h>
+////#define GLEW_STATIC
+////#include <GLEW/glew.h>
+//#include <GLFW/glfw3.h>
 
 // 客户端入口点（可选包含）
 // #include "Engine/EntryPoint.h"

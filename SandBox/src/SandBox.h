@@ -1,18 +1,15 @@
 #pragma once
 
 #include <Engine.h>
-
+#include<memory>
 class SandBox : public Engine::Application
 {
 public:
 	SandBox();
 	virtual ~SandBox();
 	
-	//void run() override;
+	void run() override;
 	
 private:
-	/*void createSimpleWindow();
-	void cleanup();*/
-	
-	//GLFWwindow* m_Window;
+	std::unique_ptr<Engine::Windows> m_Window; // ´°¿Ú¶ÔÏó
 };

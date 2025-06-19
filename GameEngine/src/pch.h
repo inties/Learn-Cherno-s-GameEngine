@@ -18,3 +18,9 @@
 #include <functional>
 #include <utility>
 #include <memory>
+
+
+
+//---------------------其它依赖库------------------------//
+#include <glad/glad.h>
+#include<GLFW/glfw3.h>
