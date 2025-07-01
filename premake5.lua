@@ -7,10 +7,11 @@ workspace"GameEngine"
 IncludeDir = {}
 IncludeDir["GLFW"] = "GameEngine/dependency/GLFW_3_4/include"
 IncludeDir["Glad"] = "GameEngine/dependency/glad/include"
+IncludeDir["ImGui"] = "GameEngine/dependency/imgui"
 
--- 包含glad子项目
+-- 包含glad/imgui两个子项目
 include "GameEngine/dependency/glad"
-
+include "GameEngine/dependency/imgui"
 project "GameEngine"
     location "GameEngine"
     kind "SharedLib"
@@ -30,6 +31,7 @@ project "GameEngine"
         "%{prj.name}/dependency/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}",
         "%{prj.name}/src"
 
     }
@@ -49,6 +51,7 @@ project "GameEngine"
         
         -- GLFW静态库及其所需的Windows系统库
         links {
+            "ImGui",
             "Glad",
             "glfw3",
             "opengl32.lib",

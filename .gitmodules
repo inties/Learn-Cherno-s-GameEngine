@@ -1,3 +1,6 @@
 [submodule "GameEngine/dependency/spdlog"]
 	path = GameEngine/dependency/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "GameEngine/dependency/imgui"]
+	path = GameEngine/dependency/imgui
+	url = https://github.com/TheCherno/imgui.git

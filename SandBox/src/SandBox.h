@@ -9,7 +9,8 @@ public:
 	virtual ~SandBox();
 	
 	void run() override;
+	Engine::Windows& GetWindow() override { return *m_Window; }
 	
 private:
-	std::unique_ptr<Engine::Windows> m_Window; // ´°¿Ú¶ÔÏó
+	std::unique_ptr<Engine::Windows> m_Window; // ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½
 };

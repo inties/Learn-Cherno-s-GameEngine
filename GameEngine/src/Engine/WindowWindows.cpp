@@ -53,31 +53,68 @@ namespace Engine {
 			std::cout << "窗口创建失败！" << std::endl;
 		}
 
-		std::cout << "SandBox::run() 结束" << std::endl;
+		//---------------------------注册glfw事件回调---------------------------
+		glfwSetWindowUserPointer(m_Window, &m_Props); // 设置用户指针为当前窗口对象
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				}
+			});
+
+		// 注册鼠标移动事件回调
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos)
+			{
+				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
+				
+				MouseMoveEvent event(xpos, ypos);
+				data.EventCallback(event);
+			});
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+			{
+				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
+				data.Width = width;
+				data.Height = height;
+
+				WindowResizeEvent event(width, height);
+				data.EventCallback(event);
+			});
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+			{
+				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
+				WindowCloseEvent event;
+				data.EventCallback(event);
+			});
+
 	}
 	WindowWindows::~WindowWindows()
 	{
 		// 清理资源
 	}
 	void WindowWindows::Update()
-	{
-		// 简单的主循环
-		while (!glfwWindowShouldClose(m_Window))
-		{
+	{	
 			// 处理事件
 			glfwPollEvents();
-
-			// 检查ESC键
-			if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-				glfwSetWindowShouldClose(m_Window, true);
-			}
-
 			// 简单渲染
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glfwSwapBuffers(m_Window);
-		}
 	}
 	void WindowWindows::SetEventCallBack(const EventFuc& callback)
 	{

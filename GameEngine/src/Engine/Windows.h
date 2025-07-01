@@ -5,7 +5,7 @@ namespace Engine{
 	class ENGINE_API Windows {
 		
 	public :
-		using EventFuc = std::function<void(Event&)>;
+		using EventFuc = std::function<bool(Event&)>;
 		struct WindowsProps {
 			std::string Title;
 			unsigned int Width;
@@ -14,7 +14,7 @@ namespace Engine{
 			WindowsProps(
 				const std::string& title="myGameEngine",
 				int wid=500, int heigh=500) :Title(title),Width(wid), Height(heigh) {
-				EventCallback = [](Event& e) {  };
+				/*EventCallback = [](Event& e) {return false;  };*/
 			};
 		};
 

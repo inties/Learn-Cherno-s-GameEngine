@@ -5,7 +5,7 @@
 namespace Engine{
 	enum EventType {
 		None = 0,
-		MouseMove,
+		MouseMove, MouseButtonPressed, MouseButtonReleased,
 		WindowClose, WindowResize,
 		KeyPressed, KeyReleased
 	};
@@ -21,7 +21,6 @@ namespace Engine{
 		virtual EventType getEventType() const = 0;
 		virtual EventCategory getCategoryFlags() const = 0;
 		virtual  const char* GetName() const = 0;
-		virtual std::string ToString() const { return GetName(); }
 		inline bool isInCategory(EventCategory category) const {
 			return getCategoryFlags() & category;
 		}
@@ -30,13 +29,13 @@ namespace Engine{
 	};
 #define EVENT_CLASS_TYPE(type) \
 		static EventType getStaticType() {  return EventType::##type; } \
-		virtual EventType getEventType() const override { return getStaticType(); } \
-		virtual const char* GetName() const override { return #type; }
-#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
-	{
-		return os << e.ToString();
-	}
+		EventType getEventType() const override { return getStaticType(); } \
+		const char* GetName() const override { return #type; }
+#define EVENT_CLASS_CATEGORY(category) EventCategory getCategoryFlags() const override { return EventCategory::##category; }
+	//inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	//{
+	//	return os << e.ToString();
+	//}
 	/// <summary>
 	//-----------------------------------------------------------------------------
 	// MouseMoveEvent 类表示鼠标移动事件，包含鼠标位置的 x 和 y 坐标。
@@ -49,44 +48,71 @@ namespace Engine{
 		std::pair<double, double>getMousePos() {
 			return std::make_pair(pos_x, pos_y);
 		}
-		static EventType getStaticType() { return EventType::MouseMove; }
-		EventType getEventType() const override {
-			return getStaticType();
-		}
-		const char* GetName() const override {
-			return "MouseMove";
-		}
-		std::string ToString() const override {
+		EVENT_CLASS_TYPE(MouseMove);
+		EVENT_CLASS_CATEGORY(MouseEvent);
+		std::string ToString() const{
 			std::stringstream ss;
 			ss << "MouseMove: " << pos_x << ", " << pos_y;
 			return ss.str();
-
 		}
 
-		EventCategory getCategoryFlags() const override {
-			return EventCategory::MouseEvent;
-		}
 	private:
 		double pos_x, pos_y;
 	};
+
+	/// <summary>
+	//-----------------------------------------------------------------------------
+	// MouseButtonPressedEvent 类表示鼠标按钮按下事件
+	/// </summary>
+	class ENGINE_API MouseButtonPressedEvent : public Event {
+	public:
+		MouseButtonPressedEvent(int button) : m_Button(button) {}
+
+		inline int getMouseButton() const { return m_Button; }
+		std::string ToString() const {
+			std::stringstream ss;
+			ss << "MouseButtonPressed: " << m_Button;
+			return ss.str();
+		}
+		EVENT_CLASS_CATEGORY(MouseEvent);
+		EVENT_CLASS_TYPE(MouseButtonPressed);
+		
+	private:
+		int m_Button;
+	};
+
+	/// <summary>
+	//-----------------------------------------------------------------------------
+	// MouseButtonReleasedEvent 类表示鼠标按钮释放事件
+	/// </summary>
+	class ENGINE_API MouseButtonReleasedEvent : public Event {
+	public:
+		MouseButtonReleasedEvent(int button) : m_Button(button) {}
+
+		inline int getMouseButton() const { return m_Button; }
+		std::string ToString() const {
+			std::stringstream ss;
+			ss << "MouseButtonReleased: " << m_Button;
+			return ss.str();
+		}
+
+		EVENT_CLASS_CATEGORY(MouseEvent);
+		EVENT_CLASS_TYPE(MouseButtonReleased);
+	private:
+		int m_Button;
+	};
+
 	class ENGINE_API KeyPressEvent : public Event {
 		public:
 			KeyPressEvent(double m_KeyCode, int m_repeatCount) :keyCode(m_KeyCode), repeatCount(m_repeatCount) {
 
 			}
-			static EventType getStaticType() { return EventType::KeyPressed; }
-			EventType getEventType() const override {
-				return getStaticType();
-			}
-			const char* GetName() const override {
-				return "KeyPressed";
-			}
-			std::string ToString() const override {
+			EVENT_CLASS_CATEGORY(KeyEvent);
+			EVENT_CLASS_TYPE(KeyPressed);
+			std::string ToString() const {
 				return "KeyPressed: " + std::to_string(keyCode) + " Repeat Count: " + std::to_string(repeatCount);
 			}
-			EventCategory getCategoryFlags() const override {
-				return EventCategory::KeyEvent;
-			}
+		
 		private:
 			int keyCode, repeatCount;
 		};
@@ -94,28 +120,47 @@ namespace Engine{
 	public:
 		KeyReleaseEvent(double m_KeyCode) :keyCode(m_KeyCode) {
 		}
-		static EventType getStaticType() { return EventType::KeyReleased; }
-		EventType getEventType() const override {
-			return getStaticType();
-		}
-		const char* GetName() const override {
-			return "KeyReleased";
-		}
-		std::string ToString() const override {
+		EVENT_CLASS_CATEGORY(KeyEvent);
+		EVENT_CLASS_TYPE(KeyReleased);
+		std::string ToString() const {
 			return "KeyReleased: " + std::to_string(keyCode);
 		}
-		EventCategory getCategoryFlags() const override {
-			return EventCategory::KeyEvent;
-		}
+		
 	private:
 		int keyCode;
+	};
+	class ENGINE_API WindowCloseEvent :public Event {
+	public:
+		WindowCloseEvent() {
+		};
+		EVENT_CLASS_CATEGORY(WindowEvent);
+		EVENT_CLASS_TYPE(WindowClose);
+
+	private:
+		
+	};
+	class ENGINE_API WindowResizeEvent :public Event {
+	public:
+		WindowResizeEvent(int wid,int height): m_Width(wid),m_Height(height){
+		};
+		EVENT_CLASS_CATEGORY(WindowEvent);
+		EVENT_CLASS_TYPE(WindowResize);
+		inline int GetWindowWidth() {
+			return m_Width;
+		}
+		inline int GetWindowHeight() {
+			return m_Height;
+		}
+	private:
+		int m_Width;
+		int m_Height;
 	};
 	class ENGINE_API EventDispatcher {//负责调用泛型编程的事件处理函数
 	public:
 		EventDispatcher(Event& event) :m_event(event) {}
 		template<typename T>
 		bool Dispatch(std::function<bool(T&)> func) {//检查泛型的类型是否匹配，并尝试进行强行类型转换
-			if (T::getStaticType() == m_event::getStaticType()) {
+			if (T::getStaticType() == m_event.getEventType()) {
 				// 如果类型匹配，则调用传入的函数
 				//return func(static_cast<T&>(m_event));
 				m_event.m_handled = func(*(T*)&m_event);
