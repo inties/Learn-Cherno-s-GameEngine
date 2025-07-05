@@ -11,6 +11,7 @@ namespace Engine {
 		void SetEventCallBack(const EventFuc& callback) override;
 		unsigned int GetWidth() override { return m_Props.Width; }
 		unsigned int GetHeight() override { return m_Props.Height; }
+		GLFWwindow* GetGLWindow() const { return m_Window; }
 	private:
 		GLFWwindow* m_Window = nullptr; // ´°¿ÚÖ¸Õë
 		

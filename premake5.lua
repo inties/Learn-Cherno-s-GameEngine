@@ -48,7 +48,7 @@ project "GameEngine"
         staticruntime "Off"
         systemversion "latest"
         buildoptions { "/utf-8" }
-        
+   
         -- GLFW静态库及其所需的Windows系统库
         links {
             "ImGui",
@@ -65,6 +65,8 @@ project "GameEngine"
         defines {
             "ENGINE_PLATFORM_WINDOWS",
             "ENGINE_BUILDING_DLL",
+            "GLAD_GLAPI_EXPORT",
+            "GLAD_GLAPI_EXPORT_BUILD"
         }
         
         postbuildcommands {
@@ -110,17 +112,17 @@ project "SandBox"
     }
     links {
         "GameEngine",
-        "Glad",
         "glfw3"
     }
-
+  
     filter "system:windows"
         cppdialect "C++17"
         staticruntime "Off"
         systemversion "latest"
         buildoptions { "/utf-8" }
         defines {
-            "ENGINE_PLATFORM_WINDOWS"
+            "ENGINE_PLATFORM_WINDOWS",
+             "GLAD_GLAPI_EXPORT"
         }
 
     filter "configurations:Debug"

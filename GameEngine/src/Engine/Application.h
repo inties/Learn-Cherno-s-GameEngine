@@ -2,8 +2,9 @@
 #include"pch.h"
 #include "core.h"
 #include"Event.h"
+#include"LayerStack.h"
+#include"Windows.h"
 namespace Engine {
-	class Windows; // Forward declaration
 	class ENGINE_API Application
 	{
 	public:
@@ -17,10 +18,12 @@ namespace Engine {
 		//virtual bool OnKeyPress(KeyPressEvent& e);
 		//virtual bool OnKeyRelease(KeyReleaseEvent& e);
 		inline static Application& Get() { return *s_Instance; }
-		virtual Windows& GetWindow() = 0;
+		inline Windows& GetWindow() { return *m_Window; }
 	protected:
+		std::unique_ptr<Engine::Windows>m_Window;
 		bool m_Running = false;
 		static Application* s_Instance;
+		LayerStack m_LayerStack;
 	};
 	
 	// 由客户端实现
