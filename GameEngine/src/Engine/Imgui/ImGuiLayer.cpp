@@ -4,10 +4,10 @@
 
 #include "Engine/Application.h"
 #include "Engine/Windows.h"
-#include "Engine/WindowWindows.h"
+#include "Engine/platform/WindowWindows.h"
 #include "imgui.h"
-#include "Engine/platform/ImguiOpenglRender.h"
-#include "Engine/platform/imgui_impl_glfw.h"
+#include "Engine/Imgui/ImguiOpenglRender.h"
+#include "Engine/Imgui/imgui_impl_glfw.h"
 #include "GLFW/glfw3.h"
 
 // 定义事件绑定宏
@@ -82,10 +82,10 @@ namespace Engine {
 
 		// 渲染UI
 		static bool show = true;
-		 ImGui::ShowDemoWindow(&show);  // 可以启用这个来显示ImGui演示窗口
+		//ImGui::ShowDemoWindow(&show);  // 可以启用这个来显示ImGui演示窗口
 
 		// 自定义UI
-		//MyInteractiveUI();
+		MyInteractiveUI();
 
 		// 渲染ImGui
 		ImGui::Render();
@@ -114,7 +114,7 @@ namespace Engine {
 		io.MousePos = ImVec2((float)e.getMousePos().first, (float)e.getMousePos().second);
 		
 		// 如果ImGui想要捕获鼠标，则阻止事件继续传播
-		return m_BlockEvents && io.WantCaptureMouse;
+		return m_BlockEvents&&io.WantCaptureMouse;
 	}
 
 	bool ImguiLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)

@@ -26,7 +26,9 @@ SandBox::~SandBox()
 }
 void SandBox::run() {
 	while (m_Running) {
-	
+		if (Engine::Input::GetInstance()->IsKeyPressed(65)) {
+			ENGINE_CORE_INFO("{0}has been pressed", (char)65);
+		}
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_LayerStack.IterateLayers();

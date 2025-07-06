@@ -166,27 +166,31 @@ copy /B /Y ..\bin\Dist-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Dist-wind
     <ClInclude Include="src\Engine\EntryPoint.h" />
     <ClInclude Include="src\Engine\Event.h" />
     <ClInclude Include="src\Engine\Imgui\ImGuiLayer.h" />
+    <ClInclude Include="src\Engine\Input.h" />
     <ClInclude Include="src\Engine\Layer.h" />
     <ClInclude Include="src\Engine\LayerStack.h" />
-    <ClInclude Include="src\Engine\WindowWindows.h" />
+    <ClInclude Include="src\Engine\platform\WindowsInput.h" />
+    <ClInclude Include="src\Engine\platform\WindowWindows.h" />
     <ClInclude Include="src\Engine\Windows.h" />
     <ClInclude Include="src\Engine\core.h" />
     <ClInclude Include="src\Engine\log.h" />
-    <ClInclude Include="src\Engine\platform\ImguiOpenglRender.h" />
-    <ClInclude Include="src\Engine\platform\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Engine\Imgui\ImguiOpenglRender.h" />
+    <ClInclude Include="src\Engine\Imgui\imgui_impl_glfw.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp" />
     <ClCompile Include="src\Engine\Event.cpp" />
     <ClCompile Include="src\Engine\Imgui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Engine\Input.cpp" />
     <ClCompile Include="src\Engine\Layer.cpp" />
     <ClCompile Include="src\Engine\LayerStack.cpp" />
-    <ClCompile Include="src\Engine\WindowWindows.cpp" />
+    <ClCompile Include="src\Engine\platform\WindowsInput.cpp" />
+    <ClCompile Include="src\Engine\platform\WindowWindows.cpp" />
     <ClCompile Include="src\Engine\Windows.cpp" />
     <ClCompile Include="src\Engine\log.cpp" />
-    <ClCompile Include="src\Engine\platform\ImguiOpenglRender.cpp" />
-    <ClCompile Include="src\Engine\platform\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Engine\Imgui\ImguiOpenglRender.cpp" />
+    <ClCompile Include="src\Engine\Imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

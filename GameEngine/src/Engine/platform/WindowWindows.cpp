@@ -1,7 +1,8 @@
 #include"pch.h"
-#include"log.h"
-#include"Event.h"
-#include"WindowWindows.h"
+#include"Engine/log.h"
+#include"Engine/Event.h"
+#include"Engine/platform/WindowWindows.h"
+#include"Engine/platform/WindowsInput.h"
 
 namespace Engine {
 	WindowWindows::WindowWindows(WindowsProps& props)
@@ -101,6 +102,8 @@ namespace Engine {
 				data.EventCallback(event);
 			});
 
+		//-----------------------¥¥Ω®Input¿‡
+		m_WindowsInput = new WindowsInput();
 	}
 	WindowWindows::~WindowWindows()
 	{

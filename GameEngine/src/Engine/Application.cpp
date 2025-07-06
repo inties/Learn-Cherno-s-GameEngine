@@ -22,7 +22,6 @@ namespace Engine {
 	}
 	bool Application::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
-		std::cout << "Call OnEvent" << std::endl;
 		if (dispatcher.Dispatch<MouseMoveEvent>([this](MouseMoveEvent& e) { return this->OnMouseMove(e); }))return true;
 		if (dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) { return this->OnWindowClose(e); }))return true;
 
@@ -32,7 +31,7 @@ namespace Engine {
 		return false;
 	}
 	bool Application::OnMouseMove(MouseMoveEvent& e) {
-		ENGINE_CORE_INFO("Mouse moved to {0},{1}", e.getMousePos().first, e.getMousePos().second);
+		//ENGINE_CORE_INFO("Mouse moved to {0},{1}", e.getMousePos().first, e.getMousePos().second);
 		return true;
 	}
 	bool Application::OnWindowClose(WindowCloseEvent& e) {

@@ -1,6 +1,7 @@
 #pragma once
 #include"pch.h"
-#include"Windows.h"
+#include"Engine/Windows.h"
+#include"Engine/platform/WindowsInput.h"
 namespace Engine {
 
 	class ENGINE_API WindowWindows : public Windows {
@@ -14,7 +15,7 @@ namespace Engine {
 		GLFWwindow* GetGLWindow() const { return m_Window; }
 	private:
 		GLFWwindow* m_Window = nullptr; // ´°¿ÚÖ¸Õë
-		
+		WindowsInput* m_WindowsInput = nullptr;
 
 
 
