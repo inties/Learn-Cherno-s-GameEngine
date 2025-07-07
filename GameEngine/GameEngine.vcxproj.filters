@@ -7,6 +7,9 @@
     <Filter Include="Engine\Imgui">
       <UniqueIdentifier>{65FD6795-5160-F739-FAE5-2FF0E627C3BC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\platform">
+      <UniqueIdentifier>{AFA6F61D-1B32-64E2-2443-E7D6904DC0E2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
@@ -19,7 +22,7 @@
     <ClInclude Include="src\Engine\Event.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Imgui\ImGui.h">
+    <ClInclude Include="src\Engine\Imgui\ImGuiLayer.h">
       <Filter>Engine\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Layer.h">
@@ -28,7 +31,7 @@
     <ClInclude Include="src\Engine\LayerStack.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\WindowWindows.h">
+    <ClInclude Include="src\Engine\platform\WindowWindows.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Windows.h">
@@ -40,7 +43,15 @@
     <ClInclude Include="src\Engine\log.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Imgui\ImguiOpenglRender.h">
+      <Filter>Engine\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Imgui\imgui_impl_glfw.h">
+      <Filter>Engine\platform</Filter>
+    </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Engine\Input.h" />
+    <ClInclude Include="src\Engine\platform\WindowsInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -49,7 +60,7 @@
     <ClCompile Include="src\Engine\Event.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Imgui\ImGui.cpp">
+    <ClCompile Include="src\Engine\Imgui\ImGuiLayer.cpp">
       <Filter>Engine\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Layer.cpp">
@@ -58,7 +69,7 @@
     <ClCompile Include="src\Engine\LayerStack.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\WindowWindows.cpp">
+    <ClCompile Include="src\Engine\platform\WindowWindows.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Windows.cpp">
@@ -67,6 +78,14 @@
     <ClCompile Include="src\Engine\log.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Imgui\ImguiOpenglRender.cpp">
+      <Filter>Engine\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Imgui\imgui_impl_glfw.cpp">
+      <Filter>Engine\platform</Filter>
+    </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Engine\platform\WindowsInput.cpp" />
+    <ClCompile Include="src\Engine\Input.cpp" />
   </ItemGroup>
 </Project>

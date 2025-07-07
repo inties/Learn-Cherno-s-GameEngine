@@ -1,7 +1,8 @@
 #include"pch.h"
-#include"log.h"
-#include"Event.h"
-#include"WindowWindows.h"
+#include"Engine/log.h"
+#include"Engine/Event.h"
+#include"Engine/platform/WindowWindows.h"
+#include"Engine/platform/WindowsInput.h"
 
 namespace Engine {
 	WindowWindows::WindowWindows(WindowsProps& props)
@@ -101,6 +102,8 @@ namespace Engine {
 				data.EventCallback(event);
 			});
 
+		//-----------------------创建Input类
+		m_WindowsInput = new WindowsInput();
 	}
 	WindowWindows::~WindowWindows()
 	{
@@ -108,11 +111,11 @@ namespace Engine {
 	}
 	void WindowWindows::Update()
 	{	
+		
 			// 处理事件
 			glfwPollEvents();
 			// 简单渲染
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+		
 
 			glfwSwapBuffers(m_Window);
 	}

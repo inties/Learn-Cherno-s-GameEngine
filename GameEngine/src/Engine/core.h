@@ -8,3 +8,6 @@
 #else
 	#error Only Supports Windows Platform
 #endif
+
+
+//#define BIND_CLASS_FUC(fc) std::bind(fc, this, std::placeholders::_1)
