@@ -1,0 +1,9 @@
+E:/myGitRepos/GameEngine/build/CMakeFiles/ALL_BUILD.dir
+E:/myGitRepos/GameEngine/build/CMakeFiles/ZERO_CHECK.dir
+E:/myGitRepos/GameEngine/build/GameEngine/dependency/glad/CMakeFiles/Glad.dir
+E:/myGitRepos/GameEngine/build/GameEngine/dependency/glad/CMakeFiles/ALL_BUILD.dir
+E:/myGitRepos/GameEngine/build/GameEngine/dependency/imgui/CMakeFiles/ImGui.dir
+E:/myGitRepos/GameEngine/build/GameEngine/dependency/imgui/CMakeFiles/ALL_BUILD.dir
+E:/myGitRepos/GameEngine/build/GameEngine/CMakeFiles/GameEngine.dir
+E:/myGitRepos/GameEngine/build/SandBox/CMakeFiles/SandBox.dir
+E:/myGitRepos/GameEngine/build/SandBox/CMakeFiles/ALL_BUILD.dir

@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -106,7 +106,7 @@ copy /B /Y ..\bin\Debug-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Debug-wi
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -136,7 +136,7 @@ copy /B /Y ..\bin\Release-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Releas
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -166,16 +166,18 @@ copy /B /Y ..\bin\Dist-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Dist-wind
     <ClInclude Include="src\Engine\EntryPoint.h" />
     <ClInclude Include="src\Engine\Event.h" />
     <ClInclude Include="src\Engine\Imgui\ImGuiLayer.h" />
+    <ClInclude Include="src\Engine\Imgui\ImguiOpenglRender.h" />
+    <ClInclude Include="src\Engine\Imgui\imgui_impl_glfw.h" />
     <ClInclude Include="src\Engine\Input.h" />
+    <ClInclude Include="src\Engine\KeyCodes.h" />
     <ClInclude Include="src\Engine\Layer.h" />
     <ClInclude Include="src\Engine\LayerStack.h" />
-    <ClInclude Include="src\Engine\platform\WindowsInput.h" />
-    <ClInclude Include="src\Engine\platform\WindowWindows.h" />
+    <ClInclude Include="src\Engine\MouseButtonCodes.h" />
     <ClInclude Include="src\Engine\Windows.h" />
     <ClInclude Include="src\Engine\core.h" />
     <ClInclude Include="src\Engine\log.h" />
-    <ClInclude Include="src\Engine\Imgui\ImguiOpenglRender.h" />
-    <ClInclude Include="src\Engine\Imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Engine\platform\WindowWindows.h" />
+    <ClInclude Include="src\Engine\platform\WindowsInput.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -185,12 +187,10 @@ copy /B /Y ..\bin\Dist-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Dist-wind
     <ClCompile Include="src\Engine\Input.cpp" />
     <ClCompile Include="src\Engine\Layer.cpp" />
     <ClCompile Include="src\Engine\LayerStack.cpp" />
-    <ClCompile Include="src\Engine\platform\WindowsInput.cpp" />
-    <ClCompile Include="src\Engine\platform\WindowWindows.cpp" />
     <ClCompile Include="src\Engine\Windows.cpp" />
     <ClCompile Include="src\Engine\log.cpp" />
-    <ClCompile Include="src\Engine\Imgui\ImguiOpenglRender.cpp" />
-    <ClCompile Include="src\Engine\Imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Engine\platform\WindowWindows.cpp" />
+    <ClCompile Include="src\Engine\platform\WindowsInput.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

@@ -14,7 +14,6 @@ project "Glad"
     includedirs {
         "include"
     }
-    defines { "GLAD_GLAPI_EXPORT", "GLAD_GLAPI_EXPORT_BUILD" }
     filter "system:windows"
         systemversion "latest"
         staticruntime "Off"

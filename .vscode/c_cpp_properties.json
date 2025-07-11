@@ -1,0 +1,165 @@
+{
+    "configurations": [
+        {
+            "name": "GameEngine-Debug",
+            "includePath": [
+                "${workspaceFolder}/GameEngine/dependency/spdlog/include",
+                "${workspaceFolder}/GameEngine/dependency/include",
+                "${workspaceFolder}/GameEngine/dependency/GLFW_3_4/include",
+                "${workspaceFolder}/GameEngine/dependency/glad/include",
+                "${workspaceFolder}/GameEngine/dependency/imgui",
+                "${workspaceFolder}/GameEngine/dependency/imgui/backends",
+                "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/src",
+                "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
+                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "ENGINE_PLATFORM_WINDOWS",
+                "ENGINE_BUILDING_DLL",
+                "GLAD_GLAPI_EXPORT",
+                "GLAD_GLAPI_EXPORT_BUILD",
+                "ENGINE_DEBUG"
+            ],
+            "windowsSdkVersion": "10.0.22000.0",
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/GameEngine/src",
+                    "${workspaceFolder}/GameEngine/dependency"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        },
+        {
+            "name": "SandBox-Debug", 
+            "includePath": [
+                "${workspaceFolder}/GameEngine/dependency/spdlog/include",
+                "${workspaceFolder}/GameEngine/dependency/include",
+                "${workspaceFolder}/GameEngine/dependency/GLFW_3_4/include",
+                "${workspaceFolder}/GameEngine/dependency/glad/include",
+                "${workspaceFolder}/GameEngine/dependency/imgui",
+                "${workspaceFolder}/GameEngine/dependency/imgui/backends",
+                "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/src",
+                "${workspaceFolder}/SandBox/src",
+                "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt", 
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
+                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE", 
+                "_UNICODE",
+                "ENGINE_PLATFORM_WINDOWS",
+                "GLAD_GLAPI_EXPORT",
+                "ENGINE_DEBUG"
+            ],
+            "windowsSdkVersion": "10.0.22000.0",
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/SandBox/src",
+                    "${workspaceFolder}/GameEngine/src",
+                    "${workspaceFolder}/GameEngine/dependency"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        },
+        {
+            "name": "GameEngine-Release",
+            "includePath": [
+                "${workspaceFolder}/GameEngine/dependency/spdlog/include",
+                "${workspaceFolder}/GameEngine/dependency/include", 
+                "${workspaceFolder}/GameEngine/dependency/GLFW_3_4/include",
+                "${workspaceFolder}/GameEngine/dependency/glad/include",
+                "${workspaceFolder}/GameEngine/dependency/imgui",
+                "${workspaceFolder}/GameEngine/dependency/imgui/backends",
+                "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/src",
+                "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
+                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+            ],
+            "defines": [
+                "NDEBUG",
+                "UNICODE",
+                "_UNICODE", 
+                "ENGINE_PLATFORM_WINDOWS",
+                "ENGINE_BUILDING_DLL",
+                "GLAD_GLAPI_EXPORT",
+                "GLAD_GLAPI_EXPORT_BUILD",
+                "ENGINE_RELEASE"
+            ],
+            "windowsSdkVersion": "10.0.22000.0",
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/GameEngine/src",
+                    "${workspaceFolder}/GameEngine/dependency"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        },
+        {
+            "name": "SandBox-Release",
+            "includePath": [
+                "${workspaceFolder}/GameEngine/dependency/spdlog/include",
+                "${workspaceFolder}/GameEngine/dependency/include",
+                "${workspaceFolder}/GameEngine/dependency/GLFW_3_4/include", 
+                "${workspaceFolder}/GameEngine/dependency/glad/include",
+                "${workspaceFolder}/GameEngine/dependency/imgui",
+                "${workspaceFolder}/GameEngine/dependency/imgui/backends",
+                "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/src",
+                "${workspaceFolder}/SandBox/src",
+                "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
+                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+            ],
+            "defines": [
+                "NDEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "ENGINE_PLATFORM_WINDOWS", 
+                "GLAD_GLAPI_EXPORT",
+                "ENGINE_RELEASE"
+            ],
+            "windowsSdkVersion": "10.0.22000.0",
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/SandBox/src",
+                    "${workspaceFolder}/GameEngine/src",
+                    "${workspaceFolder}/GameEngine/dependency"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+} 

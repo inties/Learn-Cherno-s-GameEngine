@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/myGitRepos/GameEngine/build/cmake_install.cmake",
+		"E:/myGitRepos/GameEngine/build/GameEngine/dependency/glad/cmake_install.cmake",
+		"E:/myGitRepos/GameEngine/build/GameEngine/dependency/imgui/cmake_install.cmake",
+		"E:/myGitRepos/GameEngine/build/GameEngine/cmake_install.cmake",
+		"E:/myGitRepos/GameEngine/build/SandBox/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

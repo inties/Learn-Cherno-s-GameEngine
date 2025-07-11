@@ -4,5 +4,6 @@ bin/
 bin-int/
 app/
 app-int/
+build/
 #Files
 *.user

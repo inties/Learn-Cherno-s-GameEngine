@@ -8,6 +8,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "GameEngine/dependency/GLFW_3_4/include"
 IncludeDir["Glad"] = "GameEngine/dependency/glad/include"
 IncludeDir["ImGui"] = "GameEngine/dependency/imgui"
+IncludeDir["glm"] = "GameEngine/dependency/glm_99"
 
 -- 包含glad/imgui两个子项目
 include "GameEngine/dependency/glad"
@@ -23,7 +24,9 @@ project "GameEngine"
     pchsource "GameEngine/src/pch.cpp"
     files {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+    
+
 
     }
     includedirs {
@@ -32,6 +35,7 @@ project "GameEngine"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}",
         "%{prj.name}/src"
 
     }
@@ -103,6 +107,7 @@ project "SandBox"
         "./GameEngine/dependency/include",
         "./GameEngine/dependency/GLFW_3_4/include",
         "./GameEngine/dependency/glad/include",
+        "%{IncludeDir.glm}",
         "./GameEngine/src"
     }
     libdirs {

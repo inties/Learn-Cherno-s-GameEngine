@@ -7,11 +7,16 @@ namespace Engine
 	class ENGINE_API ImguiLayer :public Layer {
 	public:
 		ImguiLayer();
+		~ImguiLayer();
+
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate() override;
 		//virtual void OnImGuiRender()override;
 		virtual void OnEvent(Event& event)override;
+		void Begin();
+		void End();
+		virtual void OnImGuiRender() override;
 	public:
 		float m_time = 0.0f;
 

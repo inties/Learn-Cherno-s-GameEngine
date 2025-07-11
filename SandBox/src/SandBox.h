@@ -8,7 +8,7 @@ public:
 	SandBox();
 	virtual ~SandBox();
 	
-	void run() override;
+	
 	
 private:
 };

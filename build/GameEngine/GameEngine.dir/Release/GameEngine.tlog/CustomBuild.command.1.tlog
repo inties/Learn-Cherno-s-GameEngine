@@ -1,0 +1,10 @@
+^E:\MYGITREPOS\GAMEENGINE\GAMEENGINE\CMAKELISTS.TXT
+setlocal
+F:\Tools\bin\cmake.exe -SE:/myGitRepos/GameEngine -BE:/myGitRepos/GameEngine/build --check-stamp-file E:/myGitRepos/GameEngine/build/GameEngine/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

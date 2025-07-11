@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\myGitRepos\GameEngine\build\GameEngine\CMakeFiles\GameEngine.dir\cmake_pch.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Imgui\ImGuiLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\LayerStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Windows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\platform\WindowWindows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\platform\WindowsInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\myGitRepos\GameEngine\GameEngine\src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\EntryPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Imgui\ImGuiLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Imgui\ImguiOpenglRender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Imgui\imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\KeyCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\LayerStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\MouseButtonCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\Windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\platform\WindowWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\Engine\platform\WindowsInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\GameEngine\src\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\build\GameEngine\CMakeFiles\GameEngine.dir\Debug\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\build\GameEngine\CMakeFiles\GameEngine.dir\Release\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\build\GameEngine\CMakeFiles\GameEngine.dir\MinSizeRel\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\myGitRepos\GameEngine\build\GameEngine\CMakeFiles\GameEngine.dir\RelWithDebInfo\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\myGitRepos\GameEngine\GameEngine\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5DAF3A67-57A8-3B7C-9D36-456F8EEAF989}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompile Header File">
+      <UniqueIdentifier>{3C22169E-5CA5-3BF1-974C-2CC7ADE9185B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{C3B0F106-EC0D-39FB-9D88-C93FA93CAB8F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -8,7 +8,7 @@
 #include "imgui.h"
 #include "Engine/Imgui/ImguiOpenglRender.h"
 #include "Engine/Imgui/imgui_impl_glfw.h"
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 // 定义事件绑定宏
 #define BIND_CLASS_FUC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
@@ -19,20 +19,38 @@ namespace Engine {
 	{
 		// 构造函数现在正确调用基类构造函数
 	}
+	ImguiLayer::~ImguiLayer(){
+
+	}
 
 	void ImguiLayer::OnAttach()
 	{
 		// 创建ImGui上下文
+		
+		
+		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
-
-		// 设置ImGui IO配置
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+		
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+	
 		// 移除所有KeyMap设置 - 在新版本ImGui中已被废弃
 		// 现代ImGui版本的后端会自动处理键盘映射
 		Application& app = Application::Get();
@@ -63,33 +81,39 @@ namespace Engine {
 		}
 		ImGui::End();
 	}
-
-	void ImguiLayer::OnUpdate()
-	{
-		// 设置显示尺寸和时间
-		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::Get();
-		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
-
-		float time = (float)glfwGetTime();
-		io.DeltaTime = m_time > 0.0f ? (time - m_time) : (1.0f / 60.0f);
-		m_time = time;
-
-		// 开始新的ImGui帧
+	void ImguiLayer::Begin(){
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+	}
+	void ImguiLayer::End()
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		Application& app = Application::Get();
+		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
-		// 渲染UI
-		static bool show = true;
-		//ImGui::ShowDemoWindow(&show);  // 可以启用这个来显示ImGui演示窗口
-
-		// 自定义UI
-		MyInteractiveUI();
-
-		// 渲染ImGui
+		// Rendering
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}
+	}
+	void ImguiLayer::OnImGuiRender()
+	{
+		static bool show = true;
+		ImGui::ShowDemoWindow(&show);
+	}
+	void ImguiLayer::OnUpdate()
+	{
+		Begin();
+		OnImGuiRender();  // 调用用户自定义的UI渲染函数
+		End();
 	}
 
 	void ImguiLayer::OnEvent(Event& e)

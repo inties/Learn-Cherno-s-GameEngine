@@ -4,6 +4,7 @@
 #include"Event.h"
 #include"LayerStack.h"
 #include"Windows.h"
+#include "Imgui/ImGuiLayer.h"
 namespace Engine {
 	class ENGINE_API Application
 	{
@@ -24,6 +25,7 @@ namespace Engine {
 		bool m_Running = false;
 		static Application* s_Instance;
 		LayerStack m_LayerStack;
+		ImguiLayer* m_ImGuiLayer = nullptr;
 	};
 	
 	// 由客户端实现
