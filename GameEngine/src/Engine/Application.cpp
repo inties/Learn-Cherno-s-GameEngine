@@ -2,8 +2,10 @@
 #include "Application.h"
 #include"log.h"
 #include"Imgui/ImGuiLayer.h"
+#include "TestLayer.h"
 #include "Input.h"
 #include "KeyCodes.h"
+#include "Renderer/Renderer.h"
 #include<glad/glad.h>
 #include <GLFW/glfw3.h>
 namespace Engine {
@@ -25,6 +27,10 @@ namespace Engine {
 			});
 		m_ImGuiLayer = new ImguiLayer();
 		m_LayerStack.PushLayer(m_ImGuiLayer);
+		m_LayerStack.PushLayer(new TestLayer());
+		
+		// ≥ı ºªØ‰÷»æ∆˜
+		Renderer::Init();
 		
 		// Initialization code here
 	}

@@ -25,9 +25,6 @@ project "GameEngine"
     files {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
-    
-
-
     }
     includedirs {
         "%{prj.name}/dependency/spdlog/include",
@@ -37,14 +34,11 @@ project "GameEngine"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{prj.name}/src"
-
     }
-    
     libdirs {
         "%{prj.name}/dependency/GLFW_3_4/lib",
         "%{prj.name}/dependency/glew",
         "%{prj.name}/dependency/libs"
-
     }
     
     filter "system:windows"
@@ -112,8 +106,6 @@ project "SandBox"
     }
     libdirs {
         "./GameEngine/dependency/GLFW_3_4/lib",
-        "./GameEngine/dependency/glew",
-        "./GameEngine/dependency/libs"
     }
     links {
         "GameEngine",

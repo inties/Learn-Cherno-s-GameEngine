@@ -43,8 +43,6 @@ set(SPDLOG_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/GameEngine/dependency/spdlog/include
 
 # Library directories
 set(GLFW_LIB_DIR "${CMAKE_SOURCE_DIR}/GameEngine/dependency/GLFW_3_4/lib")
-set(GLEW_LIB_DIR "${CMAKE_SOURCE_DIR}/GameEngine/dependency/glew")
-set(ASSIMP_LIB_DIR "${CMAKE_SOURCE_DIR}/GameEngine/dependency/libs")
 
 # Add subdirectories for dependencies
 add_subdirectory(GameEngine/dependency/glad)

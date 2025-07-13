@@ -7,8 +7,14 @@
     <Filter Include="Engine\Imgui">
       <UniqueIdentifier>{65FD6795-5160-F739-FAE5-2FF0E627C3BC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Renderer">
+      <UniqueIdentifier>{E1119970-4D9D-0635-56AE-8929C2B86235}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\platform">
       <UniqueIdentifier>{AFA6F61D-1B32-64E2-2443-E7D6904DC0E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\platform\OpenGL">
+      <UniqueIdentifier>{03159D20-EF0E-C672-D87B-5C83C4142CDF}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +52,30 @@
     <ClInclude Include="src\Engine\MouseButtonCodes.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Buffer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\RenderCommand.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Renderer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\RendererAPI.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Shader.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\VertexArray.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\TestLayer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Windows.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -54,6 +84,18 @@
     </ClInclude>
     <ClInclude Include="src\Engine\log.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLBuffer.h">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.h">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLShader.h">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLVertexArray.h">
+      <Filter>Engine\platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\WindowWindows.h">
       <Filter>Engine\platform</Filter>
@@ -82,11 +124,44 @@
     <ClCompile Include="src\Engine\LayerStack.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Buffer.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\RenderCommand.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Renderer.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\RendererAPI.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Shader.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\VertexArray.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\TestLayer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Windows.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\log.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLShader.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\platform\WindowWindows.cpp">
       <Filter>Engine\platform</Filter>

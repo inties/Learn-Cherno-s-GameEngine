@@ -7,11 +7,9 @@
 
 SandBox::SandBox()
 {
-	
-
-
-
+	// ÃÌº”≤‚ ‘≤„
 }
+
 //
 SandBox::~SandBox()
 {
