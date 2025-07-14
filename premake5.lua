@@ -68,8 +68,8 @@ project "GameEngine"
         }
         
         postbuildcommands {
-            "{MKDIR} ../bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/SandBox",
-            "{COPYFILE} %{cfg.buildtarget.relpath} ../bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/SandBox"
+            -- "{MKDIR} ../bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/SandBox",
+            "{COPYFILE} %{cfg.buildtarget.relpath} ../"
         }
 
     filter "configurations:Debug"
@@ -88,7 +88,7 @@ project "SandBox"
     kind "ConsoleApp"
     language "C++"
 
-    targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
+    targetdir ("./")
     objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
  
     files {

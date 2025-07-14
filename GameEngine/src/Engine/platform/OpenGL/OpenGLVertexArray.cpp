@@ -47,7 +47,7 @@ namespace Engine
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
 		if (vertexBuffer->GetLayout().GetElements().size() == 0)
 		{
@@ -59,6 +59,7 @@ namespace Engine
 		vertexBuffer->Bind();
 
 		const auto& layout = vertexBuffer->GetLayout();
+		uint32_t index = 0;
 		for (const auto& element : layout)
 		{
 			switch (element.Type)
@@ -68,14 +69,14 @@ namespace Engine
 			case ShaderDataType::Float3:
 			case ShaderDataType::Float4:
 			{
-				glEnableVertexAttribArray(m_VertexBufferIndex);
-				glVertexAttribPointer(m_VertexBufferIndex,
+				glEnableVertexAttribArray(index);
+				glVertexAttribPointer(index,
 					element.GetComponentCount(),
 					ShaderDataTypeToOpenGLBaseType(element.Type),
 					element.Normalized ? GL_TRUE : GL_FALSE,
 					layout.GetStride(),
 					(const void*)element.Offset);
-				m_VertexBufferIndex++;
+				index++;
 				break;
 			}
 			case ShaderDataType::Int:
@@ -84,13 +85,13 @@ namespace Engine
 			case ShaderDataType::Int4:
 			case ShaderDataType::Bool:
 			{
-				glEnableVertexAttribArray(m_VertexBufferIndex);
-				glVertexAttribIPointer(m_VertexBufferIndex,
+				glEnableVertexAttribArray(index);
+				glVertexAttribIPointer(index,
 					element.GetComponentCount(),
 					ShaderDataTypeToOpenGLBaseType(element.Type),
 					layout.GetStride(),
 					(const void*)element.Offset);
-				m_VertexBufferIndex++;
+				index++;
 				break;
 			}
 			case ShaderDataType::Mat3:
@@ -100,15 +101,15 @@ namespace Engine
 				uint8_t vectorSize = element.Type == ShaderDataType::Mat3 ? 3 : 4;
 				for (uint8_t i = 0; i < count / vectorSize; i++)
 				{
-					glEnableVertexAttribArray(m_VertexBufferIndex);
-					glVertexAttribPointer(m_VertexBufferIndex,
+					glEnableVertexAttribArray(index);
+					glVertexAttribPointer(index,
 						vectorSize,
 						ShaderDataTypeToOpenGLBaseType(element.Type),
 						element.Normalized ? GL_TRUE : GL_FALSE,
 						layout.GetStride(),
 						(const void*)(element.Offset + sizeof(float) * vectorSize * i));
-					glVertexAttribDivisor(m_VertexBufferIndex, 1);
-					m_VertexBufferIndex++;
+					glVertexAttribDivisor(index, 1);
+					index++;
 				}
 				break;
 			}
@@ -117,7 +118,7 @@ namespace Engine
 			}
 		}
 
-		m_VertexBuffers.push_back(vertexBuffer);
+		m_VertexBuffer = vertexBuffer;
 	}
 
 	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
@@ -126,5 +127,29 @@ namespace Engine
 		indexBuffer->Bind();
 
 		m_IndexBuffer = indexBuffer;
+	}
+
+	bool OpenGLVertexArray::HasIndexBuffer() const
+	{
+		return m_IndexBuffer != nullptr;
+	}
+
+	uint32_t OpenGLVertexArray::GetVertexCount() const
+	{
+		if (m_VertexBuffer == nullptr)
+		{
+			ENGINE_CORE_ERROR("No vertex buffer bound to vertex array!");
+			return 0;
+		}
+
+		const auto& layout = m_VertexBuffer->GetLayout();
+		
+		if (layout.GetStride() == 0)
+		{
+			ENGINE_CORE_ERROR("Vertex buffer has no layout or stride is zero!");
+			return 0;
+		}
+		
+		return m_VertexBuffer->GetSize() / layout.GetStride();
 	}
 } 

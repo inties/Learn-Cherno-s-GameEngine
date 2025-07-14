@@ -42,9 +42,39 @@ void TestLayer::OnAttach()
 		 0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,  // 右下角 - 蓝色
 		 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f   // 顶部 - 黄色
 	};
+	
+	// 简化的立方体顶点数据 - 只需要8个顶点（每个角一个）
+	// 每个顶点包含：位置(x,y,z) + 颜色(r,g,b,a)
+	float cubeVertices[] = {
+		// 位置                颜色
+		-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f,  // 0: 左下后 - 红色
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f,  // 1: 右下后 - 绿色
+		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f,  // 2: 右上后 - 蓝色
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  // 3: 左上后 - 黄色
+		-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f, 1.0f,  // 4: 左下前 - 紫色
+		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  // 5: 右下前 - 青色
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f, 1.0f,  // 6: 右上前 - 白色
+		-0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.5f, 1.0f   // 7: 左上前 - 灰色
+	};
 
+	// 立方体索引数据 - 36个索引组成12个三角形（6个面）
+	unsigned int cubeIndices[] = {
+		// 后面 (z = -0.5)
+		0, 1, 2,  2, 3, 0,
+		// 前面 (z = 0.5)
+		4, 5, 6,  6, 7, 4,
+		// 左面 (x = -0.5)
+		0, 4, 7,  7, 3, 0,
+		// 右面 (x = 0.5)
+		1, 5, 6,  6, 2, 1,
+		// 下面 (y = -0.5)
+		0, 1, 5,  5, 4, 0,
+		// 上面 (y = 0.5)
+		3, 2, 6,  6, 7, 3
+	};
+	
 	// 创建顶点缓冲区
-	m_VertexBuffer = Engine::VertexBuffer::Create(vertices, sizeof(vertices));
+	m_VertexBuffer = Engine::VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 	Engine::BufferLayout layout = {
 		{ Engine::ShaderDataType::Float3, "a_Position" },
 		{ Engine::ShaderDataType::Float4, "a_Color" }
@@ -53,15 +83,15 @@ void TestLayer::OnAttach()
 
 	// 创建顶点数组
 	m_VertexArray = Engine::VertexArray::Create();
-	m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+	m_VertexArray->SetVertexBuffer(m_VertexBuffer);
 
-	// 创建索引数据
-	uint32_t indices[3] = { 0, 1, 2 };
-	m_IndexBuffer = Engine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+	// 创建索引缓冲区
+	m_IndexBuffer = Engine::IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
 	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
 	// 创建位置颜色着色器 - 从文件路径创建
-	m_Shader = Engine::Shader::CreateFromFiles("VertexPosColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_position.glsl"));
+	//m_Shader = Engine::Shader::CreateFromFiles("VertexPosColor", "Shader/vertex_shader.glsl", "Shader/fragment_position.glsl");
+	m_Shader = Engine::Shader::CreateFromFiles("VertexPosColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_color.glsl"));
 
 	// 创建顶点颜色着色器 - 从文件路径创建
 	m_BlueShader = Engine::Shader::CreateFromFiles("VertexColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_color.glsl"));

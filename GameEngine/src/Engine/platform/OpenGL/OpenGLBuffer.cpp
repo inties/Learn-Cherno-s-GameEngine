@@ -10,6 +10,7 @@ namespace Engine
 	/////////////////////////////////////////////////////////////////////////////
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+		: m_Size(size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -17,6 +18,7 @@ namespace Engine
 	}
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+		: m_Size(size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);

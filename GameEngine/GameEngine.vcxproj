@@ -96,8 +96,7 @@
       <ImportLibrary>..\bin\Debug-windows-x86_64\GameEngine\GameEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF NOT EXIST ..\bin\Debug-windows-x86_64\SandBox (mkdir ..\bin\Debug-windows-x86_64\SandBox)
-copy /B /Y ..\bin\Debug-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Debug-windows-x86_64\SandBox</Command>
+      <Command>copy /B /Y ..\bin\Debug-windows-x86_64\GameEngine\GameEngine.dll ..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -126,8 +125,7 @@ copy /B /Y ..\bin\Debug-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Debug-wi
       <ImportLibrary>..\bin\Release-windows-x86_64\GameEngine\GameEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF NOT EXIST ..\bin\Release-windows-x86_64\SandBox (mkdir ..\bin\Release-windows-x86_64\SandBox)
-copy /B /Y ..\bin\Release-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Release-windows-x86_64\SandBox</Command>
+      <Command>copy /B /Y ..\bin\Release-windows-x86_64\GameEngine\GameEngine.dll ..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -156,8 +154,7 @@ copy /B /Y ..\bin\Release-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Releas
       <ImportLibrary>..\bin\Dist-windows-x86_64\GameEngine\GameEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF NOT EXIST ..\bin\Dist-windows-x86_64\SandBox (mkdir ..\bin\Dist-windows-x86_64\SandBox)
-copy /B /Y ..\bin\Dist-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Dist-windows-x86_64\SandBox</Command>
+      <Command>copy /B /Y ..\bin\Dist-windows-x86_64\GameEngine\GameEngine.dll ..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -225,6 +222,10 @@ copy /B /Y ..\bin\Dist-windows-x86_64\GameEngine\GameEngine.dll ..\bin\Dist-wind
     <ProjectReference Include="dependency\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\fragment_color.glsl" />
+    <None Include="Shader\vertex_shader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

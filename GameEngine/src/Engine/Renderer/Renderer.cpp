@@ -36,6 +36,17 @@ namespace Engine
 		// TODO: Set up shader uniforms with transform and scene data
 		shader->Bind();
 		vertexArray->Bind();
-		RenderCommand::DrawIndexed(vertexArray);
+		
+		// Use helper method to determine drawing mode
+		if (vertexArray->HasIndexBuffer())
+		{
+			// Use indexed drawing when index buffer is present
+			RenderCommand::DrawIndexed(vertexArray);
+		}
+		else
+		{
+			// Use array drawing when no index buffer is present
+			RenderCommand::DrawArrays(vertexArray);
+		}
 	}
 } 

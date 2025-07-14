@@ -32,6 +32,11 @@ namespace Engine
 			s_RendererAPI->DrawIndexed(vertexArray, indexCount);
 		}
 
+		static void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount = 0)
+		{
+			s_RendererAPI->DrawArrays(vertexArray, vertexCount);
+		}
+
 	private:
 		static std::unique_ptr<RendererAPI> s_RendererAPI;
 	};
