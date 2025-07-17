@@ -37,6 +37,9 @@
     <ClInclude Include="src\Engine\Imgui\imgui_impl_glfw.h">
       <Filter>Engine\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Imgui\imgui_internal.h">
+      <Filter>Engine\Imgui</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Input.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -73,10 +76,19 @@
     <ClInclude Include="src\Engine\Renderer\VertexArray.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\RendererLayer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\TestLayer.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Utils.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Windows.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\camera.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\core.h">
@@ -142,10 +154,16 @@
     <ClCompile Include="src\Engine\Renderer\VertexArray.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\RendererLayer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\TestLayer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Windows.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\camera.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\log.cpp">

@@ -1,159 +1,56 @@
 #include "pch.h"
 #include "TestLayer.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "platform/OpenGL/OpenGLShader.h"
 #include <imgui.h>
-#include <filesystem>
+#include <GLFW/glfw3.h>
 
 TestLayer::TestLayer()
 	: Layer("TestLayer")
 {
 }
 
-std::string TestLayer::GetShaderPath(const std::string& filename)
-{
-	// 尝试多个可能的路径
-	std::vector<std::string> possiblePaths = {
-		"GameEngine/Shader/" + filename,
-		"../GameEngine/Shader/" + filename,
-		"../../GameEngine/Shader/" + filename,
-		"../../../GameEngine/Shader/" + filename,
-		"../../../../GameEngine/Shader/" + filename
-	};
-	
-	for (const auto& path : possiblePaths) {
-		if (std::filesystem::exists(path)) {
-			ENGINE_CORE_INFO("Found shader file: {}", path);
-			return path;
-		}
-	}
-	
-	ENGINE_CORE_ERROR("Could not find shader file: {}", filename);
-	return "GameEngine/Shader/" + filename; // 回退到默认路径
-}
-
 void TestLayer::OnAttach()
 {
-	// 创建顶点数据 - 一个彩色三角形
-	float vertices[3 * 7] = {
-		-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,  // 左下角 - 紫色
-		 0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,  // 右下角 - 蓝色
-		 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f   // 顶部 - 黄色
-	};
-	
-	// 简化的立方体顶点数据 - 只需要8个顶点（每个角一个）
-	// 每个顶点包含：位置(x,y,z) + 颜色(r,g,b,a)
-	float cubeVertices[] = {
-		// 位置                颜色
-		-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f,  // 0: 左下后 - 红色
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f,  // 1: 右下后 - 绿色
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f,  // 2: 右上后 - 蓝色
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  // 3: 左上后 - 黄色
-		-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f, 1.0f,  // 4: 左下前 - 紫色
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  // 5: 右下前 - 青色
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f, 1.0f,  // 6: 右上前 - 白色
-		-0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.5f, 1.0f   // 7: 左上前 - 灰色
-	};
-
-	// 立方体索引数据 - 36个索引组成12个三角形（6个面）
-	unsigned int cubeIndices[] = {
-		// 后面 (z = -0.5)
-		0, 1, 2,  2, 3, 0,
-		// 前面 (z = 0.5)
-		4, 5, 6,  6, 7, 4,
-		// 左面 (x = -0.5)
-		0, 4, 7,  7, 3, 0,
-		// 右面 (x = 0.5)
-		1, 5, 6,  6, 2, 1,
-		// 下面 (y = -0.5)
-		0, 1, 5,  5, 4, 0,
-		// 上面 (y = 0.5)
-		3, 2, 6,  6, 7, 3
-	};
-	
-	// 创建顶点缓冲区
-	m_VertexBuffer = Engine::VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
-	Engine::BufferLayout layout = {
-		{ Engine::ShaderDataType::Float3, "a_Position" },
-		{ Engine::ShaderDataType::Float4, "a_Color" }
-	};
-	m_VertexBuffer->SetLayout(layout);
-
-	// 创建顶点数组
-	m_VertexArray = Engine::VertexArray::Create();
-	m_VertexArray->SetVertexBuffer(m_VertexBuffer);
-
-	// 创建索引缓冲区
-	m_IndexBuffer = Engine::IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
-	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-
-	// 创建位置颜色着色器 - 从文件路径创建
-	//m_Shader = Engine::Shader::CreateFromFiles("VertexPosColor", "Shader/vertex_shader.glsl", "Shader/fragment_position.glsl");
-	m_Shader = Engine::Shader::CreateFromFiles("VertexPosColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_color.glsl"));
-
-	// 创建顶点颜色着色器 - 从文件路径创建
-	m_BlueShader = Engine::Shader::CreateFromFiles("VertexColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_color.glsl"));
+	ENGINE_CORE_INFO("TestLayer attached");
 }
 
 void TestLayer::OnDetach()
 {
+	ENGINE_CORE_INFO("TestLayer detached");
 }
 
 void TestLayer::OnUpdate()
 {
-	// 设置清屏颜色
-	Engine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-	Engine::RenderCommand::Clear();
-
-	// 开始场景渲染
-	Engine::Renderer::BeginScene();
+	// 更新时间
+	m_Time = static_cast<float>(glfwGetTime());
 	
-	// 创建绕z轴旋转的变换矩阵
-	float time = (float)glfwGetTime(); // 获取当前时间
-	float rotationSpeed = 50.0f; // 每秒旋转50度
-	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), 
-		glm::radians(time * rotationSpeed), 
-		glm::vec3(0.0f, 0.0f, 1.0f)); // 绕z轴旋转
-	
-	m_Shader->SetMat4("u_Transform", rotation);
-	// 提交渲染对象
-	Engine::Renderer::Submit(m_Shader, m_VertexArray);
-
-	// 结束场景渲染
-	Engine::Renderer::EndScene();
+	// TestLayer 现在不处理渲染，只处理游戏逻辑
+	// 渲染由 RendererLayer 负责
 }
 
 void TestLayer::OnImGuiRender()
 {
-	//ImGui::Begin("Renderer Test");
-	//ImGui::Text("GameEngine Renderer Demo");
-	//ImGui::Separator();
-	//
-	//ImGui::Text("Shader Selection:");
-	//
-	//if (ImGui::Button("Position Color Shader"))
-	//{
-	//	// 切换到位置颜色着色器（基于顶点位置的颜色）
-	//	m_Shader = Engine::Shader::CreateFromFiles("PositionColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_position.glsl"));
-	//}
-	//
-	//if (ImGui::Button("Vertex Color Shader"))
-	//{
-	//	// 切换到顶点颜色着色器（使用顶点数据中的颜色）
-	//	m_Shader = m_BlueShader;
-	//}
-	//
-	//ImGui::Separator();
-	//ImGui::Text("Triangle vertices: 3");
-	//ImGui::Text("Indices: 3");
-	//ImGui::Text("Render API: %s", Engine::Renderer::GetAPI() == Engine::RendererAPI::API::OpenGL ? "OpenGL" : "Unknown");
-	//ImGui::Text("Shader files loaded from: GameEngine/Shader/");
-	//
-	//ImGui::End();
+	// 显示一个简单的测试窗口
+	if (ImGui::Begin("Test Layer"))
+	{
+		ImGui::Text("This is the Test Layer");
+		ImGui::Text("Runtime: %.2f seconds", m_Time);
+		
+		if (ImGui::Button("Click me!"))
+		{
+			m_Counter++;
+			ENGINE_CORE_INFO("Button clicked {} times", m_Counter);
+		}
+		
+		ImGui::Text("Button clicked %d times", m_Counter);
+		
+		ImGui::Separator();
+		ImGui::Text("Note: Rendering is now handled by RendererLayer");
+	}
+	ImGui::End();
 }
 
 void TestLayer::OnEvent(Engine::Event& e)
 {
+	// 处理一些测试事件
+	ENGINE_CORE_TRACE("TestLayer received event: {}", e.GetName());
 } 

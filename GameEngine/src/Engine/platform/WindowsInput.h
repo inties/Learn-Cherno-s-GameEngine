@@ -4,13 +4,18 @@
 namespace Engine {
 	class ENGINE_API WindowsInput :public Input {
 	public:
-		WindowsInput();
+		
 		virtual bool IsKeyPressed(int keycode)override;
 		virtual bool IsMouseButtonPressed(int mousecode)override;
-		virtual double GetXpos()override;
-		virtual double GetYpos()override;
-		virtual std::pair<double, double> GetMousePos()override;
+		virtual float GetXpos()override;
+		virtual float GetYpos()override;
+		virtual std::pair<float, float> GetMousePos()override;
+	private:
+		WindowsInput();
+		friend class Input;  // 允许Input类访问private构造函数
 	};
+
+
 	
 
 	

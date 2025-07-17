@@ -14,19 +14,21 @@ namespace Engine {
 		int state = glfwGetMouseButton(window, mousecode);
 		return (state == GLFW_PRESS);
 	}
-	double WindowsInput::GetXpos(){
+	float WindowsInput::GetXpos(){
 		double xpos, ypos;
 		glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
 		return xpos;
 	}
-	double WindowsInput::GetYpos(){
+	float WindowsInput::GetYpos(){
 		double xpos, ypos;
 		glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
 		return ypos;
 	}
-	std::pair<double, double> WindowsInput::GetMousePos(){
+	std::pair<float, float> WindowsInput::GetMousePos(){
 		double xpos, ypos;
 		glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
 		return { xpos, ypos };
 	}
+
+
 }

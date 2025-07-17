@@ -85,12 +85,17 @@ namespace Engine {
 				MouseMoveEvent event(xpos, ypos);
 				data.EventCallback(event);
 			});
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+		// 使用 framebuffer size callback 来获取真正的物理像素大小
+		glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
-				data.Width = width;
-				data.Height = height;
+				// 更新逻辑窗口大小（用于ImGui等）
+				int logicalWidth, logicalHeight;
+				glfwGetWindowSize(window, &logicalWidth, &logicalHeight);
+				data.Width = logicalWidth;
+				data.Height = logicalHeight;
 
+				// 发送物理像素大小的事件（用于OpenGL视口和投影矩阵）
 				WindowResizeEvent event(width, height);
 				data.EventCallback(event);
 			});
@@ -103,7 +108,7 @@ namespace Engine {
 			});
 
 		//-----------------------创建Input类
-		m_WindowsInput = new WindowsInput();
+		
 	}
 	WindowWindows::~WindowWindows()
 	{

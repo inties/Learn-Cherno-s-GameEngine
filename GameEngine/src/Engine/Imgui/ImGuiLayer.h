@@ -17,6 +17,7 @@ namespace Engine
 		void Begin();
 		void End();
 		virtual void OnImGuiRender() override;
+		void ImGuiRender();
 	public:
 		float m_time = 0.0f;
 

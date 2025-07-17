@@ -14,7 +14,6 @@ namespace Engine{
 			WindowsProps(
 				const std::string& title="myGameEngine",
 				int wid=500, int heigh=500) :Title(title),Width(wid), Height(heigh) {
-				/*EventCallback = [](Event& e) {return false;  };*/
 			};
 		};
 
