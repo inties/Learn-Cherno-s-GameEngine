@@ -5,6 +5,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/Buffer.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/Texture.h"
 #include "camera.h"
 #include "Application.h"
 #include <glm/glm.hpp>
@@ -74,5 +75,8 @@ namespace Engine
 		int m_FrameCount = 0;
 		float m_FPS = 0.0f;
 		float m_LastFPSUpdate = 0.0f;
+
+		// Œ∆¿Ì
+		std::shared_ptr<Texture2D> m_CubeTexture;
 	};
 } 

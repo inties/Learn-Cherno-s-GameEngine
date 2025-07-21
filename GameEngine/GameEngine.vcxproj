@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application.h" />
+    <ClInclude Include="src\Engine\Debug\Instrumentor.h" />
     <ClInclude Include="src\Engine\EntryPoint.h" />
     <ClInclude Include="src\Engine\Event.h" />
     <ClInclude Include="src\Engine\Imgui\ImGuiLayer.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\Engine\Renderer\Renderer.h" />
     <ClInclude Include="src\Engine\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Engine\Renderer\Shader.h" />
+    <ClInclude Include="src\Engine\Renderer\Texture.h" />
     <ClInclude Include="src\Engine\Renderer\VertexArray.h" />
     <ClInclude Include="src\Engine\RendererLayer.h" />
     <ClInclude Include="src\Engine\TestLayer.h" />
@@ -188,6 +190,7 @@
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Engine\platform\WindowWindows.h" />
     <ClInclude Include="src\Engine\platform\WindowsInput.h" />
@@ -205,8 +208,10 @@
     <ClCompile Include="src\Engine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Engine\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Engine\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Texture.cpp" />
     <ClCompile Include="src\Engine\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Engine\RendererLayer.cpp" />
+    <ClCompile Include="src\Engine\stb_lib.cpp" />
     <ClCompile Include="src\Engine\TestLayer.cpp" />
     <ClCompile Include="src\Engine\Windows.cpp" />
     <ClCompile Include="src\Engine\camera.cpp" />
@@ -214,6 +219,7 @@
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Engine\platform\WindowWindows.cpp" />
     <ClCompile Include="src\Engine\platform\WindowsInput.cpp" />

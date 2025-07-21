@@ -2,6 +2,7 @@
 #include "RendererLayer.h"
 #include "Renderer/RenderCommand.h"
 #include "platform/OpenGL/OpenGLShader.h"
+#include "Renderer/Texture.h"
 #include <imgui.h>
 #include <filesystem>
 #include <GLFW/glfw3.h>
@@ -58,21 +59,21 @@ namespace Engine
 
 	void RendererLayer::SetupCube()
 	{
-		// 简化的立方体顶点数据 - 只需要8个顶点（每个角一个）
-		// 每个顶点包含：位置(x,y,z) + 颜色(r,g,b,a)
+		// 立方体顶点数据：位置(x, y, z) + 颜色(r, g, b, a) + UV(u, v)
 		float cubeVertices[] = {
-			// 位置                颜色
-			-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f,  // 0: 左下后 - 红色
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f,  // 1: 右下后 - 绿色
-			 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f,  // 2: 右上后 - 蓝色
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  // 3: 左上后 - 黄色
-			-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f, 1.0f,  // 4: 左下前 - 紫色
-			 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  // 5: 右下前 - 青色
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f, 1.0f,  // 6: 右上前 - 白色
-			-0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.5f, 1.0f   // 7: 左上前 - 灰色
+			// 位置           颜色                UV
+			// 后面 (z = -0.5)
+			-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f, // 0
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f, // 1
+			 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f, // 2
+			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, 1.0f, // 3
+			// 前面 (z = 0.5)
+			-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f, 1.0f,  0.0f, 0.0f, // 4
+			 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  1.0f, 0.0f, // 5
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f, 1.0f,  1.0f, 1.0f, // 6
+			-0.5f,  0.5f,  0.5f,  0.5f, 0.5f, 0.5f, 1.0f,  0.0f, 1.0f  // 7
 		};
 
-		// 立方体索引数据 - 36个索引组成12个三角形（6个面）
 		unsigned int cubeIndices[] = {
 			// 后面 (z = -0.5)
 			0, 1, 2,  2, 3, 0,
@@ -87,25 +88,26 @@ namespace Engine
 			// 上面 (y = 0.5)
 			3, 2, 6,  6, 7, 3
 		};
-		
-		// 创建顶点缓冲区
+
 		m_VertexBuffer = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float4, "a_Color" }
+			{ ShaderDataType::Float4, "a_Color" },
+			{ ShaderDataType::Float2, "a_TexCoord" }
 		};
 		m_VertexBuffer->SetLayout(layout);
 
-		// 创建顶点数组
 		m_VertexArray = VertexArray::Create();
 		m_VertexArray->SetVertexBuffer(m_VertexBuffer);
 
-		// 创建索引缓冲区
 		m_IndexBuffer = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-		// 创建着色器
-		m_Shader = Shader::CreateFromFiles("VertexPosColor", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_color.glsl"));
+		// 加载纹理
+		m_CubeTexture = Texture2D::Create("E:/myGitRepos/myLearnOpengl/texture/awesomeface.png");
+
+		// 使用支持纹理的着色器
+		m_Shader = Shader::CreateFromFiles("VertexPosColorTex", GetShaderPath("vertex_shader.glsl"), GetShaderPath("fragment_color.glsl"));
 	}
 
 	void RendererLayer::OnUpdate()
@@ -139,6 +141,9 @@ namespace Engine
 		// 设置着色器uniform
 		m_Shader->Bind();
 		m_Shader->SetMat4("u_Transform", mvpMatrix);
+		// 绑定纹理并设置采样器
+		m_CubeTexture->Bind(0);
+		m_Shader->SetInt("u_Texture", 0);
 
 		// 提交渲染
 		Renderer::Submit(m_Shader, m_VertexArray, modelMatrix);

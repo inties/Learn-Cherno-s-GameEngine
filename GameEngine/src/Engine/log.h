@@ -17,9 +17,13 @@ namespace Engine {
 		inline static std::shared_ptr<spdlog::logger> getClientLogger() {
 			return s_Client_logger;
 		}
-		inline static std::shared_ptr<spdlog::logger> getEngineLogger() {
+		inline static std::shared_ptr<spdlog::logger> getCoreLogger() {
 			return s_Engine_logger;
 		}
+		inline static std::shared_ptr<spdlog::logger> getEngineLogger(){
+			return s_Engine_logger;
+		}
+
 	
 	private:
 		static std::shared_ptr<spdlog::logger> s_Client_logger;
@@ -30,6 +34,7 @@ namespace Engine {
 #define ENGINE_CORE_INFO(...) ::Engine::Log::getEngineLogger()->info(__VA_ARGS__)
 #define ENGINE_CORE_WARN(...) ::Engine::Log::getEngineLogger()->warn(__VA_ARGS__)
 #define ENGINE_CORE_ERROR(...) ::Engine::Log::getEngineLogger()->error(__VA_ARGS__)
+#define ENGINE_CORE_ASSERT(x, ...) { if(!(x)) { ENGINE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 
 #define ENGINE_TRACE(...) ::Engine::Log::getClientLogger()->trace(__VA_ARGS__)
 #define ENGINE_INFO(...) ::Engine::Log::getClientLogger()->info(__VA_ARGS__)

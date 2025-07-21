@@ -4,6 +4,9 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Debug">
+      <UniqueIdentifier>{910A0995-7D6D-9839-26F3-D0EF123564BC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\Imgui">
       <UniqueIdentifier>{65FD6795-5160-F739-FAE5-2FF0E627C3BC}</UniqueIdentifier>
     </Filter>
@@ -21,6 +24,9 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Debug\Instrumentor.h">
+      <Filter>Engine\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\EntryPoint.h">
       <Filter>Engine</Filter>
@@ -73,6 +79,9 @@
     <ClInclude Include="src\Engine\Renderer\Shader.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Texture.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\VertexArray.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
@@ -104,6 +113,9 @@
       <Filter>Engine\platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLShader.h">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLTexture.h">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLVertexArray.h">
@@ -151,6 +163,9 @@
     <ClCompile Include="src\Engine\Renderer\Shader.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Texture.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Renderer\VertexArray.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
@@ -178,6 +193,9 @@
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLShader.cpp">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClCompile>
@@ -188,5 +206,6 @@
       <Filter>Engine\platform</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Engine\stb_lib.cpp" />
   </ItemGroup>
 </Project>

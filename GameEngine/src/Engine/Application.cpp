@@ -1,6 +1,6 @@
 #include"pch.h"
 #include "Application.h"
-#include"log.h"
+#include "log.h"
 #include"Imgui/ImGuiLayer.h"
 #include "RendererLayer.h"
 #include "TestLayer.h"
@@ -9,10 +9,14 @@
 #include "Renderer/Renderer.h"
 #include<glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <filesystem>
+namespace fs = std::filesystem;
 namespace Engine {
 	// 定义并导出静态成员变量 
+
 	ENGINE_API Application* Application::s_Instance = nullptr;
 	Application::Application() {
+		std::cout << "当前工作目录: " << fs::current_path() << std::endl;
 		s_Instance = this;
 		m_Running = true;
 		Windows::WindowsProps props = { "Application", 1800, 1800 };
