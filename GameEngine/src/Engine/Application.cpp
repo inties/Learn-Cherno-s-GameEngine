@@ -36,7 +36,9 @@ namespace Engine {
 		m_LayerStack.PushLayer(m_ImGuiLayer);
 		m_LayerStack.PushLayer(new RendererLayer());
 		//m_LayerStack.PushLayer(new TestLayer());
-		mainCam =std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+		
+		// 初始化Camera单例
+		Camera::Initialize(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 		
 		// 初始化帧计时
 		m_LastFrameTime = glfwGetTime();
@@ -83,19 +85,21 @@ namespace Engine {
 	
 	void Application::ProcessCameraInput() {
 		auto input = Input::GetInstance();
+		Camera* camera = Camera::GetInstance();
+		if (!camera) return;
 		
 		// WASD键控制摄像机移动
 		if (input->IsKeyPressed(EG_KEY_W)) {
-			mainCam->ProcessKeyboard(Camera_Movement::FORWARD, m_DeltaTime);
+			camera->ProcessKeyboard(Camera_Movement::FORWARD, m_DeltaTime);
 		}
 		if (input->IsKeyPressed(EG_KEY_S)) {
-			mainCam->ProcessKeyboard(Camera_Movement::BACKWARD, m_DeltaTime);
+			camera->ProcessKeyboard(Camera_Movement::BACKWARD, m_DeltaTime);
 		}
 		if (input->IsKeyPressed(EG_KEY_A)) {
-			mainCam->ProcessKeyboard(Camera_Movement::LEFT, m_DeltaTime);
+			camera->ProcessKeyboard(Camera_Movement::LEFT, m_DeltaTime);
 		}
 		if (input->IsKeyPressed(EG_KEY_D)) {
-			mainCam->ProcessKeyboard(Camera_Movement::RIGHT, m_DeltaTime);
+			camera->ProcessKeyboard(Camera_Movement::RIGHT, m_DeltaTime);
 		}
 	}
 	
@@ -121,7 +125,10 @@ namespace Engine {
 		// ENGINE_CORE_INFO("Mouse moved to {0},{1}", e.getMousePos().first, e.getMousePos().second);
 		auto [x, y] = e.getMousePos();
 
-		mainCam->ProcessMouseMovement(x, y);
+		Camera* camera = Camera::GetInstance();
+		if (camera) {
+			camera->ProcessMouseMovement(x, y);
+		}
 		return true;
 	}
 	

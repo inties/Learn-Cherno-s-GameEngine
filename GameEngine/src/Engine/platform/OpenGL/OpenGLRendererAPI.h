@@ -14,5 +14,7 @@ namespace Engine
 
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
 		virtual void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount = 0) override;
+		virtual void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
+			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset) override;
 	};
 } 

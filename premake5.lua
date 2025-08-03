@@ -57,7 +57,8 @@ project "GameEngine"
             "user32.lib",
             "gdi32.lib",
             "shell32.lib",
-            "kernel32.lib"
+            "kernel32.lib",
+            "assimp-vc143-mtd.lib"
         }
         
         defines {

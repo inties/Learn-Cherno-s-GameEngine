@@ -4,7 +4,22 @@
 #include "Input.h"
 namespace Engine {
 
-    // constructor with vectors
+    // 单例实例
+    std::unique_ptr<Camera> Camera::s_Instance = nullptr;
+
+    // 单例访问方法
+    Camera* Camera::GetInstance() {
+        return s_Instance.get();
+    }
+
+    // 初始化单例
+    void Camera::Initialize(glm::vec3 position, glm::vec3 up, float yaw, float pitch) {
+        Camera* rawPtr = new Camera(position, up, yaw, pitch);
+        // 将原始指针交给unique_ptr管理
+        s_Instance = std::unique_ptr<Camera>(rawPtr);
+    }
+
+    // 私有构造函数 - vectors
     Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) 
         : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
@@ -17,7 +32,7 @@ namespace Engine {
         updateCameraVectors();
     }
 
-    // constructor with scalar values
+    // 私有构造函数 - scalar values
     Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
         : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
@@ -34,6 +49,14 @@ namespace Engine {
     glm::mat4 Camera::GetViewMatrix()
     {
         return glm::lookAt(Position, Position + Front, Up);
+    }
+
+    glm::mat4 Camera::GetProjectionMatrix() const {
+
+        // 假设FOV, aspect, near, far
+
+        return glm::perspective(glm::radians(Zoom), 1.0f, 0.1f, 100.0f); // 调整参数
+
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

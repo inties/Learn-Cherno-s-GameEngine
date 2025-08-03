@@ -39,4 +39,13 @@ namespace Engine
 		uint32_t count = vertexCount ? vertexCount : vertexArray->GetVertexCount();
 		glDrawArrays(GL_TRIANGLES, 0, count);
 	}
+
+	void OpenGLRendererAPI::DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
+		uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
+	{
+		vertexArray->Bind();
+		// 使用glDrawElementsBaseVertex支持偏移绘制
+		glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 
+			(void*)(indexOffset * sizeof(uint32_t)), vertexOffset);
+	}
 } 

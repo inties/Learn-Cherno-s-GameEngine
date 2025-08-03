@@ -10,8 +10,14 @@
     <Filter Include="Engine\Imgui">
       <UniqueIdentifier>{65FD6795-5160-F739-FAE5-2FF0E627C3BC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Model">
+      <UniqueIdentifier>{5B69B195-47CC-403A-F051-79F0DC930CBD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\Renderer">
       <UniqueIdentifier>{E1119970-4D9D-0635-56AE-8929C2B86235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resources">
+      <UniqueIdentifier>{05BB681F-F1B3-8771-1AE6-6CF6063E677D}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\platform">
       <UniqueIdentifier>{AFA6F61D-1B32-64E2-2443-E7D6904DC0E2}</UniqueIdentifier>
@@ -23,6 +29,9 @@
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\CameraManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Debug\Instrumentor.h">
@@ -58,6 +67,15 @@
     <ClInclude Include="src\Engine\LayerStack.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Model\Model.h">
+      <Filter>Engine\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Model\ModelLoader.h">
+      <Filter>Engine\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Model\Node.h">
+      <Filter>Engine\Model</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\MouseButtonCodes.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -65,6 +83,12 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Buffer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Material.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Mesh.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Renderer\RenderCommand.h">
@@ -82,11 +106,26 @@
     <ClInclude Include="src\Engine\Renderer\Texture.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Vertex.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\VertexArray.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\RendererLayer.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Resources\MaterialLibrary.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Resources\MeshLibrary.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Resources\ShaderLibrary.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Resources\TextureLibrary.h">
+      <Filter>Engine\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\TestLayer.h">
       <Filter>Engine</Filter>
@@ -107,6 +146,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLBuffer.h">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLMaterial.h">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.h">
@@ -133,6 +175,9 @@
     <ClCompile Include="src\Engine\Application.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\CameraManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Event.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -148,7 +193,25 @@
     <ClCompile Include="src\Engine\LayerStack.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Model\Model.cpp">
+      <Filter>Engine\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Model\ModelLoader.cpp">
+      <Filter>Engine\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Model\Node.cpp">
+      <Filter>Engine\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\ModelExample.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Buffer.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Material.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Mesh.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\RenderCommand.cpp">
@@ -172,6 +235,18 @@
     <ClCompile Include="src\Engine\RendererLayer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Resources\MaterialLibrary.cpp">
+      <Filter>Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Resources\MeshLibrary.cpp">
+      <Filter>Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Resources\ShaderLibrary.cpp">
+      <Filter>Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Resources\TextureLibrary.cpp">
+      <Filter>Engine\Resources</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\TestLayer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -185,6 +260,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLMaterial.cpp">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.cpp">
@@ -205,7 +283,9 @@
     <ClCompile Include="src\Engine\platform\WindowsInput.cpp">
       <Filter>Engine\platform</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\stb_lib.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\Engine\stb_lib.cpp" />
   </ItemGroup>
 </Project>

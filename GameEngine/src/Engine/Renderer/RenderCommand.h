@@ -37,6 +37,13 @@ namespace Engine
 			s_RendererAPI->DrawArrays(vertexArray, vertexCount);
 		}
 
+		// 新增：支持偏移绘制的方法
+		static void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
+			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
+		{
+			s_RendererAPI->DrawIndexedWithOffset(vertexArray, indexOffset, indexCount, vertexOffset);
+		}
+
 	private:
 		static std::unique_ptr<RendererAPI> s_RendererAPI;
 	};

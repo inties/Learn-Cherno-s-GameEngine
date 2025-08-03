@@ -24,8 +24,6 @@ namespace Engine {
 		// 摄像机控制相关方法
 		void ProcessCameraInput();
 		void UpdateFrameTiming();
-		
-		std::unique_ptr<Camera>mainCam;
 		inline static Application& Get() { return *s_Instance; }
 		inline Windows& GetWindow() { return *m_Window; }
 	protected:
