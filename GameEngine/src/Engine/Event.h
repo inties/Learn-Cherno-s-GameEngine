@@ -1,19 +1,24 @@
 #include"pch.h"
 #pragma once
 #include"Engine/core.h"
+#include <string>
+#include <sstream>
+#include <functional>
 
 namespace Engine{
 	enum EventType {
 		None = 0,
 		MouseMove, MouseButtonPressed, MouseButtonReleased,
 		WindowClose, WindowResize,
-		KeyPressed, KeyReleased
+		KeyPressed, KeyReleased,
+		FileDragDrop
 	};
 	enum EventCategory {
 		NoneCategory = 0,
 		KeyEvent = 1 << 0,
 		MouseEvent = 1 << 1,
 		WindowEvent = 1 << 2,
+		FileEvent = 1 << 3,
 	};
 	class ENGINE_API Event {
 		friend class EventDispatcher; // 允许 EventDispatcher 访问私有成员
@@ -155,6 +160,29 @@ namespace Engine{
 		int m_Width;
 		int m_Height;
 	};
+	class ENGINE_API FileDragDropEvent : public Event {
+	public:
+		FileDragDropEvent(const std::vector<std::string>& paths) : m_FilePaths(paths) {}
+
+		const std::vector<std::string>& GetFilePaths() const { return m_FilePaths; }
+		
+		std::string ToString() const {
+			std::stringstream ss;
+			ss << "FileDragDrop: ";
+			for (size_t i = 0; i < m_FilePaths.size(); ++i) {
+				ss << m_FilePaths[i];
+				if (i < m_FilePaths.size() - 1) ss << ", ";
+			}
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(FileDragDrop);
+		EVENT_CLASS_CATEGORY(FileEvent);
+
+	private:
+		std::vector<std::string> m_FilePaths;
+	};
+
 	class ENGINE_API EventDispatcher {//负责调用泛型编程的事件处理函数
 	public:
 		EventDispatcher(Event& event) :m_event(event) {}

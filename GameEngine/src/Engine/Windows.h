@@ -1,6 +1,8 @@
 #pragma once
 #include"pch.h"
 #include"Event.h"
+#include <string>
+#include <functional>
 namespace Engine{
 	class ENGINE_API Windows {
 		
@@ -12,9 +14,9 @@ namespace Engine{
 			unsigned int Height;
 			EventFuc EventCallback;
 			WindowsProps(
-				const std::string& title="myGameEngine",
-				int wid=500, int heigh=500) :Title(title),Width(wid), Height(heigh) {
-			};
+			const std::string& title="myGameEngine",
+			int wid=500, int heigh=500) : Title(title), Width(wid), Height(heigh) {
+		}
 		};
 
 		virtual ~Windows() {

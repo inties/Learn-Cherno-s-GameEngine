@@ -7,6 +7,9 @@
     <Filter Include="Engine\Debug">
       <UniqueIdentifier>{910A0995-7D6D-9839-26F3-D0EF123564BC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Editor">
+      <UniqueIdentifier>{B1407138-1D01-ED6E-E63B-36EC52BB314B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\Imgui">
       <UniqueIdentifier>{65FD6795-5160-F739-FAE5-2FF0E627C3BC}</UniqueIdentifier>
     </Filter>
@@ -18,6 +21,9 @@
     </Filter>
     <Filter Include="Engine\Resources">
       <UniqueIdentifier>{05BB681F-F1B3-8771-1AE6-6CF6063E677D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scene">
+      <UniqueIdentifier>{386D1796-24D0-A63A-CD55-DFF0B99772BD}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\platform">
       <UniqueIdentifier>{AFA6F61D-1B32-64E2-2443-E7D6904DC0E2}</UniqueIdentifier>
@@ -36,6 +42,9 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Debug\Instrumentor.h">
       <Filter>Engine\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Editor\EditorLayer.h">
+      <Filter>Engine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\EntryPoint.h">
       <Filter>Engine</Filter>
@@ -121,11 +130,20 @@
     <ClInclude Include="src\Engine\Resources\MeshLibrary.h">
       <Filter>Engine\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Resources\ProjectManager.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Resources\ResourceManager.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Resources\ShaderLibrary.h">
       <Filter>Engine\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Resources\TextureLibrary.h">
       <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Scene.h">
+      <Filter>Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\TestLayer.h">
       <Filter>Engine</Filter>
@@ -177,6 +195,9 @@
     </ClCompile>
     <ClCompile Include="src\Engine\CameraManager.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Editor\EditorLayer.cpp">
+      <Filter>Engine\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Event.cpp">
       <Filter>Engine</Filter>
@@ -241,11 +262,20 @@
     <ClCompile Include="src\Engine\Resources\MeshLibrary.cpp">
       <Filter>Engine\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Resources\ProjectManager.cpp">
+      <Filter>Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Resources\ResourceManager.cpp">
+      <Filter>Engine\Resources</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Resources\ShaderLibrary.cpp">
       <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Resources\TextureLibrary.cpp">
       <Filter>Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\Scene.cpp">
+      <Filter>Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\TestLayer.cpp">
       <Filter>Engine</Filter>

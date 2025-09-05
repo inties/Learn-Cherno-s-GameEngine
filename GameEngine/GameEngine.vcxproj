@@ -105,7 +105,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;src\Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -134,7 +134,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;src\Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -162,6 +162,7 @@
     <ClInclude Include="src\Engine\Application.h" />
     <ClInclude Include="src\Engine\CameraManager.h" />
     <ClInclude Include="src\Engine\Debug\Instrumentor.h" />
+    <ClInclude Include="src\Engine\Editor\EditorLayer.h" />
     <ClInclude Include="src\Engine\EntryPoint.h" />
     <ClInclude Include="src\Engine\Event.h" />
     <ClInclude Include="src\Engine\Imgui\ImGuiLayer.h" />
@@ -190,8 +191,11 @@
     <ClInclude Include="src\Engine\RendererLayer.h" />
     <ClInclude Include="src\Engine\Resources\MaterialLibrary.h" />
     <ClInclude Include="src\Engine\Resources\MeshLibrary.h" />
+    <ClInclude Include="src\Engine\Resources\ProjectManager.h" />
+    <ClInclude Include="src\Engine\Resources\ResourceManager.h" />
     <ClInclude Include="src\Engine\Resources\ShaderLibrary.h" />
     <ClInclude Include="src\Engine\Resources\TextureLibrary.h" />
+    <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\TestLayer.h" />
     <ClInclude Include="src\Engine\Utils.h" />
     <ClInclude Include="src\Engine\Windows.h" />
@@ -211,6 +215,7 @@
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp" />
     <ClCompile Include="src\Engine\CameraManager.cpp" />
+    <ClCompile Include="src\Engine\Editor\EditorLayer.cpp" />
     <ClCompile Include="src\Engine\Event.cpp" />
     <ClCompile Include="src\Engine\Imgui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Engine\Input.cpp" />
@@ -232,8 +237,11 @@
     <ClCompile Include="src\Engine\RendererLayer.cpp" />
     <ClCompile Include="src\Engine\Resources\MaterialLibrary.cpp" />
     <ClCompile Include="src\Engine\Resources\MeshLibrary.cpp" />
+    <ClCompile Include="src\Engine\Resources\ProjectManager.cpp" />
+    <ClCompile Include="src\Engine\Resources\ResourceManager.cpp" />
     <ClCompile Include="src\Engine\Resources\ShaderLibrary.cpp" />
     <ClCompile Include="src\Engine\Resources\TextureLibrary.cpp" />
+    <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\TestLayer.cpp" />
     <ClCompile Include="src\Engine\Windows.cpp" />
     <ClCompile Include="src\Engine\camera.cpp" />

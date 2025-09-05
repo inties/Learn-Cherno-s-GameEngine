@@ -7,9 +7,11 @@
 #include "Input.h"
 #include "KeyCodes.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/RenderCommand.h"
 #include<glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <filesystem>
+#include "Editor/EditorLayer.h"
 namespace fs = std::filesystem;
 namespace Engine {
 	// 定义并导出静态成员变量 
@@ -35,6 +37,7 @@ namespace Engine {
 		m_ImGuiLayer = new ImguiLayer();
 		m_LayerStack.PushLayer(m_ImGuiLayer);
 		m_LayerStack.PushLayer(new RendererLayer());
+		m_LayerStack.PushLayer(new EditorLayer());
 		//m_LayerStack.PushLayer(new TestLayer());
 		
 		// 初始化Camera单例
@@ -64,6 +67,10 @@ namespace Engine {
 			for (auto layer : m_LayerStack.m_Layers) {
 				layer->OnUpdate();
 			}
+			
+			// 在开始 ImGui 帧之前，清理默认帧缓冲，避免 UI 拖动产生残影
+			RenderCommand::SetClearColor(glm::vec4(0.10f, 0.10f, 0.10f, 1.0f));
+			RenderCommand::Clear();
 			
 			m_ImGuiLayer->Begin();
 			for (auto layer : m_LayerStack.m_Layers) {

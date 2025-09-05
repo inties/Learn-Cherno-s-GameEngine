@@ -107,6 +107,22 @@ namespace Engine {
 				data.EventCallback(event);
 			});
 
+		// 注册文件拖拽回调
+		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths)
+			{
+				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
+				
+				// 将C字符串数组转换为std::vector<std::string>
+				std::vector<std::string> filePaths;
+				for (int i = 0; i < count; ++i) {
+					filePaths.push_back(std::string(paths[i]));
+				}
+				
+				// 创建并发送文件拖拽事件
+				FileDragDropEvent event(filePaths);
+				data.EventCallback(event);
+			});
+
 		//-----------------------创建Input类
 		
 	}

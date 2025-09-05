@@ -1,11 +1,6 @@
 #pragma once
-#ifdef ENGINE_PLATFORM_WINDOWS
-#include <Windows.h>
-#endif
 
-// Engine core - 必须在其他包含之前
-#include "Engine/core.h"
-
+// Standard library includes first
 #include <vector>
 #include <array>
 #include <unordered_map>
@@ -19,9 +14,18 @@
 #include <utility>
 #include <memory>
 
+// Engine core - before platform specific includes
+#include "Engine/core.h"
 
+// Platform specific includes
+#ifdef ENGINE_PLATFORM_WINDOWS
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <Windows.h>
+#endif
 
-//---------------------其它依赖库------------------------//
+//---------------------第三方依赖库------------------------//
 #include <glad/glad.h>
 #include<GLFW/glfw3.h>
 #include <glm/glm.hpp>

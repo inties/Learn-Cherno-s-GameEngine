@@ -33,7 +33,7 @@ project "GameEngine"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{prj.name}/src"
+        "%{prj.name}/src",
     }
     libdirs {
         "%{prj.name}/dependency/GLFW_3_4/lib",

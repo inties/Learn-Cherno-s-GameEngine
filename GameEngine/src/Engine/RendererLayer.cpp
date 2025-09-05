@@ -3,11 +3,15 @@
 #include "Renderer/RenderCommand.h"
 #include "platform/OpenGL/OpenGLShader.h"
 #include "Renderer/Texture.h"
-#include "Model/Model.h"
+// #include "Model/Model.h"
 #include "Resources/ShaderLibrary.h"
+#include "Resources/ResourceManager.h"
+#include "Scene/Scene.h"
 #include <imgui.h>
 #include <filesystem>
+#include <vector>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Engine
 {
@@ -49,13 +53,18 @@ namespace Engine
 		// 设置立方体
 		SetupCube();
 		
-		// 设置模型
-		SetupModel();
+		// 移除硬编码模型加载（改由 Scene + ResourceManager 驱动）
+		// SetupModel();
 		
 		// 初始化相机和投影矩阵
 		m_AspectRatio = 1.0f; // 默认比例，会在第一次窗口大小调整时更新
 		UpdateProjectionMatrix();
 		SetupViewMatrix();
+
+		// 创建离屏渲染目标（使用当前窗口尺寸作为初始尺寸）
+		unsigned int initW = Application::Get().GetWindow().GetWidth();
+		unsigned int initH = Application::Get().GetWindow().GetHeight();
+		CreateRenderTarget(initW, initH);
 		
 		ENGINE_CORE_INFO("RendererLayer attached");
 	}
@@ -63,6 +72,7 @@ namespace Engine
 	void RendererLayer::OnDetach()
 	{
 		ENGINE_CORE_INFO("RendererLayer detached");
+		DestroyRenderTarget();
 	}
 
 	void RendererLayer::LoadDefaultShaders()
@@ -151,21 +161,6 @@ namespace Engine
 		}
 	}
 
-	void RendererLayer::SetupModel()
-	{
-		// 加载背包模型
-		std::string modelPath = "E:/myGitRepos/myLearnOpengl/models/backpack/backpack.obj";
-		ENGINE_CORE_INFO("Loading model from: {}", modelPath);
-		
-		m_Model = Model::Create(modelPath);
-		if (!m_Model) {
-			ENGINE_CORE_ERROR("Failed to load model: {}", modelPath);
-			return;
-		}
-		
-		ENGINE_CORE_INFO("Successfully loaded model");
-	}
-
 	void RendererLayer::OnUpdate()
 	{
 		// 更新时间
@@ -174,7 +169,18 @@ namespace Engine
 		// 更新旋转
 		m_Rotation += m_Settings.rotationSpeed * 0.016f; // 假设60FPS
 		
-		// 设置清屏颜色
+		// 设置线框模式
+		if (m_Settings.wireframe) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		
+		// 绑定离屏帧缓冲并设置视口
+		glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+		glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
+
+		// 设置清屏颜色并清屏
 		RenderCommand::SetClearColor(glm::vec4(m_Settings.clearColor, 1.0f));
 		RenderCommand::Clear();
 
@@ -182,23 +188,12 @@ namespace Engine
 		Renderer::BeginScene();
 
 		// 渲染立方体
-		if (m_CubeShader && m_CubeVAO) {
+	if (m_ShowCube && m_CubeShader && m_CubeVAO) {
 			// 创建立方体变换矩阵
 			glm::mat4 cubeMatrix = glm::mat4(1.0f);
 			cubeMatrix = glm::translate(cubeMatrix, glm::vec3(1.0f, 0.0f, 0.0f));
 			cubeMatrix = glm::rotate(cubeMatrix, m_Rotation, glm::vec3(1.0f, 1.0f, 0.0f));
 			cubeMatrix = glm::scale(cubeMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
-
-			// 输出关键调试信息
-			static int debugCount = 0;
-			if (debugCount++ < 60) { // 只输出前60帧避免刷屏
-				ENGINE_CORE_INFO("=== Frame {} Debug Info ===", debugCount);
-				ENGINE_CORE_INFO("Cube Position: ({:.2f}, {:.2f}, {:.2f})", 
-					m_Settings.position.x, m_Settings.position.y, m_Settings.position.z);
-				ENGINE_CORE_INFO("Cube Scale: ({:.2f}, {:.2f}, {:.2f})", 
-					m_Settings.scale.x, m_Settings.scale.y, m_Settings.scale.z);
-				ENGINE_CORE_INFO("FOV: {:.1f}, Near: {:.3f}, Far: {:.1f}", m_FOV, m_NearPlane, m_FarPlane);
-			}
 
 			// 获取视图矩阵
 			glm::mat4 viewMatrix = m_ViewMatrix;
@@ -216,31 +211,31 @@ namespace Engine
 			// 绑定VAO并渲染立方体
 			m_CubeVAO->Bind();
 			RenderCommand::DrawIndexed(m_CubeVAO);
-			
-		} else {
-			ENGINE_CORE_ERROR("Cube shader or VAO not available");
 		}
 
-		// 可选：同时渲染模型（注释掉以只显示立方体）
-		
-		if (m_Model) {
-			// 创建模型变换矩阵
-			glm::mat4 modelMatrix = glm::mat4(1.0f);
-			modelMatrix = glm::translate(modelMatrix, glm::vec3(2.0f, 0.0f, 0.0f)); // 偏移模型位置
-			modelMatrix = glm::rotate(modelMatrix, m_Rotation, glm::vec3(1.0f, 1.0f, 0.0f));
-			modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f)); // 缩小模型
-
-			if (m_UseDebugShader && m_DebugShader) {
-				RenderModelWithDebugShader(modelMatrix);
-			} else {
-				m_Model->SetGlobalTransform(modelMatrix);
-				m_Model->Draw();
+		// 渲染场景中的模型实例
+		if (m_Scene) {
+			const auto& objects = m_Scene->GetModelObjects();
+			for (const auto& obj : objects) {
+				auto model = ResourceManager::Get()->LoadModel(obj.modelPath);
+				if (!model) {
+					ENGINE_CORE_WARN("Failed to load model for scene object: {}", obj.modelPath);
+					continue;
+				}
+				// 使用场景对象的变换渲染
+				model->SetGlobalTransform(obj.transform);
+				model->Draw();
 			}
 		}
-		
 
 		// 结束场景
 		Renderer::EndScene();
+
+		// 解绑帧缓冲，恢复到默认帧缓冲，并将视口还原为窗口大小，供 ImGui 使用
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		unsigned int winW = Application::Get().GetWindow().GetWidth();
+		unsigned int winH = Application::Get().GetWindow().GetHeight();
+		glViewport(0, 0, (GLint)winW, (GLint)winH);
 		
 		// 更新FPS统计
 		m_FrameCount++;
@@ -264,6 +259,7 @@ namespace Engine
 			ImGui::Text("Basic Settings:");
 			ImGui::ColorEdit3("Clear Color", &m_Settings.clearColor.x);
 			ImGui::Checkbox("Wireframe", &m_Settings.wireframe);
+			ImGui::Checkbox("Show Cube", &m_ShowCube);
 			
 			ImGui::Separator();
 			
@@ -318,43 +314,11 @@ namespace Engine
 			
 			ImGui::Separator();
 			
-			// 统计信息
-			ImGui::Text("Statistics:");
-			ImGui::Text("FPS: %.1f", m_FPS);
-			ImGui::Text("Frame Time: %.3f ms", 1000.0f / m_FPS);
-			ImGui::Text("Current Rotation: %.2f", m_Rotation);
-			ImGui::Text("Runtime: %.2f seconds", m_Time);
-			
-			if (m_CubeVAO && m_CubeShader) {
-				ImGui::Text("Cube: Ready");
-				ImGui::Text("Cube Indices: %d", m_CubeIBO ? m_CubeIBO->GetCount() : 0);
+			// 场景信息
+			if (m_Scene) {
+				ImGui::Text("Scene Objects: %d", (int)m_Scene->GetModelObjects().size());
 			} else {
-				ImGui::Text("Cube: NOT Ready");
-			}
-			
-			if (m_Model) {
-				ImGui::Text("Model loaded: YES");
-			} else {
-				ImGui::Text("Model loaded: NO");
-			}
-			
-			ImGui::Separator();
-			
-			// 重置按钮
-			if (ImGui::Button("Reset Cube Transform"))
-			{
-				m_Settings.position = glm::vec3(0.0f);
-				m_Settings.scale = glm::vec3(1.0f);
-				m_Settings.rotationSpeed = 1.0f;
-				m_Rotation = 0.0f;
-			}
-			
-			// 快速调试按钮
-			if (ImGui::Button("Reset to Default View"))
-			{
-				m_Settings.position = glm::vec3(0.0f, 0.0f, -2.0f);
-				m_Settings.scale = glm::vec3(1.0f); // 立方体保持原大小
-				m_Rotation = 0.0f;
+				ImGui::Text("No Scene set");
 			}
 		}
 		ImGui::End();
@@ -372,10 +336,8 @@ namespace Engine
 	{
 		ENGINE_CORE_INFO("RendererLayer: Updating projection matrix for {}x{}", e.GetWindowWidth(), e.GetWindowHeight());
 		
-		// 更新纵横比
+		// 更新纵横比（窗口尺寸变化时，仅更新投影矩阵；渲染目标由 Editor 控制）
 		m_AspectRatio = static_cast<float>(e.GetWindowWidth()) / static_cast<float>(e.GetWindowHeight());
-		
-		// 重新计算投影矩阵
 		UpdateProjectionMatrix();
 		
 		// 不拦截事件，让其他层也能处理
@@ -406,33 +368,53 @@ namespace Engine
 
 	void RendererLayer::RenderModelWithDebugShader(const glm::mat4& modelMatrix)
 	{
-		//if (!m_DebugShader || !m_Model) return;
-
-		//auto sharedVAO = m_Model->GetSharedVAO();
-		//if (!sharedVAO) {
-		//	ENGINE_CORE_ERROR("Model has no shared VAO");
-		//	return;
-		//}
-
-		//// 绑定调试着色器
-		//m_DebugShader->Bind();
-		//m_DebugShader->SetMat4("u_Model", modelMatrix);
-		//m_DebugShader->SetMat4("u_ViewProjection", viewProjMatrix);
-		//m_DebugShader->SetInt("u_DebugMode", m_DebugMode);
-		//
-		//// 设置默认材质颜色
-		//m_DebugShader->SetFloat4("u_DiffuseColor", glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
-
-		//// 绑定共享VAO并渲染整个模型
-		//sharedVAO->Bind();
-		//
-		//// 由于我们使用共享VAO，需要渲染所有索引
-		//auto indexBuffer = sharedVAO->GetIndexBuffer();
-		//if (indexBuffer) {
-		//	RenderCommand::DrawIndexed(sharedVAO);
-		//	ENGINE_CORE_INFO("Debug rendered model with {} indices", indexBuffer->GetCount());
-		//} else {
-		//	ENGINE_CORE_ERROR("Shared VAO has no index buffer");
-		//}
+		// (kept commented out debug rendering)
 	}
-} 
+
+	void RendererLayer::CreateRenderTarget(unsigned int width, unsigned int height)
+	{
+		DestroyRenderTarget();
+		m_RTWidth = width; m_RTHeight = height;
+
+		glGenFramebuffers(1, &m_Framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+
+		// Color attachment texture
+		glGenTextures(1, &m_ColorAttachment);
+		glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
+
+		// Depth-stencil renderbuffer
+		glGenRenderbuffers(1, &m_DepthStencilRBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_DepthStencilRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (GLsizei)width, (GLsizei)height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthStencilRBO);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			ENGINE_CORE_ERROR("Framebuffer is not complete!");
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void RendererLayer::DestroyRenderTarget()
+	{
+		if (m_DepthStencilRBO) { glDeleteRenderbuffers(1, &m_DepthStencilRBO); m_DepthStencilRBO = 0; }
+		if (m_ColorAttachment) { glDeleteTextures(1, &m_ColorAttachment); m_ColorAttachment = 0; }
+		if (m_Framebuffer) { glDeleteFramebuffers(1, &m_Framebuffer); m_Framebuffer = 0; }
+	}
+
+	void RendererLayer::ResizeRenderTarget(unsigned int width, unsigned int height)
+	{
+		if (width == 0 || height == 0) return;
+		if (width == m_RTWidth && height == m_RTHeight) return;
+		CreateRenderTarget(width, height);
+		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+		UpdateProjectionMatrix();
+	}
+}

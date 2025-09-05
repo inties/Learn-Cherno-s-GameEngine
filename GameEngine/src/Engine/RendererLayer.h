@@ -44,8 +44,17 @@ namespace Engine
 		RendererSettings& GetSettings() { return m_Settings; }
 		const RendererSettings& GetSettings() const { return m_Settings; }
 
+		// 提供渲染目标纹理与尺寸给编辑器
+		unsigned int GetRenderTextureID() const { return m_ColorAttachment; }
+		unsigned int GetRenderWidth() const { return m_RTWidth; }
+		unsigned int GetRenderHeight() const { return m_RTHeight; }
+		void ResizeRenderTarget(unsigned int width, unsigned int height);
+
+		// 外部设置场景
+		void SetScene(const Ref<class Scene>& scene) { m_Scene = scene; }
+
 	private:
-		void SetupModel();
+		// void SetupModel(); // 已移除：不再使用硬编码模型
 		void SetupCube();
 		std::string GetShaderPath(const std::string& filename);
 		void UpdateProjectionMatrix();
@@ -54,10 +63,21 @@ namespace Engine
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
 
 	private:
+		// 离屏渲染目标（帧缓冲）
+		void CreateRenderTarget(unsigned int width, unsigned int height);
+		void DestroyRenderTarget();
+
+		unsigned int m_Framebuffer = 0;
+		unsigned int m_ColorAttachment = 0;
+		unsigned int m_DepthStencilRBO = 0;
+		unsigned int m_RTWidth = 0;
+		unsigned int m_RTHeight = 0;
 		RendererSettings m_Settings;
 		
 		// 渲染资源
-		Ref<Model> m_Model;
+		// Ref<Model> m_Model;
+		Ref<class Scene> m_Scene;
+		bool m_ShowCube = true; // 是否显示立方体演示
 		
 		// 立方体渲染资源
 		Ref<VertexArray> m_CubeVAO;
@@ -87,4 +107,4 @@ namespace Engine
 		int m_DebugMode = 0; // 0=正常, 1=位置颜色, 2=法线颜色, 3=纹理坐标, 4=纯色
 		Ref<Shader> m_DebugShader;
 	};
-} 
+}

@@ -21,11 +21,12 @@ namespace Engine {
 		//virtual bool OnKeyPress(KeyPressEvent& e);
 		//virtual bool OnKeyRelease(KeyReleaseEvent& e);
 		
-		// æ‘„åƒæœºæ§åˆ¶ç›¸å…³æ–¹æ³•
+		// ÉãÏñ»ú¿ØÖÆÏà¹Ø·½·¨
 		void ProcessCameraInput();
 		void UpdateFrameTiming();
 		inline static Application& Get() { return *s_Instance; }
 		inline Windows& GetWindow() { return *m_Window; }
+		inline LayerStack& GetLayerStack() { return m_LayerStack; }
 	protected:
 		std::unique_ptr<Engine::Windows>m_Window;
 		bool m_Running = false;
@@ -33,15 +34,15 @@ namespace Engine {
 		LayerStack m_LayerStack;
 		ImguiLayer* m_ImGuiLayer = nullptr;
 		
-		// å¸§è®¡æ—¶ç›¸å…³å˜é‡
+		// Ö¡¼ÆÊ±Ïà¹Ø±äÁ¿
 		float m_DeltaTime = 0.0f;
 		float m_LastFrameTime = 0.0f;
 		
-		// é¼ æ ‡æ§åˆ¶ç›¸å…³å˜é‡
+		// Êó±ê¿ØÖÆÏà¹Ø±äÁ¿
 		bool m_FirstMouse = true;
 	};
 	
-	// ç”±å®¢æˆ·ç«¯å®ç°
+	// ÓÉ¿Í»§¶ËÊµÏÖ
 	Application* createApplication();
 
 }

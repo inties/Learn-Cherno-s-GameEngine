@@ -33,6 +33,8 @@ namespace Engine {
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		// 禁用 ImGui 自动从磁盘加载/保存 ini（我们自行提供保存/加载入口）
+		io.IniFilename = nullptr;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
@@ -143,6 +145,33 @@ namespace Engine {
 		if (opt_fullscreen)
 			ImGui::PopStyleVar(2); // 弹出之前设置的 rounding 和 border size
 
+		// --- 顶部菜单：提供 保存/加载/重置 布局 ---
+		static const char* kUserLayoutPath = "SandBox/imgui_user_layout.ini";
+		static bool s_buildDefaultLayout = true; // 程序启动时使用默认布局；用户可通过“重置”再次触发
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Layout"))
+			{
+				if (ImGui::MenuItem("Save Layout"))
+				{
+					ImGui::SaveIniSettingsToDisk(kUserLayoutPath);
+				}
+				if (ImGui::MenuItem("Load Layout"))
+				{
+					ImGui::LoadIniSettingsFromDisk(kUserLayoutPath);
+					// 加载自定义布局后，不再强制构建默认布局
+					s_buildDefaultLayout = false;
+				}
+				if (ImGui::MenuItem("Reset to Default"))
+				{
+					// 下一个阶段使用默认布局
+					s_buildDefaultLayout = true;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
 		// --- 步骤 2: 提交 DockSpace 并设置一次性默认布局 ---
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -151,32 +180,29 @@ namespace Engine {
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-			// --- 关键：使用 DockBuilder API 设置默认布局 (仅在第一次运行时执行) ---
-			static bool first_time = true;
-			if (first_time)
+			// 使用 DockBuilder API 设置默认布局（仅当 s_buildDefaultLayout 为 true 时触发一次）
+			if (s_buildDefaultLayout)
 			{
-				first_time = false;
+				// 构建完成后立即关闭开关，避免每帧重建
+				s_buildDefaultLayout = false;
 
-				// 清除任何现有的布局
+				// 清除并重建根节点（不重复创建宿主窗口，仅重建 DockBuilder 结构）
 				ImGui::DockBuilderRemoveNode(dockspace_id);
-				// 添加一个新节点，并设置其大小为视口大小
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
-				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
+				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->WorkSize);
 
-				// 将主停靠区分割成多个区域
+				// 将主停靠区分割成：左 20%、右 25%、下 25%、中间剩余
 				ImGuiID dock_main_id = dockspace_id;
-				
-				// 首先从整个区域分割出上方区域，占据12%的高度（用于工具栏/状态栏），横跨整个宽度
-				ImGuiID dock_id_up = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Up, 0.12f, nullptr, &dock_main_id);
-				
-				// 然后从剩余的主区域分割出右侧区域，占据25%的空间
+				ImGuiID dock_id_left  = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left,  0.20f, nullptr, &dock_main_id);
 				ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.25f, nullptr, &dock_main_id);
-				
-				// 将我们的窗口停靠到指定区域
-				//ImGui::DockBuilderDockWindow("Dear ImGui Demo", dock_main_id); // 将 Demo 窗口停靠在主区域
-				ImGui::DockBuilderDockWindow("Properties", dock_id_right); // 将 Properties 窗口停靠在右侧区域
-				ImGui::DockBuilderDockWindow("RenderInfo", dock_id_up); // 将 RenderInfo 窗口停靠在上方区域
+				ImGuiID dock_id_down  = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down,  0.25f, nullptr, &dock_main_id);
 
+				// 按约定的窗口名进行 Dock：这些窗口由 EditorLayer/RendererLayer 创建
+				ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
+				ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+				ImGui::DockBuilderDockWindow("Console",   dock_id_down);
+				ImGui::DockBuilderDockWindow("Viewport",  dock_main_id); // 中央区域
+				ImGui::DockBuilderDockWindow("RenderInfo", dock_id_right); // 与 Inspector 同列（Tab）
 
 				// 完成布局设置
 				ImGui::DockBuilderFinish(dockspace_id);
@@ -193,21 +219,8 @@ namespace Engine {
 
 
 		// --- 步骤 3: 渲染你的可停靠窗口 ---
-		// 这些窗口的 Begin/End 调用需要放在宿主窗口的外面。
+		// 这些窗口由 EditorLayer/RendererLayer 各自负责创建与渲染，这里无需重复创建占位窗口。
 		// ImGui 会根据 DockBuilder 设置的布局，自动将它们绘制在正确的位置。
-
-		//// 这是一个我们想要默认停靠在右侧的示例窗口
-		ImGui::Begin("Properties");
-		ImGui::Text("This is the properties window.");
-		ImGui::Text("It should start docked on the right.");
-		if (ImGui::Button("A Button"))
-		{
-			// ...
-		}
-		ImGui::End();
-
-		//// ImGui 自带的 Demo 窗口，我们让它默认停靠在主区域
-		//ImGui::ShowDemoWindow();
 	}
 	void ImguiLayer::ImGuiRender()
 	{
@@ -256,7 +269,7 @@ namespace Engine {
 		}
 		
 		// 调试输出
-		std::cout << "Mouse button pressed: " << button << std::endl;
+		// std::cout << "Mouse button pressed: " << button << std::endl;
 		
 		// 如果ImGui想要捕获鼠标，则阻止事件继续传播
 		return m_BlockEvents && io.WantCaptureMouse;
@@ -273,7 +286,7 @@ namespace Engine {
 		}
 		
 		// 调试输出
-		std::cout << "Mouse button released: " << button << std::endl;
+		// std::cout << "Mouse button released: " << button << std::endl;
 		
 		// 如果ImGui想要捕获鼠标，则阻止事件继续传播
 		return m_BlockEvents && io.WantCaptureMouse;
