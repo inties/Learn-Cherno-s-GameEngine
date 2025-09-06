@@ -55,7 +55,11 @@ namespace Engine
 		
 		// 移除硬编码模型加载（改由 Scene + ResourceManager 驱动）
 		// SetupModel();
-		
+		const std::string s= "backpack.obj";
+		m_model = ResourceManager::Get()->LoadModel(s);
+		if (m_model) {
+			std::cout << "加载成功" << std::endl;
+		}
 		// 初始化相机和投影矩阵
 		m_AspectRatio = 1.0f; // 默认比例，会在第一次窗口大小调整时更新
 		UpdateProjectionMatrix();

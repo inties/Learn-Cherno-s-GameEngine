@@ -106,5 +106,6 @@ namespace Engine
 		bool m_UseDebugShader = false;
 		int m_DebugMode = 0; // 0=正常, 1=位置颜色, 2=法线颜色, 3=纹理坐标, 4=纯色
 		Ref<Shader> m_DebugShader;
+		Ref<Model> m_model;
 	};
 }

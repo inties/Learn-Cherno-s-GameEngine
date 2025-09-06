@@ -29,6 +29,7 @@ namespace Engine
 			glm::mat4 ViewProjectionMatrix;
 		};
 
+
 		static std::unique_ptr<SceneData> s_SceneData;
 	};
 } 

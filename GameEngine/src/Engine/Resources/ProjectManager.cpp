@@ -13,7 +13,7 @@ namespace Engine {
     }
 
     ProjectManager::ProjectManager() {
-        // 设置默认项目根目录
+        // ??????????????
         SetProjectRoot("E:/myGitRepos/GameEngine/SandBox");
         std::cout << "[ProjectManager] Default project root set to: E:/myGitRepos/GameEngine/SandBox" << std::endl;
     }
@@ -28,13 +28,13 @@ namespace Engine {
         fs::path p(path);
         m_ProjectRoot = p.lexically_normal().string();
 #ifdef _WIN32
-        // 统一为正斜杠，防止相对路径匹配不一致
+        // ?????潩?????????潩????????
         std::replace(m_ProjectRoot.begin(), m_ProjectRoot.end(), '\\', '/');
 #endif
     }
 
     AssetType ProjectManager::ClassifyByExtension(const std::string& extLower) {
-        // 不再限制特定文件类型，所有文件都视为通用文件类型
+        // ?????????????????????????????????????????
         if (!extLower.empty()) {
             return AssetType::File;
         }
@@ -72,7 +72,7 @@ namespace Engine {
         std::string rel = MakeRelativeToRoot(absPath);
         if (rel.empty()) return false;
         rel = NormalizePath(rel);
-        if (m_AssetDedup.count(rel)) return true; // 已存在，视为成功
+        if (m_AssetDedup.count(rel)) return true; // ????????????
         std::string ext = ToLower(fs::path(rel).extension().string());
         AssetType type = ClassifyByExtension(ext);
         m_Assets.push_back({ rel, type });
@@ -98,7 +98,7 @@ namespace Engine {
             return result;
         }
         
-        // 构建目标路径
+        // ???????潩??
         std::string fileName = sourcePath.filename().string();
         std::string targetRelPath = targetRelDir.empty() ? fileName : (NormalizePath(targetRelDir) + "/" + fileName);
         
@@ -109,7 +109,7 @@ namespace Engine {
         
         fs::path targetAbsPath = fs::path(m_ProjectRoot) / targetRelPath;
         
-        // 确保目标目录存在
+        // ????????????
         fs::path targetDir = targetAbsPath.parent_path();
         std::error_code ec;
         fs::create_directories(targetDir, ec);
@@ -118,7 +118,7 @@ namespace Engine {
             return result;
         }
         
-        // 处理文件冲突
+        // ??????????
         if (fs::exists(targetAbsPath)) {
             switch (strategy) {
                 case CopyStrategy::Skip:
@@ -128,7 +128,7 @@ namespace Engine {
                     return result;
                     
                 case CopyStrategy::Overwrite:
-                    // 继续执行复制
+                    // ??????潩???
                     break;
                     
                 case CopyStrategy::Rename:
@@ -138,7 +138,7 @@ namespace Engine {
             }
         }
         
-        // 执行文件复制
+        // ??????????
         std::cout << "[ProjectManager] Copying file to: " << targetAbsPath.string() << std::endl;
         fs::copy_file(sourcePath, targetAbsPath, fs::copy_options::overwrite_existing, ec);
         if (ec) {
@@ -147,7 +147,7 @@ namespace Engine {
             return result;
         }
         
-        // 更新资产列表
+        // ????????潩?
         std::string normalizedRelPath = NormalizePath(targetRelPath);
         if (!m_AssetDedup.count(normalizedRelPath)) {
             std::string ext = ToLower(fs::path(normalizedRelPath).extension().string());
@@ -188,7 +188,7 @@ namespace Engine {
         
         std::cout << "[ProjectManager] Starting recursive directory copy..." << std::endl;
         
-        // 递归复制目录中的所有文件
+        // ??漙?????潩????????
         std::error_code ec;
         int fileCount = 0;
         for (const auto& entry : fs::recursive_directory_iterator(sourceDir, ec)) {
@@ -203,11 +203,11 @@ namespace Engine {
                 fileCount++;
                 std::cout << "[ProjectManager] Processing file " << fileCount << ": " << entry.path().filename().string() << std::endl;
                 
-                // 计算相对于源目录的路径
+                // ??????????????潩??
                 fs::path relativePath = fs::relative(entry.path(), sourceDir, ec);
                 if (ec) continue;
                 
-                // 构建目标相对路径
+                // ??????????潩??
                 std::string targetSubDir = targetRelDir.empty() ? 
                     relativePath.parent_path().string() : 
                     (NormalizePath(targetRelDir) + "/" + relativePath.parent_path().string());
@@ -246,11 +246,11 @@ namespace Engine {
             dirEntry.name = entry.path().filename().string();
             dirEntry.isDirectory = entry.is_directory();
             
-            // 计算相对路径
+            // ???????潩??
             std::string entryRelPath = MakeRelativeToRoot(entry.path().string());
             dirEntry.relativePath = NormalizePath(entryRelPath);
             
-            // 判断类型：目录或文件
+            // ?潩?????????????
             if (dirEntry.isDirectory) {
                 dirEntry.type = AssetType::Directory;
             } else {
@@ -261,10 +261,10 @@ namespace Engine {
             entries.push_back(dirEntry);
         }
         
-        // 排序：先目录后文件，按名称排序
+        // ?????????????????????????
         std::sort(entries.begin(), entries.end(), [](const DirEntry& a, const DirEntry& b) {
             if (a.isDirectory != b.isDirectory) {
-                return a.isDirectory > b.isDirectory; // 目录在前
+                return a.isDirectory > b.isDirectory; // ?????
             }
             return a.name < b.name;
         });
@@ -303,7 +303,7 @@ namespace Engine {
     bool ProjectManager::IsValidTargetPath(const std::string& targetRelPath) const {
         if (targetRelPath.empty()) return false;
         
-        // 检查是否包含危险的路径组件
+        // ?????????潩???潩?????
         fs::path path(targetRelPath);
         for (const auto& component : path) {
             std::string comp = component.string();
@@ -312,7 +312,7 @@ namespace Engine {
             }
         }
         
-        // 确保规范化后的路径不会逃逸项目根目录
+        // ????漐?????潩?????????????????
         fs::path fullPath = fs::path(m_ProjectRoot) / targetRelPath;
         std::error_code ec;
         fs::path canonical = fs::weakly_canonical(fullPath, ec);
@@ -360,7 +360,7 @@ namespace Engine {
         
         try {
             if (std::filesystem::is_directory(path)) {
-                // 复制文件夹
+                // ?????????
                 auto results = CopyDirectoryToProject(inputPath);
                 if (!results.empty() && results[0].success) {
                     result.success = true;
@@ -370,7 +370,7 @@ namespace Engine {
                     result.message = results.empty() ? "Failed to copy directory" : results[0].message;
                 }
             } else {
-                // 复制文件
+                // ???????
                 result = CopyFileToProject(inputPath);
                 if (result.success) {
                     result.message = "File copied successfully: " + path.filename().string();
@@ -378,7 +378,7 @@ namespace Engine {
             }
             
             if (result.success) {
-                RefreshAssets(); // 刷新资产列表
+                RefreshAssets(); // ???????潩?
             }
         } catch (const std::exception& e) {
             result.message = "Copy failed: " + std::string(e.what());

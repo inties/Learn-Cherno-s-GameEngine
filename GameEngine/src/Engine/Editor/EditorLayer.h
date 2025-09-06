@@ -27,12 +27,12 @@ namespace Engine {
         void DrawContentPanel();
         void FindRendererLayer();
         
-        // 事件处理函数
+        // ???????????
         bool OnFileDragDrop(FileDragDropEvent& event);
 
     private:
         RendererLayer* m_RendererLayer = nullptr;
-        Ref<Scene> m_Scene; // 当前场景
+        Ref<Scene> m_Scene; // ???????
         glm::vec2 m_ViewportSize{0.0f, 0.0f};
         bool m_ViewportFocused = false;
         bool m_ViewportHovered = false;

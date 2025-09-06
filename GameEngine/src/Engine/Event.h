@@ -21,7 +21,7 @@ namespace Engine{
 		FileEvent = 1 << 3,
 	};
 	class ENGINE_API Event {
-		friend class EventDispatcher; // 允许 EventDispatcher 访问私有成员
+		friend class EventDispatcher; // ???? EventDispatcher ??????潩??
 	public:
 		virtual EventType getEventType() const = 0;
 		virtual EventCategory getCategoryFlags() const = 0;
@@ -30,7 +30,7 @@ namespace Engine{
 			return getCategoryFlags() & category;
 		}
 	protected:
-		bool m_handled = false; // 是否已经处理过事件
+		bool m_handled = false; // ???????????????
 	};
 #define EVENT_CLASS_TYPE(type) \
 		static EventType getStaticType() {  return EventType::##type; } \
@@ -43,7 +43,7 @@ namespace Engine{
 	//}
 	/// <summary>
 	//-----------------------------------------------------------------------------
-	// MouseMoveEvent 类表示鼠标移动事件，包含鼠标位置的 x 和 y 坐标。
+	// MouseMoveEvent ??????????????????????潩??? x ?? y ????
 	/// </summary>
 	class ENGINE_API MouseMoveEvent : public Event {
 	public:
@@ -67,7 +67,7 @@ namespace Engine{
 
 	/// <summary>
 	//-----------------------------------------------------------------------------
-	// MouseButtonPressedEvent 类表示鼠标按钮按下事件
+	// MouseButtonPressedEvent ???????????????
 	/// </summary>
 	class ENGINE_API MouseButtonPressedEvent : public Event {
 	public:
@@ -88,7 +88,7 @@ namespace Engine{
 
 	/// <summary>
 	//-----------------------------------------------------------------------------
-	// MouseButtonReleasedEvent 类表示鼠标按钮释放事件
+	// MouseButtonReleasedEvent ??????????????
 	/// </summary>
 	class ENGINE_API MouseButtonReleasedEvent : public Event {
 	public:
@@ -183,16 +183,16 @@ namespace Engine{
 		std::vector<std::string> m_FilePaths;
 	};
 
-	class ENGINE_API EventDispatcher {//负责调用泛型编程的事件处理函数
+	class ENGINE_API EventDispatcher {//??????潩?????????????????
 	public:
 		EventDispatcher(Event& event) :m_event(event) {}
 		template<typename T>
-		bool Dispatch(std::function<bool(T&)> func) {//检查泛型的类型是否匹配，并尝试进行强行类型转换
+		bool Dispatch(std::function<bool(T&)> func) {//??潩????????????????????????????????
 			if (T::getStaticType() == m_event.getEventType()) {
-				// 如果类型匹配，则调用传入的函数
+				// ??????????????????????
 				//return func(static_cast<T&>(m_event));
 				m_event.m_handled = func(*(T*)&m_event);
-				return m_event.m_handled; // 返回事件是否被处理
+				return m_event.m_handled; // ?????????????
 
 			}
 			return false;

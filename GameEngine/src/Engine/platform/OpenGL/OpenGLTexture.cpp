@@ -2,6 +2,7 @@
 #include "Engine/platform/OpenGL/OpenGLTexture.h"
 
 #include <stb_image.h>
+#include <cstring> // for memcpy
 
 namespace Engine {
 
@@ -29,15 +30,52 @@ namespace Engine {
 		HZ_PROFILE_FUNCTION();
 
 		int width, height, channels;
-		stbi_set_flip_vertically_on_load(1);
+		// 使用线程安全的stbi_set_flip_vertically_on_load_thread替代全局设置
+		// 这避免了多线程环境下的数据竞争问题
+#ifdef STBI_THREAD_LOCAL
+		stbi_set_flip_vertically_on_load_thread(1);
+#else
+		// 如果不支持线程局部变量，手动翻转
+		bool manual_flip = true;
+#endif
 		stbi_uc* data = nullptr;
 		{
 			HZ_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std:string&)");
+#ifdef STBI_THREAD_LOCAL
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+#else
+			// 不设置全局翻转，避免线程竞争
+			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+			if (!data) {
+				ENGINE_CORE_ERROR("stbi_load failed for path: {}, reason: {}", path, stbi_failure_reason());
+			}
+
+#endif
 		}
 		ENGINE_CORE_ASSERT(data, "Failed to load image!");
 		m_Width = width;
 		m_Height = height;
+
+#ifndef STBI_THREAD_LOCAL
+		// 手动翻转图像数据（从底部到顶部）
+		if (manual_flip && data) {
+			int bytes_per_pixel = channels;
+			int row_bytes = width * bytes_per_pixel;
+			stbi_uc* temp_row = new stbi_uc[row_bytes];
+			
+			for (int y = 0; y < height / 2; ++y) {
+				stbi_uc* row1 = data + y * row_bytes;
+				stbi_uc* row2 = data + (height - 1 - y) * row_bytes;
+				
+				// 交换行
+				memcpy(temp_row, row1, row_bytes);
+				memcpy(row1, row2, row_bytes);
+				memcpy(row2, temp_row, row_bytes);
+			}
+			
+			delete[] temp_row;
+		}
+#endif
 
 		GLenum internalFormat = 0, dataFormat = 0;
 		if (channels == 4)

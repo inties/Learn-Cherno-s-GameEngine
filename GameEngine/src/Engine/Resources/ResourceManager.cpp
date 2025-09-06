@@ -2,6 +2,8 @@
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Resources/ProjectManager.h"
 #include "Engine/Model/Model.h"
+#include "Engine/log.h"
+#include <filesystem>
 
 namespace Engine {
 
@@ -11,31 +13,58 @@ namespace Engine {
     }
 
     Ref<Model> ResourceManager::GetModel(const std::string& relativePath) const {
-        auto it = m_ModelCache.find(relativePath);
-        if (it != m_ModelCache.end()) return it->second;
+        std::string key = ProjectManager::NormalizePath(relativePath);
+        auto it = m_ModelCache.find(key);
+        if (it != m_ModelCache.end()) {
+            ENGINE_CORE_TRACE("Getting model from cache: {}", key);
+            return it->second;
+        }
+        ENGINE_CORE_WARN("Model not in cache: {}", key);
         return nullptr;
     }
 
     Ref<Model> ResourceManager::LoadModel(const std::string& relativePath) {
+        ENGINE_CORE_INFO("Starting to load model: {}", relativePath);
+        
         // 统一 key
         std::string key = ProjectManager::NormalizePath(relativePath);
         auto it = m_ModelCache.find(key);
-        if (it != m_ModelCache.end()) return it->second;
+        if (it != m_ModelCache.end()) {
+            ENGINE_CORE_INFO("Model already in cache, returning directly: {}", key);
+            return it->second;
+        }
 
         // 拼接绝对路径
         auto pm = ProjectManager::Get();
         const std::string& root = pm->GetProjectRoot();
-        if (root.empty()) return nullptr;
+        if (root.empty()) {
+            ENGINE_CORE_ERROR("Project root directory is empty, cannot load model: {}", relativePath);
+            return nullptr;
+        }
+        
         std::string abs = root;
-        if (!abs.empty() && abs.back() != '/') abs += '/';
+        if (!abs.empty() && abs.back() != '/' && abs.back() != '\\') abs += '/';
         abs += key;
-
+        
+        // 检查文件是否存在
+        if (!std::filesystem::exists(abs)) {
+            ENGINE_CORE_ERROR("Model file does not exist: {}", abs);
+            return nullptr;
+        }
+        
+        ENGINE_CORE_INFO("Loading model from file: {}", abs);
         Ref<Model> model = Model::Create(abs);
         if (model) {
             m_ModelCache[key] = model;
+            ENGINE_CORE_INFO("Model loaded successfully and cached: {}", key);
+        } else {
+            ENGINE_CORE_ERROR("Model loading failed: {}", abs);
         }
+        
         return model;
     }
+
+
 
     std::vector<std::string> ResourceManager::ListModelKeys() const {
         std::vector<std::string> keys;

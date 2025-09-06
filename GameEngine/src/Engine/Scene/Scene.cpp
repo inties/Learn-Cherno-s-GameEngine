@@ -1,17 +1,157 @@
 #include "pch.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Resources/ProjectManager.h"
+#include "Engine/Resources/ResourceManager.h"
+#include "Engine/log.h"
+#include <filesystem>
+#include <future>
+#include <thread>
+#include <algorithm>
+#include <set>
+#include <chrono>
 
 namespace Engine {
 
-    void Scene::AddModelInstance(const std::string& relativeModelPath, const glm::mat4& transform) {
-        SceneObject obj;
+    // 检查文件是否为支持的模型格式
+    bool Scene::IsValidModelFile(const std::string& filePath) {
+        std::string extension = std::filesystem::path(filePath).extension().string();
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+        
+        static const std::set<std::string> supportedFormats = {
+            ".obj", ".fbx", ".dae", ".gltf", ".glb", ".3ds", ".ply", ".x", ".md2", ".md3"
+        };
+        
+        return supportedFormats.find(extension) != supportedFormats.end();
+    }
+
+    void Scene::CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform) {
+        ENGINE_CORE_INFO("Starting to create game object, model path: {}", relativeModelPath);
+        
+        // 首先检查文件类型（根据后缀），如果是模型类型的文件，例如.obj等，则创建游戏对象。否则打印调试信息
+        if (!IsValidModelFile(relativeModelPath)) {
+            ENGINE_CORE_WARN("File {} is not a loadable model file", relativeModelPath);
+            return;
+        }
+
+        // 创建游戏对象
+        GameObject obj;
         obj.modelPath = ProjectManager::NormalizePath(relativeModelPath);
         obj.transform = transform;
-        m_Objects.emplace_back(std::move(obj));
+        obj.isLoading = true; // 标记为正在加载状态
+        
+        // 先添加到对象列表中（显示加载状态）
+        auto objIndex = gObjectList.size();
+        gObjectList.emplace_back(std::move(obj));
+        
+        ENGINE_CORE_INFO("Game object created, starting async model loading: {}", relativeModelPath);
+        
+        // 创建异步加载任务
+        CreateAsyncModelLoadingTask(relativeModelPath, objIndex);
+    }
+
+    void Scene::CreateAsyncModelLoadingTask(const std::string& relativeModelPath, size_t objectIndex) {
+        // 使用 std::async 创建异步任务
+        auto future = std::async(std::launch::async, [this, relativeModelPath, objectIndex]() {
+            ENGINE_CORE_INFO("Async loading task started: {}", relativeModelPath);
+            
+            try {
+                auto resourceManager = ResourceManager::Get();
+                Ref<Model> model_ptr = nullptr;
+                
+                if (resourceManager->IsModelLoaded(relativeModelPath)) {
+                    ENGINE_CORE_INFO("Model already in cache, getting directly: {}", relativeModelPath);
+                    model_ptr = resourceManager->GetModel(relativeModelPath);
+                } else {
+                    ENGINE_CORE_INFO("Starting to load model from file: {}", relativeModelPath);
+                    model_ptr = resourceManager->LoadModel(relativeModelPath);
+                }
+                
+                if (model_ptr) {
+                    ENGINE_CORE_INFO("Model loaded successfully: {}", relativeModelPath);
+                    
+                    // 更新游戏对象
+                    if (objectIndex < gObjectList.size()) {
+                        gObjectList[objectIndex].model = model_ptr;
+                        gObjectList[objectIndex].isLoading = false;
+                        ENGINE_CORE_INFO("Game object model binding completed: {}", relativeModelPath);
+                    }
+                } else {
+                    ENGINE_CORE_ERROR("Model loading failed: {}", relativeModelPath);
+                    
+                    // 标记加载失败
+                    if (objectIndex < gObjectList.size()) {
+                        gObjectList[objectIndex].isLoading = false;
+                        gObjectList[objectIndex].loadFailed = true;
+                    }
+                }
+            } catch (const std::exception& e) {
+                ENGINE_CORE_ERROR("Model loading exception: {} - {}", relativeModelPath, e.what());
+                
+                if (objectIndex < gObjectList.size()) {
+                    gObjectList[objectIndex].isLoading = false;
+                    gObjectList[objectIndex].loadFailed = true;
+                }
+            }
+        });
+        
+        // 存储 future 以便后续管理
+        m_LoadingTasks.emplace_back(std::move(future));
+    }
+
+    void Scene::UpdateLoadingTasks() {
+        // 清理已完成的任务
+        auto it = std::remove_if(m_LoadingTasks.begin(), m_LoadingTasks.end(),
+            [](std::future<void>& future) {
+                if (future.valid()) {
+                    auto status = future.wait_for(std::chrono::seconds(0));
+                    return status == std::future_status::ready;
+                }
+                return true; // 移除无效的future
+            });
+        
+        m_LoadingTasks.erase(it, m_LoadingTasks.end());
     }
 
     void Scene::Clear() {
-        m_Objects.clear();
+        // 等待所有加载任务完成
+        for (auto& task : m_LoadingTasks) {
+            if (task.valid()) {
+                task.wait();
+            }
+        }
+        m_LoadingTasks.clear();
+        gObjectList.clear();
+        m_SelectedObjectIndex = -1; // 清除选择
+    }
+    
+    void Scene::SetSelectedObject(int index) {
+        if (index >= 0 && index < static_cast<int>(gObjectList.size())) {
+            m_SelectedObjectIndex = index;
+            ENGINE_CORE_INFO("Selected object at index: {}", index);
+        } else if (index == -1) {
+            m_SelectedObjectIndex = -1; // 清除选择
+            ENGINE_CORE_INFO("Cleared object selection");
+        } else {
+            ENGINE_CORE_WARN("Invalid object index: {}", index);
+        }
+    }
+    
+    GameObject* Scene::GetSelectedObject() {
+        if (m_SelectedObjectIndex >= 0 && m_SelectedObjectIndex < static_cast<int>(gObjectList.size())) {
+            return &gObjectList[m_SelectedObjectIndex];
+        }
+        return nullptr;
+    }
+    
+    const GameObject* Scene::GetSelectedObject() const {
+        if (m_SelectedObjectIndex >= 0 && m_SelectedObjectIndex < static_cast<int>(gObjectList.size())) {
+            return &gObjectList[m_SelectedObjectIndex];
+        }
+        return nullptr;
+    }
+    
+    void Scene::ClearSelection() {
+        m_SelectedObjectIndex = -1;
+        ENGINE_CORE_INFO("Cleared object selection");
     }
 }
