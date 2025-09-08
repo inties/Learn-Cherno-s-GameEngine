@@ -9,7 +9,6 @@
 
 namespace Engine {
 
-    // 最小资源管理器：缓存按相对路径创建的 Model
     class ResourceManager {
     public:
         static Ref<ResourceManager> Get();

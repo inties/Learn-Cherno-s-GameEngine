@@ -16,10 +16,8 @@ namespace Engine {
         std::string key = ProjectManager::NormalizePath(relativePath);
         auto it = m_ModelCache.find(key);
         if (it != m_ModelCache.end()) {
-            ENGINE_CORE_TRACE("Getting model from cache: {}", key);
             return it->second;
         }
-        ENGINE_CORE_WARN("Model not in cache: {}", key);
         return nullptr;
     }
 

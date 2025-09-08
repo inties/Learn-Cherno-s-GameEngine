@@ -188,6 +188,9 @@
       <Filter>Engine\platform</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Engine\Editor\EditorUtils.h" />
+    <ClInclude Include="src\Engine\Renderer\FrameBuffer.h" />
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -317,5 +320,8 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Engine\Editor\EditorUtils.cpp" />
+    <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp" />
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.cpp" />
   </ItemGroup>
 </Project>

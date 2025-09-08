@@ -68,15 +68,18 @@ namespace Engine
 		// 创建离屏渲染目标（使用当前窗口尺寸作为初始尺寸）
 		unsigned int initW = Application::Get().GetWindow().GetWidth();
 		unsigned int initH = Application::Get().GetWindow().GetHeight();
-		CreateRenderTarget(initW, initH);
-		
+		ENGINE_CORE_INFO("target x,y,{},{}", initW, initH);
+		//CreateRenderTarget(initW, initH);
+		typedef FramebufferTextureFormat format;
+		FramebufferSpecification spec = { initW,initH,{format::RGBA8,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
+		FBO = Framebuffer::Create(spec);
 		ENGINE_CORE_INFO("RendererLayer attached");
 	}
 
 	void RendererLayer::OnDetach()
 	{
 		ENGINE_CORE_INFO("RendererLayer detached");
-		DestroyRenderTarget();
+		//DestroyRenderTarget();
 	}
 
 	void RendererLayer::LoadDefaultShaders()
@@ -179,14 +182,18 @@ namespace Engine
 		} else {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
-		
+		FBO->Bind();
 		// 绑定离屏帧缓冲并设置视口
-		glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
-		glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
-
+		//glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+		RenderCommand::SetViewport(0, 0, GetRenderWidth(), GetRenderHeight());
+		//glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
+		 
 		// 设置清屏颜色并清屏
 		RenderCommand::SetClearColor(glm::vec4(m_Settings.clearColor, 1.0f));
 		RenderCommand::Clear();
+		FBO->ClearAttachment(1, 0);
+		FBO->ClearAttachment(0, 0);
+
 
 		// 开始场景
 		Renderer::BeginScene();
@@ -219,16 +226,17 @@ namespace Engine
 
 		// 渲染场景中的模型实例
 		if (m_Scene) {
-			const auto& objects = m_Scene->GetModelObjects();
+			const auto& objects = m_Scene->GetGameObjects();
 			for (const auto& obj : objects) {
-				auto model = ResourceManager::Get()->LoadModel(obj.modelPath);
-				if (!model) {
+				if (auto shared_model = obj.model.lock()) {
+					// 使用场景对象的变换渲染
+					shared_model->SetGlobalTransform(obj.transform);
+					shared_model->Draw();
+				}
+				else {
 					ENGINE_CORE_WARN("Failed to load model for scene object: {}", obj.modelPath);
 					continue;
 				}
-				// 使用场景对象的变换渲染
-				model->SetGlobalTransform(obj.transform);
-				model->Draw();
 			}
 		}
 
@@ -236,10 +244,12 @@ namespace Engine
 		Renderer::EndScene();
 
 		// 解绑帧缓冲，恢复到默认帧缓冲，并将视口还原为窗口大小，供 ImGui 使用
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		FBO->Unbind();
 		unsigned int winW = Application::Get().GetWindow().GetWidth();
 		unsigned int winH = Application::Get().GetWindow().GetHeight();
-		glViewport(0, 0, (GLint)winW, (GLint)winH);
+		//glViewport(0, 0, (GLint)winW, (GLint)winH);
+		RenderCommand::SetViewport(0, 0, (GLint)winW, (GLint)winH);
 		
 		// 更新FPS统计
 		m_FrameCount++;
@@ -320,7 +330,7 @@ namespace Engine
 			
 			// 场景信息
 			if (m_Scene) {
-				ImGui::Text("Scene Objects: %d", (int)m_Scene->GetModelObjects().size());
+				ImGui::Text("Scene Objects: %d", (int)m_Scene->GetGameObjects().size());
 			} else {
 				ImGui::Text("No Scene set");
 			}
@@ -375,50 +385,51 @@ namespace Engine
 		// (kept commented out debug rendering)
 	}
 
-	void RendererLayer::CreateRenderTarget(unsigned int width, unsigned int height)
-	{
-		DestroyRenderTarget();
-		m_RTWidth = width; m_RTHeight = height;
+	//void RendererLayer::CreateRenderTarget(unsigned int width, unsigned int height)
+	//{
+	//	DestroyRenderTarget();
+	//	m_RTWidth = width; m_RTHeight = height;
 
-		glGenFramebuffers(1, &m_Framebuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+	//	glGenFramebuffers(1, &m_Framebuffer);
+	//	glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
 
-		// Color attachment texture
-		glGenTextures(1, &m_ColorAttachment);
-		glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
+	//	// Color attachment texture
+	//	glGenTextures(1, &m_ColorAttachment);
+	//	glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
 
-		// Depth-stencil renderbuffer
-		glGenRenderbuffers(1, &m_DepthStencilRBO);
-		glBindRenderbuffer(GL_RENDERBUFFER, m_DepthStencilRBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (GLsizei)width, (GLsizei)height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthStencilRBO);
+	//	// Depth-stencil renderbuffer
+	//	glGenRenderbuffers(1, &m_DepthStencilRBO);
+	//	glBindRenderbuffer(GL_RENDERBUFFER, m_DepthStencilRBO);
+	//	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (GLsizei)width, (GLsizei)height);
+	//	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthStencilRBO);
 
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-			ENGINE_CORE_ERROR("Framebuffer is not complete!");
-		}
+	//	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+	//		ENGINE_CORE_ERROR("Framebuffer is not complete!");
+	//	}
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
+	//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//}
 
-	void RendererLayer::DestroyRenderTarget()
-	{
-		if (m_DepthStencilRBO) { glDeleteRenderbuffers(1, &m_DepthStencilRBO); m_DepthStencilRBO = 0; }
-		if (m_ColorAttachment) { glDeleteTextures(1, &m_ColorAttachment); m_ColorAttachment = 0; }
-		if (m_Framebuffer) { glDeleteFramebuffers(1, &m_Framebuffer); m_Framebuffer = 0; }
-	}
+	//void RendererLayer::DestroyRenderTarget()
+	//{
+	//	if (m_DepthStencilRBO) { glDeleteRenderbuffers(1, &m_DepthStencilRBO); m_DepthStencilRBO = 0; }
+	//	if (m_ColorAttachment) { glDeleteTextures(1, &m_ColorAttachment); m_ColorAttachment = 0; }
+	//	if (m_Framebuffer) { glDeleteFramebuffers(1, &m_Framebuffer); m_Framebuffer = 0; }
+	//}
 
 	void RendererLayer::ResizeRenderTarget(unsigned int width, unsigned int height)
 	{
-		if (width == 0 || height == 0) return;
+		/*if (width == 0 || height == 0) return;
 		if (width == m_RTWidth && height == m_RTHeight) return;
 		CreateRenderTarget(width, height);
 		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
-		UpdateProjectionMatrix();
+		UpdateProjectionMatrix();*/
+		FBO->Resize(width, height);
 	}
 }

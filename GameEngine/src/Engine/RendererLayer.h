@@ -1,17 +1,18 @@
 #pragma once
-
+#include "pch.h"
 #include "Layer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Buffer.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/Texture.h"
+#include "Renderer/FrameBuffer.h"
 #include "Model/Model.h"
 #include "camera.h"
 #include "Application.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <memory>
+
 
 namespace Engine
 {
@@ -45,10 +46,11 @@ namespace Engine
 		const RendererSettings& GetSettings() const { return m_Settings; }
 
 		// 提供渲染目标纹理与尺寸给编辑器
-		unsigned int GetRenderTextureID() const { return m_ColorAttachment; }
-		unsigned int GetRenderWidth() const { return m_RTWidth; }
-		unsigned int GetRenderHeight() const { return m_RTHeight; }
+		unsigned int GetRenderTextureID(uint32_t idx=0) const { return FBO->GetColorAttachmentRendererID(idx); }
+		unsigned int GetRenderWidth() const { return FBO->GetSpecification().Width; }
+		unsigned int GetRenderHeight() const { return FBO->GetSpecification().Height; }
 		void ResizeRenderTarget(unsigned int width, unsigned int height);
+		int ReadPickBuffer(uint32_t x, uint32_t y) { return FBO->ReadPixel(1, x, y); };
 
 		// 外部设置场景
 		void SetScene(const Ref<class Scene>& scene) { m_Scene = scene; }
@@ -63,15 +65,16 @@ namespace Engine
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
 
 	private:
-		// 离屏渲染目标（帧缓冲）
-		void CreateRenderTarget(unsigned int width, unsigned int height);
-		void DestroyRenderTarget();
+		//// 离屏渲染目标（帧缓冲）
+		//void CreateRenderTarget(unsigned int width, unsigned int height);
+		//void DestroyRenderTarget();
 
-		unsigned int m_Framebuffer = 0;
+		Ref<Framebuffer> FBO = nullptr;
+	/*	unsigned int m_Framebuffer = 0;
 		unsigned int m_ColorAttachment = 0;
 		unsigned int m_DepthStencilRBO = 0;
 		unsigned int m_RTWidth = 0;
-		unsigned int m_RTHeight = 0;
+		unsigned int m_RTHeight = 0;*/
 		RendererSettings m_Settings;
 		
 		// 渲染资源

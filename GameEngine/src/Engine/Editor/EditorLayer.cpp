@@ -42,6 +42,14 @@ namespace Engine {
         }
     }
 
+    bool EditorLayer::OnMouseMove(MouseMoveEvent& event)
+    {
+        auto& [x,y] = event.getMousePos();
+        m_mousePos.x = x;
+        m_mousePos.y = y;
+        return true;
+    }
+
     void EditorLayer::DrawContentPanel() {
         auto pm = ProjectManager::Get();
         if (ImGui::Begin("Content")) {
@@ -189,12 +197,9 @@ namespace Engine {
 
             // Display scene game objects
             if (m_Scene) {
-                // Update async loading task status
-                m_Scene->UpdateLoadingTasks();
-                
                 int i = 0;
                 int selectedIndex = m_Scene->GetSelectedObjectIndex();
-                for (const auto& obj : m_Scene->GetModelObjects()) {
+                for (const auto& obj : m_Scene->GetGameObjects()) {
                     // Get display name
                     std::string name = std::filesystem::path(obj.modelPath).filename().string();
                     if (name.empty()) name = obj.modelPath;
@@ -233,7 +238,7 @@ namespace Engine {
                     i++;
                 }
                 
-                if (m_Scene->GetModelObjects().empty()) {
+                if (m_Scene->GetGameObjects().empty()) {
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
                     ImGui::Text("Drag model files here to create game objects");
                     ImGui::PopStyleColor();
@@ -340,17 +345,50 @@ namespace Engine {
             m_ViewportFocused = ImGui::IsWindowFocused();
             m_ViewportHovered = ImGui::IsWindowHovered();
 
+            // 获取viewport在整个窗口中的位置信息
+            ImVec2 viewportPos = ImGui::GetWindowPos();           // 窗口位置
+            ImVec2 contentMin = ImGui::GetWindowContentRegionMin(); // 内容区域相对窗口的偏移
+            ImVec2 contentMax = ImGui::GetWindowContentRegionMax(); // 内容区域右下角
+            ImVec2 viewportContentPos = ImVec2(viewportPos.x + contentMin.x, viewportPos.y + contentMin.y); // 内容区域绝对位置
+
             ImVec2 avail = ImGui::GetContentRegionAvail();
             if (m_RendererLayer) {
                 // Resize render target when viewport size changes (and is valid)
                 if ((m_ViewportSize.x != avail.x || m_ViewportSize.y != avail.y) && avail.x > 0 && avail.y > 0) {
                     m_ViewportSize = { avail.x, avail.y };
                     m_RendererLayer->ResizeRenderTarget((unsigned int)avail.x, (unsigned int)avail.y);
+                    ENGINE_CORE_INFO("offscreen FBO resized to{},{}", m_RendererLayer->GetRenderWidth(), m_RendererLayer->GetRenderHeight());
                 }
 
                 unsigned int texID = m_RendererLayer->GetRenderTextureID();
                 if (texID) {
                     ImGui::Image((ImTextureID)(intptr_t)texID, avail, ImVec2(0, 1), ImVec2(1, 0));
+                    
+                    // 计算鼠标在viewport中的归一化位置
+                    if (m_ViewportHovered) {
+                        ImVec2 mousePos = ImGui::GetMousePos();
+                        ImVec2 relativePos = ImVec2(
+                            mousePos.x - viewportContentPos.x,
+                            mousePos.y - viewportContentPos.y
+                        );
+                        relativePos.x=glm::clamp(relativePos.x, 0.0f, m_ViewportSize.x);
+                        relativePos.y=glm::clamp(relativePos.y, 0.0f, m_ViewportSize.y);
+                        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                        {
+                            ENGINE_CORE_INFO("mousePos:{},{}", relativePos.x , relativePos.y);
+                           std::cout<< m_RendererLayer->ReadPickBuffer(relativePos.x, m_RendererLayer->GetRenderHeight()-1-relativePos.y)<<std::endl;
+                        }
+
+                        //// 归一化到[0,1]范围
+                        //if (m_ViewportSize.x > 0 && m_ViewportSize.y > 0) {
+                        //    m_mousePos.x = relativePos.x / m_ViewportSize.x;
+                        //    m_mousePos.y = relativePos.y / m_ViewportSize.y;
+                        //    
+                        //    // 确保坐标在有效范围内
+                        //    m_mousePos.x = glm::clamp(m_mousePos.x, 0.0f, 1.0f);
+                        //    m_mousePos.y = glm::clamp(m_mousePos.y, 0.0f, 1.0f);
+                        //}
+                    }
                 } else {
                     ImGui::Text("Render target not ready.");
                 }
@@ -376,6 +414,18 @@ namespace Engine {
         }
         ImGui::End();
         ImGui::PopStyleVar();
+    }
+
+    void EditorLayer::OnUpdate()
+    {
+        //捕获鼠标在viewport中的位置(归一化)
+        // 注意：这个函数应该在DrawViewportPanel之后调用，或者将鼠标位置计算移到DrawViewportPanel中
+        
+        // 方法1：使用ImGui::GetMousePos()和窗口信息（需要在ImGui渲染期间调用）
+        // 方法2：使用平台相关的鼠标位置获取（推荐在这里使用）
+        
+        // 这里暂时留空，建议将鼠标位置计算移到DrawViewportPanel函数中
+        // 因为ImGui的窗口信息只在ImGui渲染期间有效
     }
 
     void EditorLayer::OnImGuiRender() {
@@ -456,8 +506,8 @@ namespace Engine {
     void EditorLayer::OnEvent(Event& event) {
         // Handle events
         EventDispatcher dispatcher(event);
-       /* dispatcher.Dispatch<FileDragDropEvent>([this](FileDragDropEvent& e) {
-            return OnFileDragDrop(e);
-        });*/
+        // dispatcher.Dispatch<MouseMoveEvent>([this](MouseMoveEvent& e) {
+        //     return OnMouseMove(e);
+        // });
     }
 }

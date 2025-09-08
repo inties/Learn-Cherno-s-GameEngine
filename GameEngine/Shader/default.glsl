@@ -8,6 +8,7 @@ layout (location = 2) in vec2 a_TexCoord;
 layout (location = 3) in vec3 a_Tangent;
 layout (location = 4) in vec3 a_Bitangent;
 
+
 out vec3 v_Normal;
 out vec2 v_TexCoord;
 out vec3 v_FragPos;
@@ -37,9 +38,8 @@ void main()
 in vec3 v_Normal;
 in vec2 v_TexCoord;
 in vec3 v_FragPos;
-
-out vec4 FragColor;
-
+layout (location = 0) out vec4 FragColor;  // 第一个渲染目标
+layout (location = 1) out int id;          // 第二个渲染目标
 // Texture uniforms (as expected by ModelLoader)
 uniform sampler2D u_AlbedoMap;
 uniform sampler2D u_SpecularMap;
@@ -85,6 +85,7 @@ void main()
     
     // Combine lighting
     vec3 result = ambient + diffuse;
-
+    result=vec3(1.0,0.0,0.0);
     FragColor = vec4(result, albedo.a);
+    id=10;
 }

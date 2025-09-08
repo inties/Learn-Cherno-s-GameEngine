@@ -163,6 +163,7 @@
     <ClInclude Include="src\Engine\CameraManager.h" />
     <ClInclude Include="src\Engine\Debug\Instrumentor.h" />
     <ClInclude Include="src\Engine\Editor\EditorLayer.h" />
+    <ClInclude Include="src\Engine\Editor\EditorUtils.h" />
     <ClInclude Include="src\Engine\EntryPoint.h" />
     <ClInclude Include="src\Engine\Event.h" />
     <ClInclude Include="src\Engine\Imgui\ImGuiLayer.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\Engine\Model\ModelLoader.h" />
     <ClInclude Include="src\Engine\Model\Node.h" />
     <ClInclude Include="src\Engine\MouseButtonCodes.h" />
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Renderer\Buffer.h" />
     <ClInclude Include="src\Engine\Renderer\Material.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="src\Engine\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Engine\Renderer\Renderer.h" />
     <ClInclude Include="src\Engine\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\Engine\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\Engine\Renderer\Shader.h" />
     <ClInclude Include="src\Engine\Renderer\Texture.h" />
     <ClInclude Include="src\Engine\Renderer\Vertex.h" />
@@ -216,6 +219,7 @@
     <ClCompile Include="src\Engine\Application.cpp" />
     <ClCompile Include="src\Engine\CameraManager.cpp" />
     <ClCompile Include="src\Engine\Editor\EditorLayer.cpp" />
+    <ClCompile Include="src\Engine\Editor\EditorUtils.cpp" />
     <ClCompile Include="src\Engine\Event.cpp" />
     <ClCompile Include="src\Engine\Imgui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Engine\Input.cpp" />
@@ -225,12 +229,14 @@
     <ClCompile Include="src\Engine\Model\ModelLoader.cpp" />
     <ClCompile Include="src\Engine\Model\Node.cpp" />
     <ClCompile Include="src\Engine\ModelExample.cpp" />
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Material.cpp" />
     <ClCompile Include="src\Engine\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Engine\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Engine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Engine\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Engine\Renderer\Texture.cpp" />
     <ClCompile Include="src\Engine\Renderer\VertexArray.cpp" />

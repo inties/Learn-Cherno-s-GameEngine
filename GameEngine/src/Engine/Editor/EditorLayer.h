@@ -13,11 +13,11 @@ namespace Engine {
         EditorLayer();
         virtual ~EditorLayer() = default;
 
-        virtual void OnAttach() override;
-        virtual void OnDetach() override {}
-        virtual void OnUpdate() override {}
-        virtual void OnImGuiRender() override;
-        virtual void OnEvent(Event& event) override;
+        void OnAttach() override;
+        void OnDetach() override {};
+        void OnUpdate() override;
+        void OnImGuiRender() override;
+        void OnEvent(Event& event) override;
 
     private:
         void DrawHierarchyPanel();
@@ -27,13 +27,16 @@ namespace Engine {
         void DrawContentPanel();
         void FindRendererLayer();
         
-        // ???????????
-        bool OnFileDragDrop(FileDragDropEvent& event);
+
+        //bool OnFileDragDrop(FileDragDropEvent& event);
+        bool OnMouseMove(MouseMoveEvent& event);
+
 
     private:
         RendererLayer* m_RendererLayer = nullptr;
         Ref<Scene> m_Scene; // ???????
         glm::vec2 m_ViewportSize{0.0f, 0.0f};
+        glm::vec2 m_mousePos{ 0.0f,0.0f };
         bool m_ViewportFocused = false;
         bool m_ViewportHovered = false;
     };

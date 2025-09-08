@@ -24,9 +24,7 @@ namespace Engine {
         return supportedFormats.find(extension) != supportedFormats.end();
     }
 
-    void Scene::CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform) {
-        ENGINE_CORE_INFO("Starting to create game object, model path: {}", relativeModelPath);
-        
+    void Scene::CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform) {        
         // 首先检查文件类型（根据后缀），如果是模型类型的文件，例如.obj等，则创建游戏对象。否则打印调试信息
         if (!IsValidModelFile(relativeModelPath)) {
             ENGINE_CORE_WARN("File {} is not a loadable model file", relativeModelPath);
@@ -50,67 +48,47 @@ namespace Engine {
     }
 
     void Scene::CreateAsyncModelLoadingTask(const std::string& relativeModelPath, size_t objectIndex) {
-        // 使用 std::async 创建异步任务
-        auto future = std::async(std::launch::async, [this, relativeModelPath, objectIndex]() {
-            ENGINE_CORE_INFO("Async loading task started: {}", relativeModelPath);
+        //// 使用 std::async 创建异步任务
+        //auto future = std::async(std::launch::async, [this, relativeModelPath, objectIndex]() {
+        //    ENGINE_CORE_INFO("Async loading task started: {}", relativeModelPath);
             
-            try {
-                auto resourceManager = ResourceManager::Get();
-                Ref<Model> model_ptr = nullptr;
+          
+        auto resourceManager = ResourceManager::Get();
+        Ref<Model> model_ptr = nullptr;
                 
-                if (resourceManager->IsModelLoaded(relativeModelPath)) {
-                    ENGINE_CORE_INFO("Model already in cache, getting directly: {}", relativeModelPath);
-                    model_ptr = resourceManager->GetModel(relativeModelPath);
-                } else {
-                    ENGINE_CORE_INFO("Starting to load model from file: {}", relativeModelPath);
-                    model_ptr = resourceManager->LoadModel(relativeModelPath);
-                }
+        if (resourceManager->IsModelLoaded(relativeModelPath)) {
+            ENGINE_CORE_INFO("Model already in cache, getting directly: {}", relativeModelPath);
+            model_ptr = resourceManager->GetModel(relativeModelPath);
+        } else {
+            ENGINE_CORE_INFO("Starting to load model from file: {}", relativeModelPath);
+            model_ptr = resourceManager->LoadModel(relativeModelPath);
+        }
                 
-                if (model_ptr) {
-                    ENGINE_CORE_INFO("Model loaded successfully: {}", relativeModelPath);
+        if (model_ptr) {
+            ENGINE_CORE_INFO("Model loaded successfully: {}", relativeModelPath);
                     
-                    // 更新游戏对象
-                    if (objectIndex < gObjectList.size()) {
-                        gObjectList[objectIndex].model = model_ptr;
-                        gObjectList[objectIndex].isLoading = false;
-                        ENGINE_CORE_INFO("Game object model binding completed: {}", relativeModelPath);
-                    }
-                } else {
-                    ENGINE_CORE_ERROR("Model loading failed: {}", relativeModelPath);
-                    
-                    // 标记加载失败
-                    if (objectIndex < gObjectList.size()) {
-                        gObjectList[objectIndex].isLoading = false;
-                        gObjectList[objectIndex].loadFailed = true;
-                    }
-                }
-            } catch (const std::exception& e) {
-                ENGINE_CORE_ERROR("Model loading exception: {} - {}", relativeModelPath, e.what());
-                
-                if (objectIndex < gObjectList.size()) {
-                    gObjectList[objectIndex].isLoading = false;
-                    gObjectList[objectIndex].loadFailed = true;
-                }
+          
+            gObjectList[objectIndex].model = model_ptr;
+            gObjectList[objectIndex].isLoading = false;
+            
+        }
+        else {
+            ENGINE_CORE_ERROR("Model loading failed: {}", relativeModelPath);
+
+            // 标记加载失败
+           
+            gObjectList[objectIndex].isLoading = false;
+            gObjectList[objectIndex].loadFailed = true;
+            
+
             }
-        });
+            //}
+       
         
-        // 存储 future 以便后续管理
-        m_LoadingTasks.emplace_back(std::move(future));
+        //// 存储 future 以便后续管理
+        //m_LoadingTasks.emplace_back(std::move(future));
     }
 
-    void Scene::UpdateLoadingTasks() {
-        // 清理已完成的任务
-        auto it = std::remove_if(m_LoadingTasks.begin(), m_LoadingTasks.end(),
-            [](std::future<void>& future) {
-                if (future.valid()) {
-                    auto status = future.wait_for(std::chrono::seconds(0));
-                    return status == std::future_status::ready;
-                }
-                return true; // 移除无效的future
-            });
-        
-        m_LoadingTasks.erase(it, m_LoadingTasks.end());
-    }
 
     void Scene::Clear() {
         // 等待所有加载任务完成
