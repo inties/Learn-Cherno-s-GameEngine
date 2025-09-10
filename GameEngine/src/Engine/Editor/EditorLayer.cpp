@@ -253,7 +253,7 @@ namespace Engine {
     void EditorLayer::DrawInspectorPanel() {
         if (ImGui::Begin("Inspector")) {
             if (m_Scene) {
-                const GameObject* selectedObj = m_Scene->GetSelectedObject();
+                GameObject* selectedObj = m_Scene->GetSelectedObject();
                 if (selectedObj) {
                     // 显示选中对象的信息
                     std::string name = std::filesystem::path(selectedObj->modelPath).filename().string();
@@ -265,32 +265,31 @@ namespace Engine {
                     // 显示模型路径
                     ImGui::Text("Model Path: %s", selectedObj->modelPath.c_str());
                     
-                    // 显示加载状态
-                    if (selectedObj->isLoading) {
-                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Status: Loading...");
-                    } else if (selectedObj->loadFailed) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Status: Load Failed");
-                    } else if (auto model = selectedObj->model.lock()) {
-                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Status: Loaded");
-                    } else {
-                        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Status: Empty");
-                    }
+                    // 显示Object ID
+                    ImGui::Text("Object ID: %d", m_Scene->GetSelectedObjectIndex());
                     
                     ImGui::Separator();
                     
-                    // 显示Transform信息
+                    // 可编辑的Transform信息
                     ImGui::Text("Transform:");
-                    const glm::mat4& transform = selectedObj->transform;
                     
-                    // 提取位置、旋转、缩放信息（简化显示）
-                    glm::vec3 position = glm::vec3(transform[3]);
-                    ImGui::Text("Position: (%.2f, %.2f, %.2f)", position.x, position.y, position.z);
+                    // 提取位置信息并允许编辑
+                    glm::vec3 position = glm::vec3(selectedObj->transform[3]);
+                    if (ImGui::DragFloat3("Position", &position.x, 0.1f)) {
+                        // 更新GameObject的transform
+                        selectedObj->transform[3] = glm::vec4(position, 1.0f);
+                        
+                        // 如果模型已加载，同步更新Model的GlobalTransform
+                        if (auto model = selectedObj->model.lock()) {
+                            model->SetGlobalTransform(selectedObj->transform);
+                        }
+                    }
                     
                     // 显示变换矩阵（可选）
                     if (ImGui::CollapsingHeader("Transform Matrix")) {
                         for (int i = 0; i < 4; i++) {
                             ImGui::Text("[%.2f, %.2f, %.2f, %.2f]", 
-                                transform[i][0], transform[i][1], transform[i][2], transform[i][3]);
+                                selectedObj->transform[i][0], selectedObj->transform[i][1], selectedObj->transform[i][2], selectedObj->transform[i][3]);
                         }
                     }
                     
@@ -376,7 +375,9 @@ namespace Engine {
                         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
                         {
                             ENGINE_CORE_INFO("mousePos:{},{}", relativePos.x , relativePos.y);
-                           std::cout<< m_RendererLayer->ReadPickBuffer(relativePos.x, m_RendererLayer->GetRenderHeight()-1-relativePos.y)<<std::endl;
+                            int objectID = m_RendererLayer->ReadPickBuffer(relativePos.x, m_RendererLayer->GetRenderHeight() - 1 - relativePos.y);
+                           std::cout<< objectID<<std::endl;
+                           m_Scene->SetSelectedObject(objectID);
                         }
 
                         //// 归一化到[0,1]范围

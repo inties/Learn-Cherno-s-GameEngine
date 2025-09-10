@@ -12,9 +12,10 @@ Mesh::Mesh(const Ref<Material>& material, const Ref<VertexArray>& sharedVAO,
       m_IndexOffset(indexOffset), m_IndexCount(indexCount) {
 }
 
-void Mesh::Draw(const glm::mat4& transform) const {
+void Mesh::Draw() const {
     // 调用Renderer::Submit，传入transform，使用全局camera
-    Renderer::Submit(std::const_pointer_cast<Mesh>(shared_from_this()), transform);
+    m_Material->SetInt("u_ObjectID", static_cast<int>(m_ObjectID));
+    Renderer::Submit(std::const_pointer_cast<Mesh>(shared_from_this()), worldTransform);
 }
 
 }

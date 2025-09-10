@@ -121,13 +121,6 @@ namespace Engine {
         return nullptr;
     }
     
-    const GameObject* Scene::GetSelectedObject() const {
-        if (m_SelectedObjectIndex >= 0 && m_SelectedObjectIndex < static_cast<int>(gObjectList.size())) {
-            return &gObjectList[m_SelectedObjectIndex];
-        }
-        return nullptr;
-    }
-    
     void Scene::ClearSelection() {
         m_SelectedObjectIndex = -1;
         ENGINE_CORE_INFO("Cleared object selection");

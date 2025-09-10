@@ -11,37 +11,34 @@
 namespace Engine {
 
     struct GameObject {
-        std::string modelPath; // ?????????????¡¤??
+        std::string modelPath; 
         glm::mat4 transform { 1.0f };
         std::weak_ptr<Model> model;
-        bool isLoading = false; // ??????????
-        bool loadFailed = false; // ?????????
+        bool isLoading = false; 
+        bool loadFailed = false; 
     };
 
     class Scene {
     public:
-        //???????????
+
         void CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform=glm::mat4(1.0f));
         const std::vector<GameObject>& GetObjects() const { return gObjectList; }
 
-        // ???????????????????????????????ï‚
+
         std::vector<GameObject> GetGameObjects() const { return gObjectList; }
 
         void Clear();
         
         
-        // ??§Ø??????
+    
         void SetSelectedObject(int index);
         int GetSelectedObjectIndex() const { return m_SelectedObjectIndex; }
         GameObject* GetSelectedObject();
-        const GameObject* GetSelectedObject() const;
         void ClearSelection();
 
     private:
-        // ???????????????????
         static bool IsValidModelFile(const std::string& filePath);
         
-        // ????????????????
         void CreateAsyncModelLoadingTask(const std::string& relativeModelPath, size_t objectIndex);
 
     private:

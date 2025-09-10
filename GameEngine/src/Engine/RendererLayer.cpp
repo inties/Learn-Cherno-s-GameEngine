@@ -227,8 +227,11 @@ namespace Engine
 		// 渲染场景中的模型实例
 		if (m_Scene) {
 			const auto& objects = m_Scene->GetGameObjects();
-			for (const auto& obj : objects) {
+			for (size_t i = 0; i < objects.size(); ++i) {
+				const auto& obj = objects[i];
 				if (auto shared_model = obj.model.lock()) {
+					// 为每个mesh设置物体ID
+					shared_model->SetObjectID(i);
 					// 使用场景对象的变换渲染
 					shared_model->SetGlobalTransform(obj.transform);
 					shared_model->Draw();
@@ -431,5 +434,12 @@ namespace Engine
 		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		UpdateProjectionMatrix();*/
 		FBO->Resize(width, height);
+	}
+
+	void RendererLayer::SetObjectIDForModel(const Ref<Model>& model, int objectID)
+	{
+		if (model) {
+			model->SetObjectID(objectID);
+		}
 	}
 }

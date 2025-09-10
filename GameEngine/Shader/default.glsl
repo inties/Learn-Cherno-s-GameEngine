@@ -15,6 +15,7 @@ out vec3 v_FragPos;
 
 uniform mat4 u_Model;
 uniform mat4 u_ViewProjection;
+uniform int u_ObjectID;
 
 void main()
 {
@@ -51,7 +52,7 @@ uniform sampler2D u_Texture; // Fallback texture
 
 // Material properties
 uniform vec4 u_DiffuseColor;
-
+uniform int u_ObjectID;
 void main()
 {
     // Sample diffuse texture (use u_AlbedoMap if available)
@@ -87,5 +88,5 @@ void main()
     vec3 result = ambient + diffuse;
     result=vec3(1.0,0.0,0.0);
     FragColor = vec4(result, albedo.a);
-    id=10;
+    id=int(u_ObjectID);
 }

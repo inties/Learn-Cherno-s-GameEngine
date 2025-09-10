@@ -33,10 +33,10 @@ namespace Engine
 		auto material = mesh->GetMaterial();
 		material->Bind();
 		
-		// 设置模型变换矩阵
+		// ???????任????
 		material->GetShader()->SetMat4("u_Model", transform);
 		
-		// 从Camera单例获取ViewProjection矩阵
+		// ??Camera???????ViewProjection????
 		Camera* camera = Camera::GetInstance();
 		if (camera) {
 			glm::mat4 viewProjection = camera->GetProjectionMatrix() * camera->GetViewMatrix();
@@ -49,7 +49,7 @@ namespace Engine
 			}
 		}
 		
-		// 绑定共享VAO并使用偏移绘制
+		// ?????VAO???????????
 		mesh->GetSharedVAO()->Bind();
 		RenderCommand::DrawIndexedWithOffset(mesh->GetSharedVAO(), 
 			mesh->GetIndexOffset(), mesh->GetIndexCount(), mesh->GetVertexOffset());

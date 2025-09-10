@@ -84,7 +84,8 @@
         "files.encoding": "gbk",
         "deque": "cpp",
         "queue": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "future": "cpp"
     },
     "cmake.sourceDirectory": "E:/myGitRepos/GameEngine/GameEngine/dependency/spdlog/tests",
     "files.autoGuessEncoding": true,

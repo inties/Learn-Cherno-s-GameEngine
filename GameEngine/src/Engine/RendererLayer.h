@@ -63,6 +63,9 @@ namespace Engine
 		void SetupViewMatrix();
 		void LoadDefaultShaders();
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
+		
+		// 为模型设置物体ID
+		void SetObjectIDForModel(const Ref<Model>& model, int objectID);
 
 	private:
 		//// 离屏渲染目标（帧缓冲）

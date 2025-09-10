@@ -27,4 +27,10 @@ void Model::Draw() const {
     }
 }
 
-} 
+void Model::SetObjectID(int objectID) const {
+    if (m_RootNode) {
+        m_RootNode->SetObjectID(objectID);
+    }
+}
+
+}

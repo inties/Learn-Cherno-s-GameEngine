@@ -36,6 +36,12 @@ void OpenGLMaterial::Unbind() const {
 
 }
 
+void OpenGLMaterial::SetInt(const std::string& name, int value) {
+
+    m_Shader->SetInt(name, value);
+
+}
+
 void OpenGLMaterial::SetFloat(const std::string& name, float value) {
 
     m_Shader->SetFloat(name, value);
@@ -66,4 +72,4 @@ void OpenGLMaterial::SetTexture(const std::string& name, const Ref<Texture2D>& t
 
 }
 
-} 
+}

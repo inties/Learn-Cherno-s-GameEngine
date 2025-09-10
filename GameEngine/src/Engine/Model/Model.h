@@ -18,9 +18,12 @@ public:
     void SetGlobalTransform(const glm::mat4& transform) { m_GlobalTransform = transform; }
     const glm::mat4& GetGlobalTransform() const { return m_GlobalTransform; }
     
+    // 为模型的所有mesh设置物体ID
+    void SetObjectID(int objectID) const;
+    
     // 调试接口：获取共享VAO
     const Ref<VertexArray>& GetSharedVAO() const { return m_SharedVAO; }
-
+    
     Model() = default;
 
 private:
@@ -31,4 +34,4 @@ private:
     Ref<VertexArray> m_SharedVAO;  // 共享VAO引用（用于传递给子Mesh）
 };
 
-} 
+}
