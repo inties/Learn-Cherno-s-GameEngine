@@ -5,3 +5,6 @@
 	path = GameEngine/dependency/imgui
 	url = https://github.com/TheCherno/imgui.git
 
+[submodule "GameEngine/dependency/entt"]
+	path = GameEngine/dependency/entt
+	url = https://github.com/skypjack/entt.git
