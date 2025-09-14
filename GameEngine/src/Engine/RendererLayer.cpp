@@ -5,7 +5,7 @@
 #include "Renderer/Texture.h"
 // #include "Model/Model.h"
 #include "Resources/ShaderLibrary.h"
-#include "Resources/ResourceManager.h"
+#include "Resources/ModelManager.h"
 #include "Scene/Scene.h"
 #include <imgui.h>
 #include <filesystem>
@@ -13,6 +13,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include "Scene/Component.h"
 namespace Engine
 {
 	RendererLayer::RendererLayer()
@@ -53,10 +54,10 @@ namespace Engine
 		// 设置立方体
 		SetupCube();
 		
-		// 移除硬编码模型加载（改由 Scene + ResourceManager 驱动）
+		// 移除硬编码模型加载（改由 Scene + ModelManager 驱动）
 		// SetupModel();
 		const std::string s= "backpack.obj";
-		m_model = ResourceManager::Get()->LoadModel(s);
+		m_model = ModelManager::Get()->LoadModel(s);
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
 		}
@@ -143,29 +144,34 @@ namespace Engine
 		};
 
 		// 创建VAO
-		m_CubeVAO = VertexArray::Create();
+		auto CubeVAO = VertexArray::Create();
 		
 		// 创建VBO
-		m_CubeVBO = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
+		auto CubeVBO = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float4, "a_Color" }
 		};
-		m_CubeVBO->SetLayout(layout);
-		m_CubeVAO->SetVertexBuffer(m_CubeVBO);
+		CubeVBO->SetLayout(layout);
+		CubeVAO->SetVertexBuffer(CubeVBO);
 
 		// 创建IBO
-		m_CubeIBO = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
-		m_CubeVAO->SetIndexBuffer(m_CubeIBO);
-
+		auto CubeIBO = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
+		CubeVAO->SetIndexBuffer(CubeIBO);
+		VAO_Manager.Regist("cube", CubeVAO);
 		// 创建立方体着色器
 		std::string cubeShaderPath = GetShaderPath("cube.glsl");
-		m_CubeShader = Shader::Create(cubeShaderPath);
-		if (!m_CubeShader) {
+		//m_CubeShader = Shader::Create(cubeShaderPath);
+		auto CubeShader = Shader::Create(cubeShaderPath);
+		auto CubeDefaultMat = Material::Create(CubeShader);
+		if (!CubeShader) {
 			ENGINE_CORE_ERROR("Failed to load cube shader");
-		} else {
+		}
+		else {
 			ENGINE_CORE_INFO("Successfully loaded cube shader");
 		}
+		Mat_Manager.Regist("cube", CubeDefaultMat);
+		
 	}
 
 	void RendererLayer::OnUpdate()
@@ -197,51 +203,52 @@ namespace Engine
 
 		// 开始场景
 		Renderer::BeginScene();
+		//m_CubeVAO = VAO_Manager.Get("cube");
+		//m_CubeShader = Mat_Manager.Get("cube")->GetShader();
+	//	// 渲染立方体
+	//if (m_ShowCube && m_CubeShader && m_CubeVAO) {
+	//		// 创建立方体变换矩阵
+	//		glm::mat4 cubeMatrix = glm::mat4(1.0f);
+	//		cubeMatrix = glm::translate(cubeMatrix, glm::vec3(1.0f, 0.0f, 0.0f));
+	//		cubeMatrix = glm::rotate(cubeMatrix, m_Rotation, glm::vec3(1.0f, 1.0f, 0.0f));
+	//		cubeMatrix = glm::scale(cubeMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
 
-		// 渲染立方体
-	if (m_ShowCube && m_CubeShader && m_CubeVAO) {
-			// 创建立方体变换矩阵
-			glm::mat4 cubeMatrix = glm::mat4(1.0f);
-			cubeMatrix = glm::translate(cubeMatrix, glm::vec3(1.0f, 0.0f, 0.0f));
-			cubeMatrix = glm::rotate(cubeMatrix, m_Rotation, glm::vec3(1.0f, 1.0f, 0.0f));
-			cubeMatrix = glm::scale(cubeMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
+	//		// 获取视图矩阵
+	//		glm::mat4 viewMatrix = m_ViewMatrix;
+	//		Camera* camera = Camera::GetInstance();
+	//		if (camera) {
+	//			viewMatrix = camera->GetViewMatrix();
+	//		}
+	//		glm::mat4 viewProjMatrix = m_ProjectionMatrix * viewMatrix;
 
-			// 获取视图矩阵
-			glm::mat4 viewMatrix = m_ViewMatrix;
-			Camera* camera = Camera::GetInstance();
-			if (camera) {
-				viewMatrix = camera->GetViewMatrix();
+	//		// 绑定立方体着色器并设置uniforms
+	//		m_CubeShader->Bind();
+	//		m_CubeShader->SetMat4("u_Model", cubeMatrix);
+	//		m_CubeShader->SetMat4("u_ViewProjection", viewProjMatrix);
+
+	//		// 绑定VAO并渲染立方体
+	//		m_CubeVAO->Bind();
+	//		RenderCommand::DrawIndexed(m_CubeVAO);
+	//	}
+
+		DrawRenderItems();
+		// 渲染场景中的模型实例（保留原有逻辑）
+		const auto& objects = m_Scene->GetGameObjects();
+		for (size_t i = 0; i < objects.size(); ++i) {
+			const auto& obj = objects[i];
+			if (auto shared_model = obj.model.lock()) {
+				// 为每个mesh设置物体ID
+				shared_model->SetObjectID(i);
+				// 使用场景对象的变换渲染
+				shared_model->SetGlobalTransform(obj.transform);
+				shared_model->Draw();
 			}
-			glm::mat4 viewProjMatrix = m_ProjectionMatrix * viewMatrix;
-
-			// 绑定立方体着色器并设置uniforms
-			m_CubeShader->Bind();
-			m_CubeShader->SetMat4("u_Model", cubeMatrix);
-			m_CubeShader->SetMat4("u_ViewProjection", viewProjMatrix);
-
-			// 绑定VAO并渲染立方体
-			m_CubeVAO->Bind();
-			RenderCommand::DrawIndexed(m_CubeVAO);
-		}
-
-		// 渲染场景中的模型实例
-		if (m_Scene) {
-			const auto& objects = m_Scene->GetGameObjects();
-			for (size_t i = 0; i < objects.size(); ++i) {
-				const auto& obj = objects[i];
-				if (auto shared_model = obj.model.lock()) {
-					// 为每个mesh设置物体ID
-					shared_model->SetObjectID(i);
-					// 使用场景对象的变换渲染
-					shared_model->SetGlobalTransform(obj.transform);
-					shared_model->Draw();
-				}
-				else {
-					ENGINE_CORE_WARN("Failed to load model for scene object: {}", obj.modelPath);
-					continue;
-				}
+			else {
+				ENGINE_CORE_WARN("Failed to load model for scene object: {}", obj.modelPath);
+				continue;
 			}
 		}
+		
 
 		// 结束场景
 		Renderer::EndScene();
@@ -386,6 +393,50 @@ namespace Engine
 	void RendererLayer::RenderModelWithDebugShader(const glm::mat4& modelMatrix)
 	{
 		// (kept commented out debug rendering)
+	}
+
+	void RendererLayer::DrawRenderItems()
+	{
+		// 使用ECS系统渲染有RenderComponent的实体
+		if (!m_Scene) return;
+		// 获取场景的registry
+		auto& registry = m_Scene->GetRegistry();
+
+		// 使用entt的view方法遍历有RenderComponent和TransformComponent的实体
+		auto view = registry.view<RenderComponent, TransformComponent>();
+
+		for (auto& [entity, renderComp, TransComp] : view.each()) {
+
+			// 绑定资源（如果还未绑定）
+			if (!renderComp.IsValid()) {
+				renderComp.BindResources(VAO_Manager, Mat_Manager);
+			}
+
+			// 如果资源绑定成功，进行渲染
+			if (renderComp.IsValid()) {
+				// 创建变换矩阵
+				glm::mat4 modelMatrix = TransComp.GetTransform();
+
+				// 获取视图矩阵
+				Camera* camera = Camera::GetInstance();
+				ENGINE_CORE_INFO("{}Zoom", camera->Zoom);
+				glm::mat4 viewMatrix = camera->GetViewMatrix();
+				glm::mat4 projMatrix = camera->GetProjectionMatrix();
+				glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
+
+				// 绑定着色器并设置uniforms
+				auto shader = renderComp.Mat->GetShader();
+				shader->Bind();
+				shader->SetMat4("u_Model", modelMatrix);
+				shader->SetMat4("u_ViewProjection", viewProjMatrix);
+
+				// 绑定VAO并渲染
+				renderComp.VAO->Bind();
+				RenderCommand::DrawIndexed(renderComp.VAO);
+			}
+		}
+		
+
 	}
 
 	//void RendererLayer::CreateRenderTarget(unsigned int width, unsigned int height)

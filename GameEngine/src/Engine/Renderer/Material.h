@@ -12,6 +12,7 @@
 
 #include <glm/glm.hpp>
 
+
 namespace Engine {
 
 class Material {
@@ -45,6 +46,8 @@ public:
     // Œ∆¿Ì…Ë÷√
 
     virtual void SetTexture(const std::string& name, const Ref<Texture2D>& texture) = 0;
+    
+
 
 };
 

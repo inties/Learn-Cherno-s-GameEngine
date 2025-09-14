@@ -1,6 +1,6 @@
-#include"pch.h"
+#include "pch.h"
 #pragma once
-#include"Engine/core.h"
+#include "Engine/core.h"
 #include <string>
 #include <sstream>
 #include <functional>
@@ -8,7 +8,7 @@
 namespace Engine{
 	enum EventType {
 		None = 0,
-		MouseMove, MouseButtonPressed, MouseButtonReleased,
+		MouseMove, MouseButtonPressed, MouseButtonReleased, MouseScroll,
 		WindowClose, WindowResize,
 		KeyPressed, KeyReleased,
 		FileDragDrop
@@ -21,7 +21,7 @@ namespace Engine{
 		FileEvent = 1 << 3,
 	};
 	class ENGINE_API Event {
-		friend class EventDispatcher; // ???? EventDispatcher ??????ùù??
+		friend class EventDispatcher; // ???? EventDispatcher ?????????
 	public:
 		virtual EventType getEventType() const = 0;
 		virtual EventCategory getCategoryFlags() const = 0;
@@ -43,7 +43,7 @@ namespace Engine{
 	//}
 	/// <summary>
 	//-----------------------------------------------------------------------------
-	// MouseMoveEvent ??????????????????????ùù??? x ?? y ????
+	// MouseMoveEvent ?????????????????????????? x ?? y ????
 	/// </summary>
 	class ENGINE_API MouseMoveEvent : public Event {
 	public:
@@ -107,10 +107,35 @@ namespace Engine{
 		int m_Button;
 	};
 
+	/// <summary>
+	//-----------------------------------------------------------------------------
+	// MouseScrollEvent  Û±Íπˆ¬÷ ¬º˛
+	/// </summary>
+	class ENGINE_API MouseScrollEvent : public Event {
+	public:
+		MouseScrollEvent(double xOffset, double yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {}
+
+		inline double getXOffset() const { return m_XOffset; }
+		inline double getYOffset() const { return m_YOffset; }
+		std::string ToString() const {
+			std::stringstream ss;
+			ss << "MouseScroll: " << m_XOffset << ", " << m_YOffset;
+			return ss.str();
+		}
+
+		EVENT_CLASS_CATEGORY(MouseEvent);
+		EVENT_CLASS_TYPE(MouseScroll);
+	private:
+		double m_XOffset, m_YOffset;
+	};
+
 	class ENGINE_API KeyPressEvent : public Event {
 		public:
 			KeyPressEvent(double m_KeyCode, int m_repeatCount) :keyCode(m_KeyCode), repeatCount(m_repeatCount) {
 
+			}
+			inline int GetKeyCode() {
+				return keyCode;
 			}
 			EVENT_CLASS_CATEGORY(KeyEvent);
 			EVENT_CLASS_TYPE(KeyPressed);

@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 #include <filesystem>
 #include "Editor/EditorLayer.h"
+#include "Engine/platform/WindowWindows.h"
 namespace fs = std::filesystem;
 namespace Engine {
 	// 定义并导出静态成员变量 
@@ -115,6 +116,8 @@ namespace Engine {
 	bool Application::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
 		if (dispatcher.Dispatch<MouseMoveEvent>([this](MouseMoveEvent& e) { return this->OnMouseMove(e); }))return true;
+		if (dispatcher.Dispatch<MouseScrollEvent>([this](MouseScrollEvent& e) { return this->OnMouseScroll(e); }))return true;
+		if (dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) { return this->OnKeyPress(e); }))return true;
 		if (dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) { return this->OnWindowClose(e); }))return true;
 		
 		// 对于窗口大小调整事件，先在Application层处理，然后传播给所有层
@@ -138,6 +141,21 @@ namespace Engine {
 		}
 		return true;
 	}
+
+	bool Application::OnKeyPress(KeyPressEvent& e) {
+		// ESC键切换鼠标锁定模式
+		if (e.GetKeyCode() == EG_KEY_ESCAPE) {
+			static bool cursorDisabled = false;
+			cursorDisabled = !cursorDisabled;
+			
+			// 获取窗口实例并设置光标模式
+			if (auto* windowsWindow = dynamic_cast<WindowWindows*>(m_Window.get())) {
+				windowsWindow->SetCursorMode(cursorDisabled);
+			}
+			return true;
+		}
+		return false;
+	}
 	
 	bool Application::OnWindowClose(WindowCloseEvent& e) {
 		m_Running = false;
@@ -151,5 +169,13 @@ namespace Engine {
 		Renderer::OnWindowResize(e.GetWindowWidth(), e.GetWindowHeight());
 		
 		// 注意：这个方法现在被设计为void，因为事件传播由OnEvent方法控制
+	}
+
+	bool Application::OnMouseScroll(MouseScrollEvent& e) {
+		Camera* camera = Camera::GetInstance();
+		if (camera) {
+			camera->ProcessMouseScroll(e.getYOffset());
+		}
+		return true;
 	}
 }

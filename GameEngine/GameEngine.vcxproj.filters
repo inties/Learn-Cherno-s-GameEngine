@@ -46,6 +46,9 @@
     <ClInclude Include="src\Engine\Editor\EditorLayer.h">
       <Filter>Engine\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Editor\EditorUtils.h">
+      <Filter>Engine\Editor</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\EntryPoint.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -94,6 +97,9 @@
     <ClInclude Include="src\Engine\Renderer\Buffer.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\FrameBuffer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Material.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
@@ -130,10 +136,13 @@
     <ClInclude Include="src\Engine\Resources\MeshLibrary.h">
       <Filter>Engine\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Resources\ModelManager.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Resources\ProjectManager.h">
       <Filter>Engine\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Resources\ResourceManager.h">
+    <ClInclude Include="src\Engine\Resources\ResouceRegistry.h">
       <Filter>Engine\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Resources\ShaderLibrary.h">
@@ -142,7 +151,22 @@
     <ClInclude Include="src\Engine\Resources\TextureLibrary.h">
       <Filter>Engine\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Component.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Entity.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\PrefabTypes.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Prefabs.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Scene\Scene.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\ScriptableEntity.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\TestLayer.h">
@@ -164,6 +188,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLBuffer.h">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.h">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLMaterial.h">
@@ -188,9 +215,6 @@
       <Filter>Engine\platform</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Engine\Editor\EditorUtils.h" />
-    <ClInclude Include="src\Engine\Renderer\FrameBuffer.h" />
-    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -200,6 +224,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Editor\EditorLayer.cpp">
+      <Filter>Engine\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Editor\EditorUtils.cpp">
       <Filter>Engine\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Event.cpp">
@@ -230,6 +257,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Buffer.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Material.cpp">
@@ -265,10 +295,10 @@
     <ClCompile Include="src\Engine\Resources\MeshLibrary.cpp">
       <Filter>Engine\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Resources\ProjectManager.cpp">
+    <ClCompile Include="src\Engine\Resources\ModelManager.cpp">
       <Filter>Engine\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Resources\ResourceManager.cpp">
+    <ClCompile Include="src\Engine\Resources\ProjectManager.cpp">
       <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Resources\ShaderLibrary.cpp">
@@ -276,6 +306,12 @@
     </ClCompile>
     <ClCompile Include="src\Engine\Resources\TextureLibrary.cpp">
       <Filter>Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\Component.cpp">
+      <Filter>Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\Entity.cpp">
+      <Filter>Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\Scene.cpp">
       <Filter>Engine\Scene</Filter>
@@ -293,6 +329,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>Engine\platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.cpp">
       <Filter>Engine\platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLMaterial.cpp">
@@ -320,8 +359,5 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\Engine\Editor\EditorUtils.cpp" />
-    <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp" />
-    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.cpp" />
   </ItemGroup>
 </Project>

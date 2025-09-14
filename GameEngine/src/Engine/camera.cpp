@@ -29,6 +29,7 @@ namespace Engine {
         Pitch = pitch;
         MouseLastX = Input::GetInstance()->GetXpos() / 2;
         MouseLastY = Input::GetInstance()->GetYpos() / 2;
+        firstMouse = true;
         updateCameraVectors();
     }
 
@@ -76,6 +77,14 @@ namespace Engine {
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void Camera::ProcessMouseMovement(float xPos, float yPos)
     {
+        if (firstMouse)
+        {
+            MouseLastX = xPos;
+            MouseLastY = yPos;
+            firstMouse = false;
+            return;
+        }
+
 		float xoffset = xPos - MouseLastX;
 		float yoffset = MouseLastY - yPos; // reversed since y-coordinates go from bottom to top
 		MouseLastX = xPos;
@@ -122,4 +131,4 @@ namespace Engine {
         Up = glm::normalize(glm::cross(Right, Front));
     }
 
-} // namespace Engine 
+} // namespace Engine

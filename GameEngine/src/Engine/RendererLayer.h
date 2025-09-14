@@ -2,16 +2,11 @@
 #include "pch.h"
 #include "Layer.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Texture.h"
-#include "Renderer/FrameBuffer.h"
+#include "Resources/ResouceRegistry.h"
 #include "Model/Model.h"
 #include "camera.h"
 #include "Application.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Scene/Entity.h"
 
 
 namespace Engine
@@ -63,7 +58,7 @@ namespace Engine
 		void SetupViewMatrix();
 		void LoadDefaultShaders();
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
-		
+		void DrawRenderItems();
 		// 为模型设置物体ID
 		void SetObjectIDForModel(const Ref<Model>& model, int objectID);
 
@@ -90,7 +85,11 @@ namespace Engine
 		Ref<VertexBuffer> m_CubeVBO;
 		Ref<IndexBuffer> m_CubeIBO;
 		Ref<Shader> m_CubeShader;
-		
+		ResourceRegistry<VertexArray>VAO_Manager;
+		ResourceRegistry<Material>Mat_Manager;
+
+
+
 		// 时间和变换
 		float m_Time = 0.0f;
 		float m_Rotation = 0.0f;

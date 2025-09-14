@@ -38,14 +38,14 @@ public:
 
 private:
 
-    Ref<Shader> m_Shader;
+    
 
     std::unordered_map<std::string, Ref<Texture2D>> m_Textures;
 
     // TODO: 其他uniform缓存，如floats, vec3等
 
     mutable int m_TextureSlot = 0; // 用于绑定时分配slot
-
+    Ref<Shader> m_Shader;
 };
 
 }

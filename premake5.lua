@@ -9,6 +9,7 @@ IncludeDir["GLFW"] = "GameEngine/dependency/GLFW_3_4/include"
 IncludeDir["Glad"] = "GameEngine/dependency/glad/include"
 IncludeDir["ImGui"] = "GameEngine/dependency/imgui"
 IncludeDir["glm"] = "GameEngine/dependency/glm_99"
+IncludeDir["entt"]="GameEngine/dependency/entt/src/entt"
 
 -- 包含glad/imgui两个子项目
 include "GameEngine/dependency/glad"
@@ -33,6 +34,7 @@ project "GameEngine"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
+        "%{IncludeDir.entt}",
         "%{prj.name}/src",
     }
     libdirs {

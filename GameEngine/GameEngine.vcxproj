@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -105,7 +105,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;src\Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -134,7 +134,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;src;src\Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -178,15 +178,14 @@
     <ClInclude Include="src\Engine\Model\ModelLoader.h" />
     <ClInclude Include="src\Engine\Model\Node.h" />
     <ClInclude Include="src\Engine\MouseButtonCodes.h" />
-    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Renderer\Buffer.h" />
+    <ClInclude Include="src\Engine\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\Engine\Renderer\Material.h" />
     <ClInclude Include="src\Engine\Renderer\Mesh.h" />
     <ClInclude Include="src\Engine\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Engine\Renderer\Renderer.h" />
     <ClInclude Include="src\Engine\Renderer\RendererAPI.h" />
-    <ClInclude Include="src\Engine\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\Engine\Renderer\Shader.h" />
     <ClInclude Include="src\Engine\Renderer\Texture.h" />
     <ClInclude Include="src\Engine\Renderer\Vertex.h" />
@@ -194,11 +193,17 @@
     <ClInclude Include="src\Engine\RendererLayer.h" />
     <ClInclude Include="src\Engine\Resources\MaterialLibrary.h" />
     <ClInclude Include="src\Engine\Resources\MeshLibrary.h" />
+    <ClInclude Include="src\Engine\Resources\ModelManager.h" />
     <ClInclude Include="src\Engine\Resources\ProjectManager.h" />
-    <ClInclude Include="src\Engine\Resources\ResourceManager.h" />
+    <ClInclude Include="src\Engine\Resources\ResouceRegistry.h" />
     <ClInclude Include="src\Engine\Resources\ShaderLibrary.h" />
     <ClInclude Include="src\Engine\Resources\TextureLibrary.h" />
+    <ClInclude Include="src\Engine\Scene\Component.h" />
+    <ClInclude Include="src\Engine\Scene\Entity.h" />
+    <ClInclude Include="src\Engine\Scene\PrefabTypes.h" />
+    <ClInclude Include="src\Engine\Scene\Prefabs.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
+    <ClInclude Include="src\Engine\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Engine\TestLayer.h" />
     <ClInclude Include="src\Engine\Utils.h" />
     <ClInclude Include="src\Engine\Windows.h" />
@@ -206,6 +211,7 @@
     <ClInclude Include="src\Engine\core.h" />
     <ClInclude Include="src\Engine\log.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLMaterial.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Engine\platform\OpenGL\OpenGLShader.h" />
@@ -229,30 +235,32 @@
     <ClCompile Include="src\Engine\Model\ModelLoader.cpp" />
     <ClCompile Include="src\Engine\Model\Node.cpp" />
     <ClCompile Include="src\Engine\ModelExample.cpp" />
-    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Material.cpp" />
     <ClCompile Include="src\Engine\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Engine\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Engine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Engine\Renderer\RendererAPI.cpp" />
-    <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Engine\Renderer\Texture.cpp" />
     <ClCompile Include="src\Engine\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Engine\RendererLayer.cpp" />
     <ClCompile Include="src\Engine\Resources\MaterialLibrary.cpp" />
     <ClCompile Include="src\Engine\Resources\MeshLibrary.cpp" />
+    <ClCompile Include="src\Engine\Resources\ModelManager.cpp" />
     <ClCompile Include="src\Engine\Resources\ProjectManager.cpp" />
-    <ClCompile Include="src\Engine\Resources\ResourceManager.cpp" />
     <ClCompile Include="src\Engine\Resources\ShaderLibrary.cpp" />
     <ClCompile Include="src\Engine\Resources\TextureLibrary.cpp" />
+    <ClCompile Include="src\Engine\Scene\Component.cpp" />
+    <ClCompile Include="src\Engine\Scene\Entity.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\TestLayer.cpp" />
     <ClCompile Include="src\Engine\Windows.cpp" />
     <ClCompile Include="src\Engine\camera.cpp" />
     <ClCompile Include="src\Engine\log.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Engine\platform\OpenGL\OpenGLFrameBuffer.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Engine\platform\OpenGL\OpenGLShader.cpp" />

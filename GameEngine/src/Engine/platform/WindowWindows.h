@@ -13,8 +13,9 @@ namespace Engine {
 		unsigned int GetWidth() override { return m_Props.Width; }
 		unsigned int GetHeight() override { return m_Props.Height; }
 		GLFWwindow* GetGLWindow() const { return m_Window; }
+		void SetCursorMode(bool disabled);
 	private:
-		GLFWwindow* m_Window = nullptr; // ´°¿ÚÖ¸Õë
+		GLFWwindow* m_Window = nullptr; // ????
 		WindowsInput* m_WindowsInput = nullptr;
 
 

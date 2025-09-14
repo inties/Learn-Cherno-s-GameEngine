@@ -5,6 +5,12 @@
 #include <glm/glm.hpp>
 #include "Engine/camera.h"
 #include "Engine/Renderer/Mesh.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "Buffer.h"
+#include "VertexArray.h"
+#include "Texture.h"
+#include "FrameBuffer.h"
 namespace Engine
 {
 	class Shader;

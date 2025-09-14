@@ -85,7 +85,10 @@
         "deque": "cpp",
         "queue": "cpp",
         "random": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "memory_resource": "cpp",
+        "ranges": "cpp",
+        "*.rh": "cpp"
     },
     "cmake.sourceDirectory": "E:/myGitRepos/GameEngine/GameEngine/dependency/spdlog/tests",
     "files.autoGuessEncoding": true,
@@ -108,5 +111,6 @@
         "files.encoding": "utf8"
     },
     "C_Cpp.default.cppStandard": "c++17",
-    "C_Cpp.default.cStandard": "c17"
+    "C_Cpp.default.cStandard": "c17",
+    "kiroAgent.configureMCP": "Disabled"
 }

@@ -1,16 +1,19 @@
 #include "pch.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Resources/ProjectManager.h"
-#include "Engine/Resources/ResourceManager.h"
-#include "Engine/log.h"
+#include "Engine/Resources/ModelManager.h"
 #include <filesystem>
-#include <future>
-#include <thread>
-#include <algorithm>
-#include <set>
-#include <chrono>
 
+#include "Entity.h"
+#include "Component.h"
+#include "prefabs.h"
 namespace Engine {
+
+    Scene::Scene() {
+        // 默认创建一个CubeEntity
+        CreatePrefab(PrefabTypes::Cube);
+        ENGINE_CORE_INFO("Scene created with default CubeEntity");
+    }
 
     // 检查文件是否为支持的模型格式
     bool Scene::IsValidModelFile(const std::string& filePath) {
@@ -24,7 +27,27 @@ namespace Engine {
         return supportedFormats.find(extension) != supportedFormats.end();
     }
 
-    void Scene::CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform) {        
+    Entity Scene::CreatePrefab(PrefabTypes prefabType)
+    {
+        entt::entity handle = m_Registry.create();
+        switch (prefabType) {
+            case PrefabTypes::Cube:
+                return CubeEntity(handle, this);
+            case PrefabTypes::None:
+            default:
+                return Entity(handle, this);
+        }
+    }
+
+    Entity Scene::CreateEntity(const std::string& str)
+    {
+        Entity e (m_Registry.create(),this );
+        e.AddComponent<TransformComponent>(glm::vec3(1.0f, 1.0f, 1.0f));
+        e.AddComponent<TagComponent>(str);
+        return e;
+    }
+
+    void Scene::CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform) {
         // 首先检查文件类型（根据后缀），如果是模型类型的文件，例如.obj等，则创建游戏对象。否则打印调试信息
         if (!IsValidModelFile(relativeModelPath)) {
             ENGINE_CORE_WARN("File {} is not a loadable model file", relativeModelPath);
@@ -53,15 +76,15 @@ namespace Engine {
         //    ENGINE_CORE_INFO("Async loading task started: {}", relativeModelPath);
             
           
-        auto resourceManager = ResourceManager::Get();
+        auto ModelManager = ModelManager::Get();
         Ref<Model> model_ptr = nullptr;
                 
-        if (resourceManager->IsModelLoaded(relativeModelPath)) {
+        if (ModelManager->IsModelLoaded(relativeModelPath)) {
             ENGINE_CORE_INFO("Model already in cache, getting directly: {}", relativeModelPath);
-            model_ptr = resourceManager->GetModel(relativeModelPath);
+            model_ptr = ModelManager->GetModel(relativeModelPath);
         } else {
             ENGINE_CORE_INFO("Starting to load model from file: {}", relativeModelPath);
-            model_ptr = resourceManager->LoadModel(relativeModelPath);
+            model_ptr = ModelManager->LoadModel(relativeModelPath);
         }
                 
         if (model_ptr) {
@@ -90,17 +113,6 @@ namespace Engine {
     }
 
 
-    void Scene::Clear() {
-        // 等待所有加载任务完成
-        for (auto& task : m_LoadingTasks) {
-            if (task.valid()) {
-                task.wait();
-            }
-        }
-        m_LoadingTasks.clear();
-        gObjectList.clear();
-        m_SelectedObjectIndex = -1; // 清除选择
-    }
     
     void Scene::SetSelectedObject(int index) {
         if (index >= 0 && index < static_cast<int>(gObjectList.size())) {

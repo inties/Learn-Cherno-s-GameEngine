@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-	std::shared_ptr<VertexArray> VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		return std::make_shared<OpenGLVertexArray>();
 	}

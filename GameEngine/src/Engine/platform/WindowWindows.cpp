@@ -3,6 +3,7 @@
 #include"Engine/Event.h"
 #include"Engine/platform/WindowWindows.h"
 #include"Engine/platform/WindowsInput.h"
+#include"Engine/camera.h"
 
 namespace Engine {
 	WindowWindows::WindowWindows(WindowsProps& props)
@@ -40,7 +41,7 @@ namespace Engine {
 		}
 
 		std::cout << "OpenGL???:" << std::endl;
-		std::cout << "?潩: " << glGetString(GL_VERSION) << std::endl;
+		std::cout << "??: " << glGetString(GL_VERSION) << std::endl;
 		std::cout << "????: " << glGetString(GL_VENDOR) << std::endl;
 
 		glViewport(0, 0, m_Props.Width, m_Props.Height);
@@ -77,7 +78,7 @@ namespace Engine {
 				}
 			});
 
-		// 注册鼠标移动事件
+		// ????????
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos)
 			{
 				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
@@ -85,17 +86,26 @@ namespace Engine {
 				MouseMoveEvent event(xpos, ypos);
 				data.EventCallback(event);
 			});
-		// ??? framebuffer size callback ????????????????????潩
+
+		// ????????
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset)
+			{
+				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
+				
+				MouseScrollEvent event(xoffset, yoffset);
+				data.EventCallback(event);
+			});
+		// ??? framebuffer size callback ?????????????????????
 		glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowsProps& data = *(WindowsProps*)glfwGetWindowUserPointer(window);
-				// ????????????潩??????ImGui???
+				// ???????????????????ImGui???
 				int logicalWidth, logicalHeight;
 				glfwGetWindowSize(window, &logicalWidth, &logicalHeight);
 				data.Width = logicalWidth;
 				data.Height = logicalHeight;
 
-				// ?????????????潩???????????OpenGL??????????
+				// ?????????????????????????OpenGL??????????
 				WindowResizeEvent event(width, height);
 				data.EventCallback(event);
 			});
@@ -143,6 +153,20 @@ namespace Engine {
 	void WindowWindows::SetEventCallBack(const EventFuc& callback)
 	{
 		m_Props.EventCallback = callback;
+	}
+
+	void WindowWindows::SetCursorMode(bool disabled)
+	{
+		if (disabled) {
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			// 重置firstMouse标志，避免跳动
+			Camera* camera = Camera::GetInstance();
+			if (camera) {
+				camera->firstMouse = true;
+			}
+		} else {
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 	}
 	//???glfw???????????
 }

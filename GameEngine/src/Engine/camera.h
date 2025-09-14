@@ -42,6 +42,7 @@ namespace Engine {
         float Zoom;
         float MouseLastX;
         float MouseLastY;
+        bool firstMouse;
 
         // ????
         static Camera* GetInstance();
@@ -61,6 +62,9 @@ namespace Engine {
         // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
         void ProcessMouseMovement(float xPos, float yPos);
         
+        // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
+        void ProcessMouseScroll(float yoffset);
+        
         // ???????
         void SetPosition(const glm::vec3& position) { Position = position; }
         const glm::vec3& GetPosition() const { return Position; }
@@ -73,9 +77,6 @@ namespace Engine {
         
         // ????
         static std::unique_ptr<Camera> s_Instance;
-
-        // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-        void ProcessMouseScroll(float yoffset);
 
         // calculates the front vector from the Camera's (updated) Euler Angles
         void updateCameraVectors();

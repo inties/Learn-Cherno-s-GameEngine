@@ -16,9 +16,11 @@ namespace Engine {
 		virtual void run();
 		virtual bool OnEvent(Event& e);
 		virtual bool OnMouseMove(MouseMoveEvent& e);
-		virtual bool OnWindowClose(WindowCloseEvent& e);
+		virtual bool OnMouseScroll(MouseScrollEvent& e);
+		virtual bool OnWindowClose(WindowCloseEvent& e);	
 		virtual void OnWindowResize(WindowResizeEvent& e);
-		//virtual bool OnKeyPress(KeyPressEvent& e);
+
+		virtual bool OnKeyPress(KeyPressEvent& e);
 		//virtual bool OnKeyRelease(KeyReleaseEvent& e);
 		
 		// 摄像机控制相关方法

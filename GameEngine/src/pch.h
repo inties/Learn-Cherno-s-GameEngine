@@ -13,6 +13,7 @@
 #include <functional>
 #include <utility>
 #include <memory>
+#include <chrono>
 
 // Engine core - before platform specific includes
 #include "Engine/core.h"
