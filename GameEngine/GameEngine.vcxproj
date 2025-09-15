@@ -80,11 +80,11 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;dependency\nlohmann;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /MP %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -105,14 +105,14 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;dependency\nlohmann;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /MP %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -134,14 +134,14 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_BUILDING_DLL;GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependency\spdlog\include;dependency\include;dependency\GLFW_3_4\include;dependency\glad\include;dependency\imgui;dependency\glm_99;dependency\entt\src\entt;dependency\nlohmann;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /MP %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>

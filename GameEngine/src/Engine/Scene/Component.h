@@ -1,6 +1,5 @@
 #pragma once
 #include "pch.h"
-#include <glm/gtx/quaternion.hpp>
 #include "Engine/Renderer/Material.h"
 #include "Engine/Renderer/VertexArray.h"
 namespace Engine {
@@ -29,6 +28,9 @@ namespace Engine {
 				* rotation
 				* glm::scale(glm::mat4(1.0f), Scale);
 		}
+		void Translate(glm::vec3& t) {
+			Translation += t;
+		}
 	};
 
 	struct TagComponent {
@@ -39,12 +41,12 @@ namespace Engine {
 
 	struct NativeScriptableComponent {
 		ScriptableEntity* Instance;
-		ScriptableEntity* (*Initilize)();        
-		void(*DestroyScript)(ScriptableEntity*&);
-		template<typename T>
-		void Bind() {
-			Initilize = []() {
-				return static_cast<ScriptableEntity*>(new T());
+		std::function<ScriptableEntity* ()> Initilize;
+		std::function<void(ScriptableEntity*&)>DestroyScript;
+		template<typename T,typename...Args>
+		void Bind(Args&&...args) {
+			Initilize = [=]() {
+				return static_cast<ScriptableEntity*>(new T(args...));
 				};
 			DestroyScript = &DestroyScriptInstance;
 		}

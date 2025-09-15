@@ -1,13 +1,9 @@
 #pragma once
-
-#include "Engine/core.h"
+#include "pch.h"
 #include "Engine/Renderer/Vertex.h"
 #include "Engine/Renderer/VertexArray.h"
 #include "Engine/Renderer/Material.h"
-#include <glm/glm.hpp>
-#include <vector>
-#include <cstdint>
-#include <memory>
+
 
 namespace Engine {
 

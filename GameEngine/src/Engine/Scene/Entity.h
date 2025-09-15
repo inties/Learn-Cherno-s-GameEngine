@@ -3,10 +3,6 @@
 
 #include "Scene.h"
 
-//#include "entt.hpp"
-#include "E:\myGitRepos\GameEngine\GameEngine\dependency\entt\src\entt\entt.hpp"
-
-
 #include "Component.h"
 namespace Engine {
 

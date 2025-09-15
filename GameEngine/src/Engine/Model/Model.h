@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Engine/core.h"
+#include "pch.h"
 #include "Node.h"
 #include "Engine/Renderer/VertexArray.h"
-#include <glm/glm.hpp>
-#include <string>
 
 namespace Engine {
 

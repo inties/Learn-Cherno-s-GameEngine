@@ -1,15 +1,14 @@
 #include "pch.h"
 #include "EditorLayer.h"
-#include <imgui.h>
-#include <imgui_internal.h>
+
 #include "Engine/Application.h"
 #include "Engine/RendererLayer.h"
 #include "Engine/Resources/ProjectManager.h"
 #include "Engine/Scene/Scene.h"
-#include "Engine/log.h"
-#include <filesystem>
-#include <cstring>
-
+#include "Engine/Scene/ScriptableEntity.h"
+#include <imgui.h>
+#include <imgui_internal.h>
+#include "Engine/Scene/Component.h"
 namespace Engine {
 
     static const char* kPayloadAssetPath = "ASSET_PATH";
@@ -195,57 +194,57 @@ namespace Engine {
             ImGui::Text("Scene");
             ImGui::Separator();
 
-            // Display scene game objects
-            if (m_Scene) {
-                int i = 0;
-                int selectedIndex = m_Scene->GetSelectedObjectIndex();
-                for (const auto& obj : m_Scene->GetGameObjects()) {
-                    // Get display name
-                    std::string name = std::filesystem::path(obj.modelPath).filename().string();
-                    if (name.empty()) name = obj.modelPath;
-                    
-                    // Check if this object is selected
-                    bool isSelected = (i == selectedIndex);
-                    
-                    // Display different icons and colors based on loading status
-                    if (obj.isLoading) {
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f)); // Yellow for loading
-                        if (ImGui::Selectable((name + " (Loading...)##obj" + std::to_string(i)).c_str(), isSelected)) {
-                            m_Scene->SetSelectedObject(i);
-                        }
-                        ImGui::PopStyleColor();
-                    } else if (obj.loadFailed) {
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Red for failed
-                        if (ImGui::Selectable((name + " (Failed)##obj" + std::to_string(i)).c_str(), isSelected)) {
-                            m_Scene->SetSelectedObject(i);
-                        }
-                        ImGui::PopStyleColor();
-                    } else if (auto model = obj.model.lock()) {
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f)); // Green for success
-                        if (ImGui::Selectable((name + "##obj" + std::to_string(i)).c_str(), isSelected)) {
-                            m_Scene->SetSelectedObject(i);
-                        }
-                        ImGui::PopStyleColor();
-                    } else {
-                        // Model object is empty (weak pointer may be invalid)
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f)); // Gray
-                        if (ImGui::Selectable((name + " (Empty)##obj" + std::to_string(i)).c_str(), isSelected)) {
-                            m_Scene->SetSelectedObject(i);
-                        }
-                        ImGui::PopStyleColor();
-                    }
-                    
-                    i++;
-                }
-                
-                if (m_Scene->GetGameObjects().empty()) {
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
-                    ImGui::Text("Drag model files here to create game objects");
-                    ImGui::PopStyleColor();
-                }
-            } else {
-                ImGui::TextUnformatted("[No Scene]");
-            }
+            //// Display scene game objects
+            //if (m_Scene) {
+            //    int i = 0;
+            //    int selectedIndex = m_Scene->GetSelectedObjectIndex();
+            //    for (const auto& obj : m_Scene->GetGameObjects()) {
+            //        // Get display name
+            //        std::string name = std::filesystem::path(obj.modelPath).filename().string();
+            //        if (name.empty()) name = obj.modelPath;
+            //        
+            //        // Check if this object is selected
+            //        bool isSelected = (i == selectedIndex);
+            //        
+            //        // Display different icons and colors based on loading status
+            //        if (obj.isLoading) {
+            //            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f)); // Yellow for loading
+            //            if (ImGui::Selectable((name + " (Loading...)##obj" + std::to_string(i)).c_str(), isSelected)) {
+            //                m_Scene->SetSelectedObject(i);
+            //            }
+            //            ImGui::PopStyleColor();
+            //        } else if (obj.loadFailed) {
+            //            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Red for failed
+            //            if (ImGui::Selectable((name + " (Failed)##obj" + std::to_string(i)).c_str(), isSelected)) {
+            //                m_Scene->SetSelectedObject(i);
+            //            }
+            //            ImGui::PopStyleColor();
+            //        } else if (auto model = obj.model.lock()) {
+            //            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f)); // Green for success
+            //            if (ImGui::Selectable((name + "##obj" + std::to_string(i)).c_str(), isSelected)) {
+            //                m_Scene->SetSelectedObject(i);
+            //            }
+            //            ImGui::PopStyleColor();
+            //        } else {
+            //            // Model object is empty (weak pointer may be invalid)
+            //            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f)); // Gray
+            //            if (ImGui::Selectable((name + " (Empty)##obj" + std::to_string(i)).c_str(), isSelected)) {
+            //                m_Scene->SetSelectedObject(i);
+            //            }
+            //            ImGui::PopStyleColor();
+            //        }
+            //        
+            //        i++;
+            //    }
+            //    
+            //    if (m_Scene->GetGameObjects().empty()) {
+            //        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
+            //        ImGui::Text("Drag model files here to create game objects");
+            //        ImGui::PopStyleColor();
+            //    }
+            //} else {
+            //    ImGui::TextUnformatted("[No Scene]");
+            //}
         }
         ImGui::End();
     }
@@ -253,50 +252,14 @@ namespace Engine {
     void EditorLayer::DrawInspectorPanel() {
         if (ImGui::Begin("Inspector")) {
             if (m_Scene) {
-                GameObject* selectedObj = m_Scene->GetSelectedObject();
-                if (selectedObj) {
-                    // 显示选中对象的信息
-                    std::string name = std::filesystem::path(selectedObj->modelPath).filename().string();
-                    if (name.empty()) name = selectedObj->modelPath;
-                    
-                    ImGui::Text("Selected Object: %s", name.c_str());
-                    ImGui::Separator();
-                    
-                    // 显示模型路径
-                    ImGui::Text("Model Path: %s", selectedObj->modelPath.c_str());
-                    
-                    // 显示Object ID
-                    ImGui::Text("Object ID: %d", m_Scene->GetSelectedObjectIndex());
-                    
-                    ImGui::Separator();
-                    
-                    // 可编辑的Transform信息
-                    ImGui::Text("Transform:");
-                    
-                    // 提取位置信息并允许编辑
-                    glm::vec3 position = glm::vec3(selectedObj->transform[3]);
-                    if (ImGui::DragFloat3("Position", &position.x, 0.1f)) {
-                        // 更新GameObject的transform
-                        selectedObj->transform[3] = glm::vec4(position, 1.0f);
-                        
-                        // 如果模型已加载，同步更新Model的GlobalTransform
-                        if (auto model = selectedObj->model.lock()) {
-                            model->SetGlobalTransform(selectedObj->transform);
-                        }
-                    }
-                    
-                    // 显示变换矩阵（可选）
-                    if (ImGui::CollapsingHeader("Transform Matrix")) {
-                        for (int i = 0; i < 4; i++) {
-                            ImGui::Text("[%.2f, %.2f, %.2f, %.2f]", 
-                                selectedObj->transform[i][0], selectedObj->transform[i][1], selectedObj->transform[i][2], selectedObj->transform[i][3]);
-                        }
-                    }
-                    
-                } else {
+                int SelectedID = m_Scene->GetSelectedID();
+                if (SelectedID == -1) {
                     ImGui::Text("No object selected.");
                     ImGui::Separator();
                     ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Select an object in the Hierarchy to view its properties.");
+                }
+                else {
+
                 }
             } else {
                 ImGui::Text("No scene loaded.");
@@ -419,14 +382,17 @@ namespace Engine {
 
     void EditorLayer::OnUpdate()
     {
-        //捕获鼠标在viewport中的位置(归一化)
-        // 注意：这个函数应该在DrawViewportPanel之后调用，或者将鼠标位置计算移到DrawViewportPanel中
-        
-        // 方法1：使用ImGui::GetMousePos()和窗口信息（需要在ImGui渲染期间调用）
-        // 方法2：使用平台相关的鼠标位置获取（推荐在这里使用）
-        
-        // 这里暂时留空，建议将鼠标位置计算移到DrawViewportPanel函数中
-        // 因为ImGui的窗口信息只在ImGui渲染期间有效
+        //if (!running)return;
+        //更新所有脚本
+        auto& registry = m_Scene->GetRegistry();
+        auto view = registry.view<NativeScriptableComponent>();
+
+        for (auto& [entity, nsc] : view.each()) {
+            if (!nsc.Instance) {
+                nsc.Instance = nsc.Initilize();
+            }
+            nsc.Instance->OnUpdate();
+        }
     }
 
     void EditorLayer::OnImGuiRender() {
@@ -505,10 +471,7 @@ namespace Engine {
     }
 
     void EditorLayer::OnEvent(Event& event) {
-        // Handle events
+
         EventDispatcher dispatcher(event);
-        // dispatcher.Dispatch<MouseMoveEvent>([this](MouseMoveEvent& e) {
-        //     return OnMouseMove(e);
-        // });
     }
 }

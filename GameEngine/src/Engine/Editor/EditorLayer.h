@@ -34,10 +34,11 @@ namespace Engine {
 
     private:
         RendererLayer* m_RendererLayer = nullptr;
-        Ref<Scene> m_Scene; // ???????
+        Ref<Scene> m_Scene; 
         glm::vec2 m_ViewportSize{0.0f, 0.0f};
         glm::vec2 m_mousePos{ 0.0f,0.0f };
         bool m_ViewportFocused = false;
         bool m_ViewportHovered = false;
+        bool running = false;
     };
 }

@@ -2,9 +2,8 @@
 //steal form hazel
 #pragma once
 
-#include <string>
+#include "pch.h"
 
-#include "Engine/core.h"
 
 
 namespace Engine {

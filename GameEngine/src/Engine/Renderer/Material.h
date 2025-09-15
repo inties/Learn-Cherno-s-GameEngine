@@ -1,16 +1,9 @@
 #pragma once
-
-#include "Engine/core.h"
-
+#include "pch.h"
 #include "Engine/Renderer/Shader.h"
-
 #include "Engine/Renderer/Texture.h"
 
-#include <string>
 
-#include <unordered_map>
-
-#include <glm/glm.hpp>
 
 
 namespace Engine {

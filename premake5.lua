@@ -10,7 +10,7 @@ IncludeDir["Glad"] = "GameEngine/dependency/glad/include"
 IncludeDir["ImGui"] = "GameEngine/dependency/imgui"
 IncludeDir["glm"] = "GameEngine/dependency/glm_99"
 IncludeDir["entt"]="GameEngine/dependency/entt/src/entt"
-
+IncludeDir["nlohmann"]="GameEngine/dependency/nlohmann"
 -- 包含glad/imgui两个子项目
 include "GameEngine/dependency/glad"
 include "GameEngine/dependency/imgui"
@@ -35,6 +35,7 @@ project "GameEngine"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
+        "%{IncludeDir.nlohmann}",
         "%{prj.name}/src",
     }
     libdirs {
@@ -47,7 +48,7 @@ project "GameEngine"
         cppdialect "C++17"
         staticruntime "Off"
         systemversion "latest"
-        buildoptions { "/utf-8" }
+        buildoptions { "/utf-8", "/MP" }
    
         -- GLFW静态库及其所需的Windows系统库
         links {
@@ -91,6 +92,9 @@ project "SandBox"
     kind "ConsoleApp"
     language "C++"
 
+    pchheader "pch.h"
+    pchsource "SandBox/src/pch.cpp"
+
     targetdir ("./")
     objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
  
@@ -104,8 +108,12 @@ project "SandBox"
         "./GameEngine/dependency/include",
         "./GameEngine/dependency/GLFW_3_4/include",
         "./GameEngine/dependency/glad/include",
+        "./GameEngine/dependency/imgui",
         "%{IncludeDir.glm}",
-        "./GameEngine/src"
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.nlohmann}",
+        "./GameEngine/src",
+        "%{prj.name}/src"
     }
     libdirs {
         "./GameEngine/dependency/GLFW_3_4/lib",
@@ -119,7 +127,7 @@ project "SandBox"
         cppdialect "C++17"
         staticruntime "Off"
         systemversion "latest"
-        buildoptions { "/utf-8" }
+        buildoptions { "/utf-8", "/MP" }
         defines {
             "ENGINE_PLATFORM_WINDOWS",
              "GLAD_GLAPI_EXPORT"

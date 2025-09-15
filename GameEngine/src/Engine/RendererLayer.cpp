@@ -56,8 +56,8 @@ namespace Engine
 		
 		// 移除硬编码模型加载（改由 Scene + ModelManager 驱动）
 		// SetupModel();
-		const std::string s= "backpack.obj";
-		m_model = ModelManager::Get()->LoadModel(s);
+		//const std::string s= "backpack.obj";
+		//m_model = ModelManager::Get()->LoadModel(s);
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
 		}
@@ -232,7 +232,7 @@ namespace Engine
 	//	}
 
 		DrawRenderItems();
-		// 渲染场景中的模型实例（保留原有逻辑）
+
 		const auto& objects = m_Scene->GetGameObjects();
 		for (size_t i = 0; i < objects.size(); ++i) {
 			const auto& obj = objects[i];
@@ -419,7 +419,7 @@ namespace Engine
 
 				// 获取视图矩阵
 				Camera* camera = Camera::GetInstance();
-				ENGINE_CORE_INFO("{}Zoom", camera->Zoom);
+				/*ENGINE_CORE_INFO("{}Zoom", camera->Zoom);*/
 				glm::mat4 viewMatrix = camera->GetViewMatrix();
 				glm::mat4 projMatrix = camera->GetProjectionMatrix();
 				glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
@@ -429,7 +429,7 @@ namespace Engine
 				shader->Bind();
 				shader->SetMat4("u_Model", modelMatrix);
 				shader->SetMat4("u_ViewProjection", viewProjMatrix);
-
+				shader->SetInt("u_ObjectID", static_cast<int>(entity));
 				// 绑定VAO并渲染
 				renderComp.VAO->Bind();
 				RenderCommand::DrawIndexed(renderComp.VAO);

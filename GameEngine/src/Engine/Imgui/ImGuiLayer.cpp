@@ -1,15 +1,12 @@
 #include "pch.h"  
 #include "Engine/core.h"
 #include "ImGuiLayer.h"  
-
+#include "imgui_internal.h"
 #include "Engine/Application.h"
 #include "Engine/Windows.h"
 #include "Engine/platform/WindowWindows.h"
-#include "imgui.h"
-#include "Engine/Imgui/ImguiOpenglRender.h"
-#include "Engine/Imgui/imgui_impl_glfw.h"
-#include "Engine/Imgui/imgui_internal.h"
-#include <GLFW/glfw3.h>
+
+
 
 // 定义事件绑定宏
 #define BIND_CLASS_FUC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }

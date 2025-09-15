@@ -2,16 +2,18 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Resources/ProjectManager.h"
 #include "Engine/Resources/ModelManager.h"
-#include <filesystem>
 
 #include "Entity.h"
 #include "Component.h"
 #include "prefabs.h"
+#include "ScriptableEntity.h"
 namespace Engine {
 
     Scene::Scene() {
         // 默认创建一个CubeEntity
-        CreatePrefab(PrefabTypes::Cube);
+        Entity cube=CreatePrefab(PrefabTypes::Cube);
+        auto& nsc=cube.AddComponent<NativeScriptableComponent>();
+        nsc.Bind<MoveScript>(cube);  // 传递Entity指针而不是NativeScriptableComponent指针
         ENGINE_CORE_INFO("Scene created with default CubeEntity");
     }
 
@@ -53,21 +55,22 @@ namespace Engine {
             ENGINE_CORE_WARN("File {} is not a loadable model file", relativeModelPath);
             return;
         }
-
-        // 创建游戏对象
-        GameObject obj;
-        obj.modelPath = ProjectManager::NormalizePath(relativeModelPath);
-        obj.transform = transform;
-        obj.isLoading = true; // 标记为正在加载状态
-        
-        // 先添加到对象列表中（显示加载状态）
-        auto objIndex = gObjectList.size();
-        gObjectList.emplace_back(std::move(obj));
-        
-        ENGINE_CORE_INFO("Game object created, starting async model loading: {}", relativeModelPath);
-        
-        // 创建异步加载任务
-        CreateAsyncModelLoadingTask(relativeModelPath, objIndex);
+        ENGINE_CORE_INFO("Abandoned Function:Load Model From: {}", relativeModelPath);
+        return;
+        //// 创建游戏对象
+        //GameObject obj;
+        //obj.modelPath = ProjectManager::NormalizePath(relativeModelPath);
+        //obj.transform = transform;
+        //obj.isLoading = true; // 标记为正在加载状态
+        //
+        //// 先添加到对象列表中（显示加载状态）
+        //auto objIndex = gObjectList.size();
+        //gObjectList.emplace_back(std::move(obj));
+        //
+        //ENGINE_CORE_INFO("Game object created, starting async model loading: {}", relativeModelPath);
+        //
+        //// 创建异步加载任务
+        //CreateAsyncModelLoadingTask(relativeModelPath, objIndex);
     }
 
     void Scene::CreateAsyncModelLoadingTask(const std::string& relativeModelPath, size_t objectIndex) {
@@ -115,15 +118,8 @@ namespace Engine {
 
     
     void Scene::SetSelectedObject(int index) {
-        if (index >= 0 && index < static_cast<int>(gObjectList.size())) {
             m_SelectedObjectIndex = index;
-            ENGINE_CORE_INFO("Selected object at index: {}", index);
-        } else if (index == -1) {
-            m_SelectedObjectIndex = -1; // 清除选择
-            ENGINE_CORE_INFO("Cleared object selection");
-        } else {
-            ENGINE_CORE_WARN("Invalid object index: {}", index);
-        }
+            ENGINE_CORE_INFO("Selected ObjectID set as{}", index);       
     }
     
     GameObject* Scene::GetSelectedObject() {
