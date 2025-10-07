@@ -1,4 +1,4 @@
-//steam from Hazel
+﻿//steam from Hazel
 #pragma once
 
 #include "Engine/Renderer/Texture.h"
@@ -10,7 +10,8 @@ namespace Engine {
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(uint32_t width, uint32_t height);
+		//constTexture表示纹理尺寸和mipmap层级不可变
+		OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format=TextureFormat::RGBA8,int samples=1);
 		OpenGLTexture2D(const std::string& path);
 		virtual ~OpenGLTexture2D();
 

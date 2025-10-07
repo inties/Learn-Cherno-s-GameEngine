@@ -1,4 +1,4 @@
-//******************************************************************
+﻿//******************************************************************
 //steal form hazel
 #pragma once
 
@@ -8,6 +8,20 @@
 
 namespace Engine {
 
+	enum class TextureFormat
+	{
+		None = 0,
+
+		// Color
+		RGBA8,
+		RED_INTEGER,
+
+		// Depth/stencil
+		DEPTH24STENCIL8,
+
+		// Defaults
+		Depth = DEPTH24STENCIL8
+	};
 	class Texture
 	{
 	public:
@@ -22,12 +36,13 @@ namespace Engine {
 		virtual void Bind(uint32_t slot = 0) const = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
+	
 	};
 
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
+		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureFormat format = TextureFormat::RGBA8, int sample = 1);
 		static Ref<Texture2D> Create(const std::string& path);
 	};
 

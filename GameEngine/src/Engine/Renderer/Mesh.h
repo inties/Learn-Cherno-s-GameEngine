@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 #include "Engine/Renderer/Vertex.h"
 #include "Engine/Renderer/VertexArray.h"
@@ -9,11 +9,11 @@ namespace Engine {
 
 class Mesh : public std::enable_shared_from_this<Mesh> {
 public:
-    // ¹¹Ôìº¯Êı£º½ÓÊÕ²ÄÖÊºÍÆ«ÒÆĞÅÏ¢£¬²»ÔÙ´´½¨»º³åÇø
+    // æ„é€ å‡½æ•°ï¼šæ¥æ”¶æè´¨å’Œåç§»ä¿¡æ¯ï¼Œä¸å†åˆ›å»ºç¼“å†²åŒº
     Mesh(const Ref<Material>& material, const Ref<VertexArray>& sharedVAO, 
          uint32_t vertexOffset, uint32_t vertexCount, uint32_t indexOffset, uint32_t indexCount);
 
-    // Draw·½·¨£ºÊ¹ÓÃÈ«¾ÖcameraºÍtransform£¬µ÷ÓÃRenderer::Submit
+    // Drawæ–¹æ³•ï¼šä½¿ç”¨å…¨å±€cameraå’Œtransformï¼Œè°ƒç”¨Renderer::Submit
     void Draw() const;
 
     // Getters
@@ -27,12 +27,12 @@ public:
     void SetObjectID(uint32_t id) { m_ObjectID = id; }
     void SetWorldTranform(glm::mat4& T) { worldTransform = T; }
 private:
-    Ref<VertexArray> m_SharedVAO;    // ¹²ÏíVAOÒıÓÃ
-    Ref<Material> m_Material;       // ²ÄÖÊÒıÓÃ
-    uint32_t m_VertexOffset;        // ¶¥µã»º³åÇøÆğÊ¼Æ«ÒÆ
-    uint32_t m_VertexCount;         // ¶¥µãÊıÁ¿
-    uint32_t m_IndexOffset;         // Ë÷Òı»º³åÇøÆğÊ¼Æ«ÒÆ
-    uint32_t m_IndexCount;          // Ë÷ÒıÊıÁ¿
+    Ref<VertexArray> m_SharedVAO;    // å…±äº«VAOå¼•ç”¨
+    Ref<Material> m_Material;       // æè´¨å¼•ç”¨
+    uint32_t m_VertexOffset;        // é¡¶ç‚¹ç¼“å†²åŒºèµ·å§‹åç§»
+    uint32_t m_VertexCount;         // é¡¶ç‚¹æ•°é‡
+    uint32_t m_IndexOffset;         // ç´¢å¼•ç¼“å†²åŒºèµ·å§‹åç§»
+    uint32_t m_IndexCount;          // ç´¢å¼•æ•°é‡
     uint32_t m_ObjectID;
     glm::mat4 worldTransform=glm::mat4(1.0f);
 };

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"Engine/Input.h"
 #include<glfw/glfw3.h>
 namespace Engine {
@@ -12,7 +12,7 @@ namespace Engine {
 		virtual std::pair<float, float> GetMousePos()override;
 	private:
 		WindowsInput();
-		friend class Input;  // ÔÊĞíInputÀà·ÃÎÊprivate¹¹Ôìº¯Êı
+		friend class Input;  // å…è®¸Inputç±»è®¿é—®privateæ„é€ å‡½æ•°
 	};
 
 

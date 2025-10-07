@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "TestLayer.h"
 #include <imgui.h>
 #include <GLFW/glfw3.h>
@@ -20,16 +20,16 @@ void TestLayer::OnDetach()
 
 void TestLayer::OnUpdate()
 {
-	// ¸üĞÂÊ±¼ä
+	// æ›´æ–°æ—¶é—´
 	m_Time = static_cast<float>(glfwGetTime());
 	
-	// TestLayer ÏÖÔÚ²»´¦ÀíäÖÈ¾£¬Ö»´¦ÀíÓÎÏ·Âß¼­
-	// äÖÈ¾ÓÉ RendererLayer ¸ºÔğ
+	// TestLayer ç°åœ¨ä¸å¤„ç†æ¸²æŸ“ï¼Œåªå¤„ç†æ¸¸æˆé€»è¾‘
+	// æ¸²æŸ“ç”± RendererLayer è´Ÿè´£
 }
 
 void TestLayer::OnImGuiRender()
 {
-	// ÏÔÊ¾Ò»¸ö¼òµ¥µÄ²âÊÔ´°¿Ú
+	// æ˜¾ç¤ºä¸€ä¸ªç®€å•çš„æµ‹è¯•çª—å£
 	if (ImGui::Begin("Test Layer"))
 	{
 		ImGui::Text("This is the Test Layer");
@@ -51,6 +51,6 @@ void TestLayer::OnImGuiRender()
 
 void TestLayer::OnEvent(Engine::Event& e)
 {
-	// ´¦ÀíÒ»Ğ©²âÊÔÊÂ¼ş
+	// å¤„ç†ä¸€äº›æµ‹è¯•äº‹ä»¶
 	ENGINE_CORE_TRACE("TestLayer received event: {}", e.GetName());
 } 

@@ -1,0 +1,14 @@
+# .editorconfig for C++ projects
+# Top-most EditorConfig file
+root = true
+
+# Apply to all files
+[*]
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Specify character set for C++ source files
+[*.{h, cpp, hpp, cxx, hxx, inl}]
+charset = utf-8-bom
+

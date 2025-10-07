@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/Renderer/Material.h"
 
@@ -42,9 +42,9 @@ private:
 
     std::unordered_map<std::string, Ref<Texture2D>> m_Textures;
 
-    // TODO: ÆäËûuniform»º´æ£¬Èçfloats, vec3µÈ
+    // TODO: å…¶ä»–uniformç¼“å­˜ï¼Œå¦‚floats, vec3ç­‰
 
-    mutable int m_TextureSlot = 0; // ÓÃÓÚ°ó¶¨Ê±·ÖÅäslot
+    mutable int m_TextureSlot = 0; // ç”¨äºç»‘å®šæ—¶åˆ†é…slot
     Ref<Shader> m_Shader;
 };
 

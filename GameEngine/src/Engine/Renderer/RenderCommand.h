@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "RendererAPI.h"
 
@@ -37,7 +37,7 @@ namespace Engine
 			s_RendererAPI->DrawArrays(vertexArray, vertexCount);
 		}
 
-		// ĞÂÔö£ºÖ§³ÖÆ«ÒÆ»æÖÆµÄ·½·¨
+		// æ–°å¢ï¼šæ”¯æŒåç§»ç»˜åˆ¶çš„æ–¹æ³•
 		static void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
 		{

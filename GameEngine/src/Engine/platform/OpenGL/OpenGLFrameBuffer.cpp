@@ -1,10 +1,10 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Engine/Platform/OpenGL/OpenGLFramebuffer.h"
 
 
 namespace Engine {
 
-	static const uint32_t s_MaxFramebufferSize = 8192;//æ≤Ã¨∫Ø ˝∫Õ≥£¡ø÷ª∂‘µ±«∞±‡“Îµ•‘™ø…º˚
+	static const uint32_t s_MaxFramebufferSize = 8192;//ÈùôÊÄÅÂáΩÊï∞ÂíåÂ∏∏ÈáèÂè™ÂØπÂΩìÂâçÁºñËØëÂçïÂÖÉÂèØËßÅ
 
 	namespace Utils {
 
@@ -65,22 +65,22 @@ namespace Engine {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
 		}
 
-		static bool IsDepthFormat(FramebufferTextureFormat format)
+		static bool IsDepthFormat(TextureFormat format)
 		{
 			switch (format)
 			{
-			case FramebufferTextureFormat::DEPTH24STENCIL8:  return true;
+			case TextureFormat::DEPTH24STENCIL8:  return true;
 			}
 
 			return false;
 		}
 
-		static GLenum HazelFBTextureFormatToGL(FramebufferTextureFormat format)
+		static GLenum HazelFBTextureFormatToGL(TextureFormat format)
 		{
 			switch (format)
 			{
-			case FramebufferTextureFormat::RGBA8:       return GL_RGBA8;
-			case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+			case TextureFormat::RGBA8:       return GL_RGBA8;
+			case TextureFormat::RED_INTEGER: return GL_RED_INTEGER;
 			}
 
 			ENGINE_CORE_ASSERT(false,"Unown Framebuffer Format");
@@ -126,35 +126,40 @@ namespace Engine {
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
 		bool multisample = m_Specification.Samples > 1;
-
+		GLenum multi= multisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		// Attachments
 		if (m_ColorAttachmentSpecifications.size())
 		{
 			m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
-			Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
+			//Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
 
 			for (size_t i = 0; i < m_ColorAttachments.size(); i++)
 			{
-				Utils::BindTexture(multisample, m_ColorAttachments[i]);
-				switch (m_ColorAttachmentSpecifications[i].TextureFormat)
-				{
-				case FramebufferTextureFormat::RGBA8:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
-					break;
-				case FramebufferTextureFormat::RED_INTEGER:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
-					break;
-				}
+				Ref<Texture>colortexture = Texture2D::Create(m_Specification.Width, m_Specification.Height, m_ColorAttachmentSpecifications[i].TextureFormat,1);
+				m_RenderTextures.push_back(colortexture);
+				m_ColorAttachments[i] = colortexture->GetRendererID();
+				
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, multi, m_ColorAttachments[i], 0);
+				//Utils::BindTexture(multisample, m_ColorAttachments[i]);
+				//switch (m_ColorAttachmentSpecifications[i].TextureFormat)
+				//{
+				//case TextureFormat::RGBA8:
+				//	Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+				//	break;
+				//case TextureFormat::RED_INTEGER:
+				//	Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+				//	break;
+				//}
 			}
 		}
 
-		if (m_DepthAttachmentSpecification.TextureFormat != FramebufferTextureFormat::None)
+		if (m_DepthAttachmentSpecification.TextureFormat != TextureFormat::None)
 		{
 			Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
 			Utils::BindTexture(multisample, m_DepthAttachment);
 			switch (m_DepthAttachmentSpecification.TextureFormat)
 			{
-			case FramebufferTextureFormat::DEPTH24STENCIL8:
+			case TextureFormat::DEPTH24STENCIL8:
 				Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
 				break;
 			}
@@ -203,12 +208,12 @@ namespace Engine {
 
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 	{
-		//∞Û∂®FBO£¨±£÷§ƒ‹∏√∂¡»°÷°ª∫≥Â ˝æ›
+		//ÁªëÂÆöFBOÔºå‰øùËØÅËÉΩËØ•ËØªÂèñÂ∏ßÁºìÂÜ≤Êï∞ÊçÆ
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
 		ENGINE_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(),"Can't readPix from a frameAttachment out of range");
 
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-		//±Ì æŒ¥∂¡»°µΩ÷µ
+		//Ë°®Á§∫Êú™ËØªÂèñÂà∞ÂÄº
 		int pixelData=-1;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

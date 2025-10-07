@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
 #include "Material.h"
 
@@ -9,7 +9,7 @@ namespace Engine {
 
 Ref<Material> Material::Create(const Ref<Shader>& shader) {
 
-    // TODO: ¸ù¾İRendererAPIÑ¡ÔñÊµÏÖ
+    // TODO: æ ¹æ®RendererAPIé€‰æ‹©å®ç°
 	switch (Renderer::GetAPI())
 	{
 	case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;

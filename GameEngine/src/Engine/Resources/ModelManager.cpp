@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Engine/Resources/ModelManager.h"
 #include "Engine/Resources/ProjectManager.h"
 #include "Engine/Model/Model.h"
@@ -24,7 +24,7 @@ namespace Engine {
     Ref<Model> ModelManager::LoadModel(const std::string& relativePath) {
         ENGINE_CORE_INFO("Starting to load model: {}", relativePath);
         
-        // Í³Ò» key
+        // ç»Ÿä¸€ key
         std::string key = ProjectManager::NormalizePath(relativePath);
         auto it = m_ModelCache.find(key);
         if (it != m_ModelCache.end()) {
@@ -32,7 +32,7 @@ namespace Engine {
             return it->second;
         }
 
-        // Æ´½Ó¾ø¶ÔÂ·¾¶
+        // æ‹¼æ¥ç»å¯¹è·¯å¾„
         auto pm = ProjectManager::Get();
         const std::string& root = pm->GetProjectRoot();
         if (root.empty()) {
@@ -44,7 +44,7 @@ namespace Engine {
         if (!abs.empty() && abs.back() != '/' && abs.back() != '\\') abs += '/';
         abs += key;
         
-        // ¼ì²éÎÄ¼şÊÇ·ñ´æÔÚ
+        // æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨
         if (!std::filesystem::exists(abs)) {
             ENGINE_CORE_ERROR("Model file does not exist: {}", abs);
             return nullptr;

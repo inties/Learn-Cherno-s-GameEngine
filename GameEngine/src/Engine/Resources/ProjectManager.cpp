@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Engine/Resources/ProjectManager.h"
 #include <algorithm>
 #include <iostream>
@@ -28,7 +28,7 @@ namespace Engine {
         fs::path p(path);
         m_ProjectRoot = p.lexically_normal().string();
 #ifdef _WIN32
-        // ?????ùù?????????ùù????????
+        // ?????ÊΩ©?????????ÊΩ©????????
         std::replace(m_ProjectRoot.begin(), m_ProjectRoot.end(), '\\', '/');
 #endif
     }
@@ -98,7 +98,7 @@ namespace Engine {
             return result;
         }
         
-        // ???????ùù??
+        // ???????ÊΩ©??
         std::string fileName = sourcePath.filename().string();
         std::string targetRelPath = targetRelDir.empty() ? fileName : (NormalizePath(targetRelDir) + "/" + fileName);
         
@@ -128,7 +128,7 @@ namespace Engine {
                     return result;
                     
                 case CopyStrategy::Overwrite:
-                    // ??????ùù???
+                    // ??????ÊΩ©???
                     break;
                     
                 case CopyStrategy::Rename:
@@ -147,7 +147,7 @@ namespace Engine {
             return result;
         }
         
-        // ????????ùù?
+        // ????????ÊΩ©?
         std::string normalizedRelPath = NormalizePath(targetRelPath);
         if (!m_AssetDedup.count(normalizedRelPath)) {
             std::string ext = ToLower(fs::path(normalizedRelPath).extension().string());
@@ -188,7 +188,7 @@ namespace Engine {
         
         std::cout << "[ProjectManager] Starting recursive directory copy..." << std::endl;
         
-        // ??ù`?????ùù????????
+        // ??Êºô?????ÊΩ©????????
         std::error_code ec;
         int fileCount = 0;
         for (const auto& entry : fs::recursive_directory_iterator(sourceDir, ec)) {
@@ -203,11 +203,11 @@ namespace Engine {
                 fileCount++;
                 std::cout << "[ProjectManager] Processing file " << fileCount << ": " << entry.path().filename().string() << std::endl;
                 
-                // ??????????????ùù??
+                // ??????????????ÊΩ©??
                 fs::path relativePath = fs::relative(entry.path(), sourceDir, ec);
                 if (ec) continue;
                 
-                // ??????????ùù??
+                // ??????????ÊΩ©??
                 std::string targetSubDir = targetRelDir.empty() ? 
                     relativePath.parent_path().string() : 
                     (NormalizePath(targetRelDir) + "/" + relativePath.parent_path().string());
@@ -246,11 +246,11 @@ namespace Engine {
             dirEntry.name = entry.path().filename().string();
             dirEntry.isDirectory = entry.is_directory();
             
-            // ???????ùù??
+            // ???????ÊΩ©??
             std::string entryRelPath = MakeRelativeToRoot(entry.path().string());
             dirEntry.relativePath = NormalizePath(entryRelPath);
             
-            // ?ùù?????????????
+            // ?ÊΩ©?????????????
             if (dirEntry.isDirectory) {
                 dirEntry.type = AssetType::Directory;
             } else {
@@ -303,7 +303,7 @@ namespace Engine {
     bool ProjectManager::IsValidTargetPath(const std::string& targetRelPath) const {
         if (targetRelPath.empty()) return false;
         
-        // ?????????ùù???ùù?????
+        // ?????????ÊΩ©???ÊΩ©?????
         fs::path path(targetRelPath);
         for (const auto& component : path) {
             std::string comp = component.string();
@@ -312,7 +312,7 @@ namespace Engine {
             }
         }
         
-        // ????ùZ?????ùù?????????????????
+        // ????Êºê?????ÊΩ©?????????????????
         fs::path fullPath = fs::path(m_ProjectRoot) / targetRelPath;
         std::error_code ec;
         fs::path canonical = fs::weakly_canonical(fullPath, ec);
@@ -378,7 +378,7 @@ namespace Engine {
             }
             
             if (result.success) {
-                RefreshAssets(); // ???????ùù?
+                RefreshAssets(); // ???????ÊΩ©?
             }
         } catch (const std::exception& e) {
             result.message = "Copy failed: " + std::string(e.what());

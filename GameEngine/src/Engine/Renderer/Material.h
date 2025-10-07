@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 #include "Engine/Renderer/Shader.h"
 #include "Engine/Renderer/Texture.h"
@@ -24,7 +24,7 @@ public:
 
     virtual void SetShader(const Ref<Shader>& shader) = 0;
 
-    // Í³Ò»ÉèÖÃ½Ó¿Ú
+    // ç»Ÿä¸€è®¾ç½®æ¥å£
 
     virtual void SetInt(const std::string& name, int value) = 0;
 
@@ -36,7 +36,7 @@ public:
 
     virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
 
-    // ÎÆÀíÉèÖÃ
+    // çº¹ç†è®¾ç½®
 
     virtual void SetTexture(const std::string& name, const Ref<Texture2D>& texture) = 0;
     

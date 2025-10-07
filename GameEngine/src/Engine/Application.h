@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"pch.h"
 #include "core.h"
 #include"Event.h"
@@ -23,7 +23,7 @@ namespace Engine {
 		virtual bool OnKeyPress(KeyPressEvent& e);
 		//virtual bool OnKeyRelease(KeyReleaseEvent& e);
 		
-		// ÉãÏñ»ú¿ØÖÆÏà¹Ø·½·¨
+		// æ‘„åƒæœºæ§åˆ¶ç›¸å…³æ–¹æ³•
 		void ProcessCameraInput();
 		void UpdateFrameTiming();
 		inline static Application& Get() { return *s_Instance; }
@@ -36,15 +36,15 @@ namespace Engine {
 		LayerStack m_LayerStack;
 		ImguiLayer* m_ImGuiLayer = nullptr;
 		
-		// Ö¡¼ÆÊ±Ïà¹Ø±äÁ¿
+		// å¸§è®¡æ—¶ç›¸å…³å˜é‡
 		float m_DeltaTime = 0.0f;
 		float m_LastFrameTime = 0.0f;
 		
-		// Êó±ê¿ØÖÆÏà¹Ø±äÁ¿
+		// é¼ æ ‡æ§åˆ¶ç›¸å…³å˜é‡
 		bool m_FirstMouse = true;
 	};
 	
-	// ÓÉ¿Í»§¶ËÊµÏÖ
+	// ç”±å®¢æˆ·ç«¯å®ç°
 	Application* createApplication();
 
 }

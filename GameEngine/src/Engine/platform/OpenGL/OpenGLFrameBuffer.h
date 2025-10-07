@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #pragma once
 
 #include "Engine/Renderer/Framebuffer.h"
@@ -21,17 +21,22 @@ namespace Engine {
 
 		void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
+		//获取指定序号的纹理附件
 		uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { ENGINE_CORE_ASSERT(index < m_ColorAttachments.size(),"Can't get ColorAttachment Out of Range"); return m_ColorAttachments[index]; }
-
+		Ref<Texture>GetRenderTexture(uint32_t index = 0)const override {
+			ENGINE_CORE_ASSERT(index < m_ColorAttachments.size(), "Can't get ColorAttachment Out of Range");
+			return m_RenderTextures[index];
+		}
 		const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 	private:
 		uint32_t m_RendererID = 0;
 		FramebufferSpecification m_Specification;
 
 		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-		FramebufferTextureSpecification m_DepthAttachmentSpecification = FramebufferTextureFormat::None;
+		FramebufferTextureSpecification m_DepthAttachmentSpecification = TextureFormat::None;
 
 		std::vector<uint32_t> m_ColorAttachments;
+		std::vector<Ref<Texture>>m_RenderTextures;
 		uint32_t m_DepthAttachment = 0;
 	};
 

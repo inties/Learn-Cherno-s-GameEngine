@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "RendererLayer.h"
 #include "Renderer/RenderCommand.h"
 #include "platform/OpenGL/OpenGLShader.h"
@@ -8,8 +8,6 @@
 #include "Resources/ModelManager.h"
 #include "Scene/Scene.h"
 #include <imgui.h>
-#include <filesystem>
-#include <vector>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -23,7 +21,7 @@ namespace Engine
 
 	std::string RendererLayer::GetShaderPath(const std::string& filename)
 	{
-		// ³¢ÊÔ¶à¸ö¿ÉÄÜµÄÂ·¾¶
+		// å°è¯•å¤šä¸ªå¯èƒ½çš„è·¯å¾„
 		std::vector<std::string> possiblePaths = {
 			"GameEngine/Shader/" + filename,
 			"../GameEngine/Shader/" + filename,
@@ -40,38 +38,38 @@ namespace Engine
 		}
 		
 		ENGINE_CORE_ERROR("Could not find shader file: {}", filename);
-		return "GameEngine/Shader/" + filename; // »ØÍËµ½Ä¬ÈÏÂ·¾¶
+		return "GameEngine/Shader/" + filename; // å›é€€åˆ°é»˜è®¤è·¯å¾„
 	}
 
 	void RendererLayer::OnAttach()
 	{
-		// ³õÊ¼»¯äÖÈ¾Æ÷
+		// åˆå§‹åŒ–æ¸²æŸ“å™¨
 		Renderer::Init();
 		
-		// ¼ÓÔØÄ¬ÈÏ×ÅÉ«Æ÷
+		// åŠ è½½é»˜è®¤ç€è‰²å™¨
 		LoadDefaultShaders();
 		
-		// ÉèÖÃÁ¢·½Ìå
+		// è®¾ç½®ç«‹æ–¹ä½“
 		SetupCube();
 		
-		// ÒÆ³ıÓ²±àÂëÄ£ĞÍ¼ÓÔØ£¨¸ÄÓÉ Scene + ModelManager Çı¶¯£©
+		// ç§»é™¤ç¡¬ç¼–ç æ¨¡å‹åŠ è½½ï¼ˆæ”¹ç”± Scene + ModelManager é©±åŠ¨ï¼‰
 		// SetupModel();
 		//const std::string s= "backpack.obj";
 		//m_model = ModelManager::Get()->LoadModel(s);
 		if (m_model) {
-			std::cout << "¼ÓÔØ³É¹¦" << std::endl;
+			std::cout << "åŠ è½½æˆåŠŸ" << std::endl;
 		}
-		// ³õÊ¼»¯Ïà»úºÍÍ¶Ó°¾ØÕó
-		m_AspectRatio = 1.0f; // Ä¬ÈÏ±ÈÀı£¬»áÔÚµÚÒ»´Î´°¿Ú´óĞ¡µ÷ÕûÊ±¸üĞÂ
+		// åˆå§‹åŒ–ç›¸æœºå’ŒæŠ•å½±çŸ©é˜µ
+		m_AspectRatio = 1.0f; // é»˜è®¤æ¯”ä¾‹ï¼Œä¼šåœ¨ç¬¬ä¸€æ¬¡çª—å£å¤§å°è°ƒæ•´æ—¶æ›´æ–°
 		UpdateProjectionMatrix();
 		SetupViewMatrix();
 
-		// ´´½¨ÀëÆÁäÖÈ¾Ä¿±ê£¨Ê¹ÓÃµ±Ç°´°¿Ú³ß´ç×÷Îª³õÊ¼³ß´ç£©
+		// åˆ›å»ºç¦»å±æ¸²æŸ“ç›®æ ‡ï¼ˆä½¿ç”¨å½“å‰çª—å£å°ºå¯¸ä½œä¸ºåˆå§‹å°ºå¯¸ï¼‰
 		unsigned int initW = Application::Get().GetWindow().GetWidth();
 		unsigned int initH = Application::Get().GetWindow().GetHeight();
-		ENGINE_CORE_INFO("target x,y,{},{}", initW, initH);
+		ENGINE_CORE_INFO("çª—å£åˆå§‹ x,y,{},{}", initW, initH);
 		//CreateRenderTarget(initW, initH);
-		typedef FramebufferTextureFormat format;
+		typedef TextureFormat format;
 		FramebufferSpecification spec = { initW,initH,{format::RGBA8,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
 		FBO = Framebuffer::Create(spec);
 		ENGINE_CORE_INFO("RendererLayer attached");
@@ -85,7 +83,7 @@ namespace Engine
 
 	void RendererLayer::LoadDefaultShaders()
 	{
-		// ¼ÓÔØÄ¬ÈÏPBR×ÅÉ«Æ÷µ½ShaderLibrary
+		// åŠ è½½é»˜è®¤PBRç€è‰²å™¨åˆ°ShaderLibrary
 		std::string shaderPath = GetShaderPath("default.glsl");
 		ENGINE_CORE_INFO("Loading default shader from: {}", shaderPath);
 		
@@ -96,10 +94,10 @@ namespace Engine
 			ENGINE_CORE_INFO("Successfully loaded DefaultPBR shader");
 		}
 		
-		// Ò²×¢²áÎª"Default"ÒÔ·ÀÍòÒ»
+		// ä¹Ÿæ³¨å†Œä¸º"Default"ä»¥é˜²ä¸‡ä¸€
 		ShaderLibrary::Get()->Add("Default", defaultShader);
 		
-		// ¼ÓÔØ²âÊÔ×ÅÉ«Æ÷
+		// åŠ è½½æµ‹è¯•ç€è‰²å™¨
 		std::string testShaderPath = GetShaderPath("test_simple.glsl");
 		ENGINE_CORE_INFO("Loading test shader from: {}", testShaderPath);
 		
@@ -113,40 +111,40 @@ namespace Engine
 
 	void RendererLayer::SetupCube()
 	{
-		// Á¢·½Ìå¶¥µãÊı¾İ£ºÎ»ÖÃ(x, y, z) + ÑÕÉ«(r, g, b, a)
+		// ç«‹æ–¹ä½“é¡¶ç‚¹æ•°æ®ï¼šä½ç½®(x, y, z) + é¢œè‰²(r, g, b, a)
 		float cubeVertices[] = {
-			// Î»ÖÃ           ÑÕÉ« (RGBA)
-			// Ç°Ãæ (z = 0.5)
-			-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 1.0f, // 0 - ºìÉ«
-			 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, // 1 - ÂÌÉ«
-			 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, // 2 - À¶É«
-			-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 1.0f, // 3 - »ÆÉ«
-			// ºóÃæ (z = -0.5)
-			-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 1.0f, 1.0f, // 4 - Ñóºì
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 1.0f, 1.0f, // 5 - ÇàÉ«
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, // 6 - °×É«
-			-0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.5f, 1.0f  // 7 - »ÒÉ«
+			// ä½ç½®           é¢œè‰² (RGBA)
+			// å‰é¢ (z = 0.5)
+			-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 1.0f, // 0 - çº¢è‰²
+			 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, // 1 - ç»¿è‰²
+			 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, // 2 - è“è‰²
+			-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 1.0f, // 3 - é»„è‰²
+			// åé¢ (z = -0.5)
+			-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 1.0f, 1.0f, // 4 - æ´‹çº¢
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 1.0f, 1.0f, // 5 - é’è‰²
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, // 6 - ç™½è‰²
+			-0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.5f, 1.0f  // 7 - ç°è‰²
 		};
 
 		unsigned int cubeIndices[] = {
-			// Ç°Ãæ
+			// å‰é¢
 			0, 1, 2,  2, 3, 0,
-			// ºóÃæ
+			// åé¢
 			4, 5, 6,  6, 7, 4,
-			// ×óÃæ
+			// å·¦é¢
 			4, 0, 3,  3, 7, 4,
-			// ÓÒÃæ
+			// å³é¢
 			1, 5, 6,  6, 2, 1,
-			// ÏÂÃæ
+			// ä¸‹é¢
 			4, 5, 1,  1, 0, 4,
-			// ÉÏÃæ
+			// ä¸Šé¢
 			3, 2, 6,  6, 7, 3
 		};
 
-		// ´´½¨VAO
+		// åˆ›å»ºVAO
 		auto CubeVAO = VertexArray::Create();
 		
-		// ´´½¨VBO
+		// åˆ›å»ºVBO
 		auto CubeVBO = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
@@ -155,11 +153,11 @@ namespace Engine
 		CubeVBO->SetLayout(layout);
 		CubeVAO->SetVertexBuffer(CubeVBO);
 
-		// ´´½¨IBO
+		// åˆ›å»ºIBO
 		auto CubeIBO = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
 		CubeVAO->SetIndexBuffer(CubeIBO);
 		VAO_Manager.Regist("cube", CubeVAO);
-		// ´´½¨Á¢·½Ìå×ÅÉ«Æ÷
+		// åˆ›å»ºç«‹æ–¹ä½“ç€è‰²å™¨
 		std::string cubeShaderPath = GetShaderPath("cube.glsl");
 		//m_CubeShader = Shader::Create(cubeShaderPath);
 		auto CubeShader = Shader::Create(cubeShaderPath);
@@ -176,84 +174,37 @@ namespace Engine
 
 	void RendererLayer::OnUpdate()
 	{
-		// ¸üĞÂÊ±¼ä
+		// æ›´æ–°æ—¶é—´
 		m_Time = static_cast<float>(glfwGetTime());
 		
-		// ¸üĞÂĞı×ª
-		m_Rotation += m_Settings.rotationSpeed * 0.016f; // ¼ÙÉè60FPS
+		// æ›´æ–°æ—‹è½¬
+		m_Rotation += m_Settings.rotationSpeed * 0.016f; // å‡è®¾60FPS
 		
-		// ÉèÖÃÏß¿òÄ£Ê½
+		// è®¾ç½®çº¿æ¡†æ¨¡å¼
 		if (m_Settings.wireframe) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		} else {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		FBO->Bind();
-		// °ó¶¨ÀëÆÁÖ¡»º³å²¢ÉèÖÃÊÓ¿Ú
+		// ç»‘å®šç¦»å±å¸§ç¼“å†²å¹¶è®¾ç½®è§†å£
 		//glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
 		RenderCommand::SetViewport(0, 0, GetRenderWidth(), GetRenderHeight());
 		//glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
 		 
-		// ÉèÖÃÇåÆÁÑÕÉ«²¢ÇåÆÁ
+		// è®¾ç½®æ¸…å±é¢œè‰²å¹¶æ¸…å±
 		RenderCommand::SetClearColor(glm::vec4(m_Settings.clearColor, 1.0f));
 		RenderCommand::Clear();
 		FBO->ClearAttachment(1, 0);
 		FBO->ClearAttachment(0, 0);
 
 
-		// ¿ªÊ¼³¡¾°
+		// å¼€å§‹åœºæ™¯
 		Renderer::BeginScene();
-		//m_CubeVAO = VAO_Manager.Get("cube");
-		//m_CubeShader = Mat_Manager.Get("cube")->GetShader();
-	//	// äÖÈ¾Á¢·½Ìå
-	//if (m_ShowCube && m_CubeShader && m_CubeVAO) {
-	//		// ´´½¨Á¢·½Ìå±ä»»¾ØÕó
-	//		glm::mat4 cubeMatrix = glm::mat4(1.0f);
-	//		cubeMatrix = glm::translate(cubeMatrix, glm::vec3(1.0f, 0.0f, 0.0f));
-	//		cubeMatrix = glm::rotate(cubeMatrix, m_Rotation, glm::vec3(1.0f, 1.0f, 0.0f));
-	//		cubeMatrix = glm::scale(cubeMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
-
-	//		// »ñÈ¡ÊÓÍ¼¾ØÕó
-	//		glm::mat4 viewMatrix = m_ViewMatrix;
-	//		Camera* camera = Camera::GetInstance();
-	//		if (camera) {
-	//			viewMatrix = camera->GetViewMatrix();
-	//		}
-	//		glm::mat4 viewProjMatrix = m_ProjectionMatrix * viewMatrix;
-
-	//		// °ó¶¨Á¢·½Ìå×ÅÉ«Æ÷²¢ÉèÖÃuniforms
-	//		m_CubeShader->Bind();
-	//		m_CubeShader->SetMat4("u_Model", cubeMatrix);
-	//		m_CubeShader->SetMat4("u_ViewProjection", viewProjMatrix);
-
-	//		// °ó¶¨VAO²¢äÖÈ¾Á¢·½Ìå
-	//		m_CubeVAO->Bind();
-	//		RenderCommand::DrawIndexed(m_CubeVAO);
-	//	}
-
 		DrawRenderItems();
-
-		const auto& objects = m_Scene->GetGameObjects();
-		for (size_t i = 0; i < objects.size(); ++i) {
-			const auto& obj = objects[i];
-			if (auto shared_model = obj.model.lock()) {
-				// ÎªÃ¿¸ömeshÉèÖÃÎïÌåID
-				shared_model->SetObjectID(i);
-				// Ê¹ÓÃ³¡¾°¶ÔÏóµÄ±ä»»äÖÈ¾
-				shared_model->SetGlobalTransform(obj.transform);
-				shared_model->Draw();
-			}
-			else {
-				ENGINE_CORE_WARN("Failed to load model for scene object: {}", obj.modelPath);
-				continue;
-			}
-		}
-		
-
-		// ½áÊø³¡¾°
 		Renderer::EndScene();
 
-		// ½â°óÖ¡»º³å£¬»Ö¸´µ½Ä¬ÈÏÖ¡»º³å£¬²¢½«ÊÓ¿Ú»¹Ô­Îª´°¿Ú´óĞ¡£¬¹© ImGui Ê¹ÓÃ
+		// è§£ç»‘å¸§ç¼“å†²ï¼Œæ¢å¤åˆ°é»˜è®¤å¸§ç¼“å†²ï¼Œå¹¶å°†è§†å£è¿˜åŸä¸ºçª—å£å¤§å°ï¼Œä¾› ImGui ä½¿ç”¨
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		FBO->Unbind();
 		unsigned int winW = Application::Get().GetWindow().GetWidth();
@@ -261,7 +212,7 @@ namespace Engine
 		//glViewport(0, 0, (GLint)winW, (GLint)winH);
 		RenderCommand::SetViewport(0, 0, (GLint)winW, (GLint)winH);
 		
-		// ¸üĞÂFPSÍ³¼Æ
+		// æ›´æ–°FPSç»Ÿè®¡
 		m_FrameCount++;
 		if (m_Time - m_LastFPSUpdate >= 1.0f)
 		{
@@ -273,13 +224,13 @@ namespace Engine
 
 	void RendererLayer::OnImGuiRender()
 	{
-		// ´´½¨äÖÈ¾Æ÷ÉèÖÃ´°¿Ú
+		// åˆ›å»ºæ¸²æŸ“å™¨è®¾ç½®çª—å£
 		if (ImGui::Begin("RenderInfo"))
 		{
 			ImGui::Text("Renderer Layer Properties");
 			ImGui::Separator();
 			
-			// »ù±¾äÖÈ¾ÉèÖÃ
+			// åŸºæœ¬æ¸²æŸ“è®¾ç½®
 			ImGui::Text("Basic Settings:");
 			ImGui::ColorEdit3("Clear Color", &m_Settings.clearColor.x);
 			ImGui::Checkbox("Wireframe", &m_Settings.wireframe);
@@ -287,7 +238,7 @@ namespace Engine
 			
 			ImGui::Separator();
 			
-			// Á¢·½Ìå±ä»»ÉèÖÃ
+			// ç«‹æ–¹ä½“å˜æ¢è®¾ç½®
 			ImGui::Text("Cube Transform:");
 			ImGui::SliderFloat("Rotation Speed", &m_Settings.rotationSpeed, 0.0f, 5.0f, "%.2f");
 			ImGui::SliderFloat3("Position", &m_Settings.position.x, -5.0f, 5.0f, "%.2f");
@@ -295,7 +246,7 @@ namespace Engine
 			
 			ImGui::Separator();
 			
-			// Ïà»úÉèÖÃ
+			// ç›¸æœºè®¾ç½®
 			ImGui::Text("Camera Settings:");
 			bool projectionChanged = false;
 			projectionChanged |= ImGui::SliderFloat("FOV", &m_FOV, 10.0f, 120.0f, "%.1f");
@@ -309,7 +260,7 @@ namespace Engine
 			
 			ImGui::Separator();
 			
-			// µ÷ÊÔÑ¡Ïî
+			// è°ƒè¯•é€‰é¡¹
 			ImGui::Separator();
 			ImGui::Text("Debug Options:");
 			ImGui::Checkbox("Use Debug Shader", &m_UseDebugShader);
@@ -324,7 +275,7 @@ namespace Engine
 			
 			ImGui::Separator();
 			
-			// Ïà»úĞÅÏ¢
+			// ç›¸æœºä¿¡æ¯
 			ImGui::Text("Camera Info:");
 			Camera* camera = Camera::GetInstance();
 			if (camera) {
@@ -338,12 +289,6 @@ namespace Engine
 			
 			ImGui::Separator();
 			
-			// ³¡¾°ĞÅÏ¢
-			if (m_Scene) {
-				ImGui::Text("Scene Objects: %d", (int)m_Scene->GetGameObjects().size());
-			} else {
-				ImGui::Text("No Scene set");
-			}
 		}
 		ImGui::End();
 	}
@@ -360,11 +305,11 @@ namespace Engine
 	{
 		ENGINE_CORE_INFO("RendererLayer: Updating projection matrix for {}x{}", e.GetWindowWidth(), e.GetWindowHeight());
 		
-		// ¸üĞÂ×İºá±È£¨´°¿Ú³ß´ç±ä»¯Ê±£¬½ö¸üĞÂÍ¶Ó°¾ØÕó£»äÖÈ¾Ä¿±êÓÉ Editor ¿ØÖÆ£©
+		// æ›´æ–°çºµæ¨ªæ¯”ï¼ˆçª—å£å°ºå¯¸å˜åŒ–æ—¶ï¼Œä»…æ›´æ–°æŠ•å½±çŸ©é˜µï¼›æ¸²æŸ“ç›®æ ‡ç”± Editor æ§åˆ¶ï¼‰
 		m_AspectRatio = static_cast<float>(e.GetWindowWidth()) / static_cast<float>(e.GetWindowHeight());
 		UpdateProjectionMatrix();
 		
-		// ²»À¹½ØÊÂ¼ş£¬ÈÃÆäËû²ãÒ²ÄÜ´¦Àí
+		// ä¸æ‹¦æˆªäº‹ä»¶ï¼Œè®©å…¶ä»–å±‚ä¹Ÿèƒ½å¤„ç†
 		return false;
 	}
 
@@ -375,14 +320,14 @@ namespace Engine
 
 	void RendererLayer::SetupViewMatrix()
 	{
-		// Ç¿ÖÆÉèÖÃÏà»úµ½°²È«Î»ÖÃ
+		// å¼ºåˆ¶è®¾ç½®ç›¸æœºåˆ°å®‰å…¨ä½ç½®
 		Camera* camera = Camera::GetInstance();
 		if (camera) {
 			ENGINE_CORE_INFO("Force setting camera to safe position");
 			camera->SetPosition(glm::vec3(0.0f, 0.0f, 50.0f));
 		}
 		
-		// ÉèÖÃÒ»¸ö¼òµ¥µÄÊÓÍ¼¾ØÕó£¬Ïà»úÔÚ (0, 0, 50) Î»ÖÃ£¬¿´ÏòÔ­µã
+		// è®¾ç½®ä¸€ä¸ªç®€å•çš„è§†å›¾çŸ©é˜µï¼Œç›¸æœºåœ¨ (0, 0, 50) ä½ç½®ï¼Œçœ‹å‘åŸç‚¹
 		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 50.0f);
 		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -397,40 +342,40 @@ namespace Engine
 
 	void RendererLayer::DrawRenderItems()
 	{
-		// Ê¹ÓÃECSÏµÍ³äÖÈ¾ÓĞRenderComponentµÄÊµÌå
+		// ä½¿ç”¨ECSç³»ç»Ÿæ¸²æŸ“æœ‰RenderComponentçš„å®ä½“
 		if (!m_Scene) return;
-		// »ñÈ¡³¡¾°µÄregistry
+		// è·å–åœºæ™¯çš„registry
 		auto& registry = m_Scene->GetRegistry();
 
-		// Ê¹ÓÃenttµÄview·½·¨±éÀúÓĞRenderComponentºÍTransformComponentµÄÊµÌå
+		// ä½¿ç”¨enttçš„viewæ–¹æ³•éå†æœ‰RenderComponentå’ŒTransformComponentçš„å®ä½“
 		auto view = registry.view<RenderComponent, TransformComponent>();
 
 		for (auto& [entity, renderComp, TransComp] : view.each()) {
 
-			// °ó¶¨×ÊÔ´£¨Èç¹û»¹Î´°ó¶¨£©
+			// ç»‘å®šèµ„æºï¼ˆå¦‚æœè¿˜æœªç»‘å®šï¼‰
 			if (!renderComp.IsValid()) {
 				renderComp.BindResources(VAO_Manager, Mat_Manager);
 			}
 
-			// Èç¹û×ÊÔ´°ó¶¨³É¹¦£¬½øĞĞäÖÈ¾
+			// å¦‚æœèµ„æºç»‘å®šæˆåŠŸï¼Œè¿›è¡Œæ¸²æŸ“
 			if (renderComp.IsValid()) {
-				// ´´½¨±ä»»¾ØÕó
+				// åˆ›å»ºå˜æ¢çŸ©é˜µ
 				glm::mat4 modelMatrix = TransComp.GetTransform();
 
-				// »ñÈ¡ÊÓÍ¼¾ØÕó
+				// è·å–è§†å›¾çŸ©é˜µ
 				Camera* camera = Camera::GetInstance();
 				/*ENGINE_CORE_INFO("{}Zoom", camera->Zoom);*/
 				glm::mat4 viewMatrix = camera->GetViewMatrix();
 				glm::mat4 projMatrix = camera->GetProjectionMatrix();
 				glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
 
-				// °ó¶¨×ÅÉ«Æ÷²¢ÉèÖÃuniforms
+				// ç»‘å®šç€è‰²å™¨å¹¶è®¾ç½®uniforms
 				auto shader = renderComp.Mat->GetShader();
 				shader->Bind();
 				shader->SetMat4("u_Model", modelMatrix);
 				shader->SetMat4("u_ViewProjection", viewProjMatrix);
 				shader->SetInt("u_ObjectID", static_cast<int>(entity));
-				// °ó¶¨VAO²¢äÖÈ¾
+				// ç»‘å®šVAOå¹¶æ¸²æŸ“
 				renderComp.VAO->Bind();
 				RenderCommand::DrawIndexed(renderComp.VAO);
 			}
@@ -439,51 +384,9 @@ namespace Engine
 
 	}
 
-	//void RendererLayer::CreateRenderTarget(unsigned int width, unsigned int height)
-	//{
-	//	DestroyRenderTarget();
-	//	m_RTWidth = width; m_RTHeight = height;
-
-	//	glGenFramebuffers(1, &m_Framebuffer);
-	//	glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
-
-	//	// Color attachment texture
-	//	glGenTextures(1, &m_ColorAttachment);
-	//	glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
-	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
-
-	//	// Depth-stencil renderbuffer
-	//	glGenRenderbuffers(1, &m_DepthStencilRBO);
-	//	glBindRenderbuffer(GL_RENDERBUFFER, m_DepthStencilRBO);
-	//	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (GLsizei)width, (GLsizei)height);
-	//	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthStencilRBO);
-
-	//	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-	//		ENGINE_CORE_ERROR("Framebuffer is not complete!");
-	//	}
-
-	//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//}
-
-	//void RendererLayer::DestroyRenderTarget()
-	//{
-	//	if (m_DepthStencilRBO) { glDeleteRenderbuffers(1, &m_DepthStencilRBO); m_DepthStencilRBO = 0; }
-	//	if (m_ColorAttachment) { glDeleteTextures(1, &m_ColorAttachment); m_ColorAttachment = 0; }
-	//	if (m_Framebuffer) { glDeleteFramebuffers(1, &m_Framebuffer); m_Framebuffer = 0; }
-	//}
 
 	void RendererLayer::ResizeRenderTarget(unsigned int width, unsigned int height)
 	{
-		/*if (width == 0 || height == 0) return;
-		if (width == m_RTWidth && height == m_RTHeight) return;
-		CreateRenderTarget(width, height);
-		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
-		UpdateProjectionMatrix();*/
 		FBO->Resize(width, height);
 	}
 

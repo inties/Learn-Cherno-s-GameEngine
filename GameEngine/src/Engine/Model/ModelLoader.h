@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/core.h"
 #include "Engine/Model/Model.h"
@@ -13,14 +13,14 @@
 
 namespace Engine {
 
-// ÓÃÓÚ´æ´¢MeshÊı¾İµÄÁÙÊ±½á¹¹
+// ç”¨äºå­˜å‚¨Meshæ•°æ®çš„ä¸´æ—¶ç»“æ„
 struct MeshData {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     Ref<Material> material;
     uint32_t vertexOffset = 0;
     uint32_t indexOffset = 0;
-    Ref<Mesh> mesh;  // ´´½¨ºóµÄMeshÒıÓÃ
+    Ref<Mesh> mesh;  // åˆ›å»ºåçš„Meshå¼•ç”¨
 };
 
 class ModelLoader {
@@ -28,24 +28,24 @@ public:
     static bool Load(const std::string& path, Ref<Model> model);
 
 private:
-    // ÊÕ¼¯ËùÓĞMeshÊı¾İµÄĞÂ·½·¨
+    // æ”¶é›†æ‰€æœ‰Meshæ•°æ®çš„æ–°æ–¹æ³•
     static void CollectMeshData(aiNode* assimpNode, const aiScene* scene, const std::string& modelPath,
         std::vector<Vertex>& allVertices, std::vector<uint32_t>& allIndices, std::vector<MeshData>& meshDataList);
     
-    // ´´½¨¹²ÏíVAO
+    // åˆ›å»ºå…±äº«VAO
     static Ref<VertexArray> CreateSharedVAO(const std::vector<Vertex>& allVertices, const std::vector<uint32_t>& allIndices);
     
-    // »ùÓÚÊÕ¼¯µÄÊı¾İ´´½¨Mesh
+    // åŸºäºæ”¶é›†çš„æ•°æ®åˆ›å»ºMesh
     static void CreateMeshesWithOffsets(std::vector<MeshData>& meshDataList, const Ref<VertexArray>& sharedVAO);
 
-    // ĞŞ¸ÄºóµÄProcessNode£¨Ê¹ÓÃÔ¤´´½¨µÄMeshºÍ¾Ö²¿Ë÷Òı¼ÆÊıÆ÷£©
+    // ä¿®æ”¹åçš„ProcessNodeï¼ˆä½¿ç”¨é¢„åˆ›å»ºçš„Meshå’Œå±€éƒ¨ç´¢å¼•è®¡æ•°å™¨ï¼‰
     static Ref<Node> ProcessNode(aiNode* assimpNode, const aiScene* scene, const std::string& modelPath, 
         const std::vector<MeshData>& meshDataList, size_t& meshIndex);
 
-    // ¸¨Öú·½·¨
+    // è¾…åŠ©æ–¹æ³•
     static Ref<Material> ProcessMaterial(aiMaterial* assimpMaterial, const aiScene* scene, const std::string& modelPath, const std::string& directory);
-    static Ref<Material> CreateDefaultMaterial(); // ´´½¨Ä¬ÈÏ²ÄÖÊ
-    static BufferLayout BuildVertexLayout(const std::vector<Vertex>& vertices); // ¶¯Ì¬¹¹½¨¶¥µã²¼¾Ö
+    static Ref<Material> CreateDefaultMaterial(); // åˆ›å»ºé»˜è®¤æè´¨
+    static BufferLayout BuildVertexLayout(const std::vector<Vertex>& vertices); // åŠ¨æ€æ„å»ºé¡¶ç‚¹å¸ƒå±€
     static glm::mat4 ToGlm(const aiMatrix4x4& from);
     static std::string GetDirectory(const std::string& path);
     static std::string GetUniformName(aiTextureType type);

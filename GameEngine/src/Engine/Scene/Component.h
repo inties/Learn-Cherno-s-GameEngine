@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 #include "Engine/Renderer/Material.h"
 #include "Engine/Renderer/VertexArray.h"
@@ -74,7 +74,7 @@ namespace Engine {
 		bool NeedsMaterialCreation() const { return !materialCreated && !materialFailed && !MatName.empty(); }
 		bool IsFullyCreated() const { return geometryCreated && materialCreated; }
 
-		// ´ÓResourceRegistry°ó¶¨×ÊÔ´
+		// ä»ResourceRegistryç»‘å®šèµ„æº
 		template<typename VAORegistry, typename MatRegistry>
 		void BindResources(VAORegistry& vaoRegistry, MatRegistry& matRegistry) {
 			if (!geometryCreated && !GeoMetryName.empty()) {

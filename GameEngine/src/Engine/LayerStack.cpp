@@ -1,4 +1,4 @@
-#include"pch.h"
+ï»¿#include"pch.h"
 #include"LayerStack.h"
 using namespace Engine;
 LayerStack::~LayerStack()
@@ -11,7 +11,7 @@ LayerStack::~LayerStack()
 void LayerStack::PushLayer(Layer* layer)
 {
 	m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
-	layer->OnAttach();//µ÷ÓÃ²ã³õÊ¼»¯·½·¨
+	layer->OnAttach();//è°ƒç”¨å±‚åˆå§‹åŒ–æ–¹æ³•
 	m_LayerInsertIndex++;
 }
 void LayerStack::PushOverlay(Layer* overlay)

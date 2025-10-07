@@ -1,32 +1,17 @@
-#pragma once
+﻿#pragma once
 #include "pch.h"
 #include "Engine/core.h"
-
+#include "Engine/Renderer/Texture.h"
 namespace Engine {
-
-	enum class FramebufferTextureFormat
-	{
-		None = 0,
-
-		// Color
-		RGBA8,
-		RED_INTEGER,
-
-		// Depth/stencil
-		DEPTH24STENCIL8,
-
-		// Defaults
-		Depth = DEPTH24STENCIL8
-	};
 
 	struct FramebufferTextureSpecification
 	{
 		FramebufferTextureSpecification() = default;
-		FramebufferTextureSpecification(FramebufferTextureFormat format)
+		FramebufferTextureSpecification(TextureFormat format)
 			: TextureFormat(format) {
 		}
 
-		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
+		TextureFormat TextureFormat = TextureFormat::None;
 		// TODO: filtering/wrap
 	};
 
@@ -63,6 +48,9 @@ namespace Engine {
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
+
+		//获取颜色纹理附件对应的Texture
+		virtual Ref<Texture>GetRenderTexture(uint32_t index = 0)const = 0;
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 

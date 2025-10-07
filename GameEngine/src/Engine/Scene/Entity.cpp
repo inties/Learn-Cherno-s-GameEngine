@@ -10,4 +10,14 @@ namespace Engine {
 		AddComponent<TagComponent>();
 	}
 
+	Entity Entity::CreateFromHandle(entt::entity handle, Scene* scene)
+	{
+		Entity entity;
+		entity.m_EntityHandle = handle;
+		entity.m_Scene = scene;
+		return entity;
+	}
+
+
+
 }

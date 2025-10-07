@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -13,15 +13,15 @@ namespace Engine {
     public:
         static Ref<ModelManager> Get();
 
-        // »ñÈ¡»ò¼ÓÔØÄ£ĞÍ£¨Â·¾¶±ØĞëÎªÏà¶Ô ProjectRoot µÄÍ³Ò»ÕıĞ±¸Ü·ç¸ñ£©
+        // è·å–æˆ–åŠ è½½æ¨¡å‹ï¼ˆè·¯å¾„å¿…é¡»ä¸ºç›¸å¯¹ ProjectRoot çš„ç»Ÿä¸€æ­£æ–œæ é£æ ¼ï¼‰
         Ref<Model> LoadModel(const std::string& relativePath);
         Ref<Model> GetModel(const std::string& relativePath) const;
        
-        //¼ì²éÄ£ĞÍÊÇ·ñÒÑ¾­±»¼ÓÔØ
+        //æ£€æŸ¥æ¨¡å‹æ˜¯å¦å·²ç»è¢«åŠ è½½
         inline bool IsModelLoaded(const std::string& relativePath)const {
             return m_ModelCache.count(relativePath);
         };
-        // ¼òÒ×Í³¼Æ/±éÀú
+        // ç®€æ˜“ç»Ÿè®¡/éå†
         std::vector<std::string> ListModelKeys() const;
 
     private:

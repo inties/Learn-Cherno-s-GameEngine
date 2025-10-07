@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/core.h"
 
@@ -18,7 +18,7 @@ public:
 
     void Draw(const glm::mat4& parentTransform) const;
     
-    // Îª½Úµã¼°Æä×Ó½ÚµãµÄËùÓĞmeshÉèÖÃÎïÌåID
+    // ä¸ºèŠ‚ç‚¹åŠå…¶å­èŠ‚ç‚¹çš„æ‰€æœ‰meshè®¾ç½®ç‰©ä½“ID
     void SetObjectID(int objectID) const;
     void SetLocalTransform(glm::mat4& transform) { m_LocalTransform = transform; }
 

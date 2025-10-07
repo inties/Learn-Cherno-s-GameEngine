@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 #include "Layer.h"
 #include "Renderer/Renderer.h"
@@ -11,14 +11,14 @@
 
 namespace Engine
 {
-	// äÖÈ¾ÉèÖÃ½á¹¹Ìå
+	// æ¸²æŸ“è®¾ç½®ç»“æ„ä½“
 	struct RendererSettings
 	{
-		glm::vec3 clearColor{0.1f, 0.1f, 0.1f};  // ÇåÆÁÑÕÉ«
-		float rotationSpeed = 1.0f;              // Ğı×ªËÙ¶È
-		glm::vec3 position{5.0f, 0.0f, 0.0f};    // Ä£ĞÍÎ»ÖÃ
-		glm::vec3 scale{1.0f, 1.0f, 1.0f};       // Ä£ĞÍËõ·Å
-		bool wireframe = false;                   // Ïß¿òÄ£Ê½
+		glm::vec3 clearColor{0.1f, 0.1f, 0.1f};  // æ¸…å±é¢œè‰²
+		float rotationSpeed = 1.0f;              // æ—‹è½¬é€Ÿåº¦
+		glm::vec3 position{5.0f, 0.0f, 0.0f};    // æ¨¡å‹ä½ç½®
+		glm::vec3 scale{1.0f, 1.0f, 1.0f};       // æ¨¡å‹ç¼©æ”¾
+		bool wireframe = false;                   // çº¿æ¡†æ¨¡å¼
 	};
 
 	class ENGINE_API RendererLayer : public Layer
@@ -33,25 +33,25 @@ namespace Engine
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& event) override;
 
-		// ´°¿Ú´óĞ¡µ÷Õû´¦Àí
+		// çª—å£å¤§å°è°ƒæ•´å¤„ç†
 		bool OnWindowResize(WindowResizeEvent& e);
 
-		// ±©Â¶ÉèÖÃ¹©Íâ²¿·ÃÎÊ
+		// æš´éœ²è®¾ç½®ä¾›å¤–éƒ¨è®¿é—®
 		RendererSettings& GetSettings() { return m_Settings; }
 		const RendererSettings& GetSettings() const { return m_Settings; }
 
-		// Ìá¹©äÖÈ¾Ä¿±êÎÆÀíÓë³ß´ç¸ø±à¼­Æ÷
+		// æä¾›æ¸²æŸ“ç›®æ ‡çº¹ç†ä¸å°ºå¯¸ç»™ç¼–è¾‘å™¨
 		unsigned int GetRenderTextureID(uint32_t idx=0) const { return FBO->GetColorAttachmentRendererID(idx); }
 		unsigned int GetRenderWidth() const { return FBO->GetSpecification().Width; }
 		unsigned int GetRenderHeight() const { return FBO->GetSpecification().Height; }
 		void ResizeRenderTarget(unsigned int width, unsigned int height);
 		int ReadPickBuffer(uint32_t x, uint32_t y) { return FBO->ReadPixel(1, x, y); };
 
-		// Íâ²¿ÉèÖÃ³¡¾°
+		// å¤–éƒ¨è®¾ç½®åœºæ™¯
 		void SetScene(const Ref<class Scene>& scene) { m_Scene = scene; }
 
 	private:
-		// void SetupModel(); // ÒÑÒÆ³ı£º²»ÔÙÊ¹ÓÃÓ²±àÂëÄ£ĞÍ
+		// void SetupModel(); // å·²ç§»é™¤ï¼šä¸å†ä½¿ç”¨ç¡¬ç¼–ç æ¨¡å‹
 		void SetupCube();
 		std::string GetShaderPath(const std::string& filename);
 		void UpdateProjectionMatrix();
@@ -59,11 +59,11 @@ namespace Engine
 		void LoadDefaultShaders();
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
 		void DrawRenderItems();
-		// ÎªÄ£ĞÍÉèÖÃÎïÌåID
+		// ä¸ºæ¨¡å‹è®¾ç½®ç‰©ä½“ID
 		void SetObjectIDForModel(const Ref<Model>& model, int objectID);
 
 	private:
-		//// ÀëÆÁäÖÈ¾Ä¿±ê£¨Ö¡»º³å£©
+		//// ç¦»å±æ¸²æŸ“ç›®æ ‡ï¼ˆå¸§ç¼“å†²ï¼‰
 		//void CreateRenderTarget(unsigned int width, unsigned int height);
 		//void DestroyRenderTarget();
 
@@ -75,12 +75,12 @@ namespace Engine
 		unsigned int m_RTHeight = 0;*/
 		RendererSettings m_Settings;
 		
-		// äÖÈ¾×ÊÔ´
+		// æ¸²æŸ“èµ„æº
 		// Ref<Model> m_Model;
 		Ref<class Scene> m_Scene;
-		bool m_ShowCube = true; // ÊÇ·ñÏÔÊ¾Á¢·½ÌåÑİÊ¾
+		bool m_ShowCube = true; // æ˜¯å¦æ˜¾ç¤ºç«‹æ–¹ä½“æ¼”ç¤º
 		
-		// Á¢·½ÌåäÖÈ¾×ÊÔ´
+		// ç«‹æ–¹ä½“æ¸²æŸ“èµ„æº
 		Ref<VertexArray> m_CubeVAO;
 		Ref<VertexBuffer> m_CubeVBO;
 		Ref<IndexBuffer> m_CubeIBO;
@@ -90,11 +90,11 @@ namespace Engine
 
 
 
-		// Ê±¼äºÍ±ä»»
+		// æ—¶é—´å’Œå˜æ¢
 		float m_Time = 0.0f;
 		float m_Rotation = 0.0f;
 	
-		// Ïà»úºÍÍ¶Ó°
+		// ç›¸æœºå’ŒæŠ•å½±
 		glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 		float m_AspectRatio = 1.0f;
@@ -102,14 +102,14 @@ namespace Engine
 		float m_NearPlane = 0.1f;
 		float m_FarPlane = 100.0f;
 		
-		// Í³¼ÆĞÅÏ¢
+		// ç»Ÿè®¡ä¿¡æ¯
 		int m_FrameCount = 0;
 		float m_FPS = 0.0f;
 		float m_LastFPSUpdate = 0.0f;
 		
-		// µ÷ÊÔÉèÖÃ
+		// è°ƒè¯•è®¾ç½®
 		bool m_UseDebugShader = false;
-		int m_DebugMode = 0; // 0=Õı³£, 1=Î»ÖÃÑÕÉ«, 2=·¨ÏßÑÕÉ«, 3=ÎÆÀí×ø±ê, 4=´¿É«
+		int m_DebugMode = 0; // 0=æ­£å¸¸, 1=ä½ç½®é¢œè‰², 2=æ³•çº¿é¢œè‰², 3=çº¹ç†åæ ‡, 4=çº¯è‰²
 		Ref<Shader> m_DebugShader;
 		Ref<Model> m_model;
 	};

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 
 #include "Scene.h"
@@ -15,19 +15,10 @@ namespace Engine {
 		template<typename T>
 		void OnAddComponent() {
 		}
-		template<>
-		void OnAddComponent<RenderComponent>() {
-
-		}
+		
 		template<typename T>
 		void OnRemoveComponent() {
 
-		}
-		template<>
-		void OnRemoveComponent<RenderComponent>() {
-			//¿É·ñµ÷ÓÃrendercomponent×ÔÉíµÄÎö¹¹£¿
-			RenderComponent& r = GetComponent<RenderComponent>();
-			r.Destroy();
 		}
 
 
@@ -74,9 +65,28 @@ namespace Engine {
 		{
 			return !(*this == other);
 		}
+
+		bool IsValid() const { return m_EntityHandle != entt::null && m_Scene != nullptr; }
+
+		// Static factory method for creating Entity without adding default components
+		static Entity CreateFromHandle(entt::entity handle, Scene* scene);
+
 	private:
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
 	};
+
+	// Template specializations - defined inline to avoid linker errors
+	template<>
+	inline void Entity::OnAddComponent<RenderComponent>() {
+
+	}
+
+	template<>
+	inline void Entity::OnRemoveComponent<RenderComponent>() {
+		//å¯å¦è°ƒç”¨rendercomponentè‡ªèº«çš„ææ„ï¼Ÿ
+		RenderComponent& r = GetComponent<RenderComponent>();
+		r.Destroy();
+	}
 
 }

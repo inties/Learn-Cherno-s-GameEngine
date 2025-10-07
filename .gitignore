@@ -1,5 +1,8 @@
 #Directories
 .vs/
+.kiro/
+.cursor/
+.vscode/ipch/
 bin/
 bin-int/
 app/
@@ -8,3 +11,6 @@ build/
 #Files
 *.user
 SandBox/assets
+*.exe
+*.dll
+BROWSE.VC.DB

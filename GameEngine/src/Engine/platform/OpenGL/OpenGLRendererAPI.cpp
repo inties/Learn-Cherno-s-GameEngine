@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "OpenGLRendererAPI.h"
 
 #include <glad/glad.h>
@@ -44,7 +44,7 @@ namespace Engine
 		uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
 	{
 		vertexArray->Bind();
-		// Ê¹ÓÃglDrawElementsBaseVertexÖ§³ÖÆ«ÒÆ»æÖÆ
+		// ä½¿ç”¨glDrawElementsBaseVertexæ”¯æŒåç§»ç»˜åˆ¶
 		glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 
 			(void*)(indexOffset * sizeof(uint32_t)), vertexOffset);
 	}

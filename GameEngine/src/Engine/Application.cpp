@@ -1,4 +1,4 @@
-#include"pch.h"
+ï»¿#include"pch.h"
 #include "Application.h"
 #include "log.h"
 #include"Imgui/ImGuiLayer.h"
@@ -15,11 +15,11 @@
 #include "Engine/platform/WindowWindows.h"
 namespace fs = std::filesystem;
 namespace Engine {
-	// ¶¨Òå²¢µ¼³ö¾²Ì¬³ÉÔ±±äÁ¿ 
+	// å®šä¹‰å¹¶å¯¼å‡ºé™æ€æˆå‘˜å˜é‡ 
 
 	ENGINE_API Application* Application::s_Instance = nullptr;
 	Application::Application() {
-		std::cout << "µ±Ç°¹¤×÷Ä¿Â¼: " << fs::current_path() << std::endl;
+		std::cout << fs::current_path() << std::endl;
 		s_Instance = this;
 		m_Running = true;
 		Windows::WindowsProps props = { "Application", 1800, 1800 };
@@ -34,20 +34,20 @@ namespace Engine {
 			return this->OnEvent(e);
 			});
 		
-		// °´Ë³ĞòÌí¼Ó²ã£ºÊ×ÏÈImGui²ã¡¢ÊÇäÖÈ¾²ã£¬È»ºóÊÇ²âÊÔ²ã
+		// æŒ‰é¡ºåºæ·»åŠ å±‚ï¼šé¦–å…ˆImGuiå±‚ã€æ˜¯æ¸²æŸ“å±‚ï¼Œç„¶åæ˜¯æµ‹è¯•å±‚
 		m_ImGuiLayer = new ImguiLayer();
 		m_LayerStack.PushLayer(m_ImGuiLayer);
 		m_LayerStack.PushLayer(new RendererLayer());
 		m_LayerStack.PushLayer(new EditorLayer());
 		//m_LayerStack.PushLayer(new TestLayer());
 		
-		// ³õÊ¼»¯Cameraµ¥Àı
+		// åˆå§‹åŒ–Cameraå•ä¾‹
 		Camera::Initialize(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 		
-		// ³õÊ¼»¯Ö¡¼ÆÊ±
+		// åˆå§‹åŒ–å¸§è®¡æ—¶
 		m_LastFrameTime = glfwGetTime();
 		
-		// ×¢Òâ£ºRenderer::Init() ÏÖÔÚÔÚ RendererLayer::OnAttach() ÖĞµ÷ÓÃ
+		// æ³¨æ„ï¼šRenderer::Init() ç°åœ¨åœ¨ RendererLayer::OnAttach() ä¸­è°ƒç”¨
 		
 		// Initialization code here
 	}
@@ -58,18 +58,18 @@ namespace Engine {
 	
 	void Application::run() {
 		while (m_Running) {
-			// ¸üĞÂÖ¡¼ÆÊ±
+			// æ›´æ–°å¸§è®¡æ—¶
 			UpdateFrameTiming();
 			
-			// ´¦ÀíÉãÏñ»ú¼üÅÌÊäÈë
+			// å¤„ç†æ‘„åƒæœºé”®ç›˜è¾“å…¥
 			ProcessCameraInput();
 			
-			// ÒÆ³ıÊÖ¶¯µÄÇåÆÁ´úÂë£¬ÏÖÔÚÓÉ RendererLayer ´¦Àí
+			// ç§»é™¤æ‰‹åŠ¨çš„æ¸…å±ä»£ç ï¼Œç°åœ¨ç”± RendererLayer å¤„ç†
 			for (auto layer : m_LayerStack.m_Layers) {
 				layer->OnUpdate();
 			}
 			
-			// ÔÚ¿ªÊ¼ ImGui Ö¡Ö®Ç°£¬ÇåÀíÄ¬ÈÏÖ¡»º³å£¬±ÜÃâ UI ÍÏ¶¯²úÉú²ĞÓ°
+			// åœ¨å¼€å§‹ ImGui å¸§ä¹‹å‰ï¼Œæ¸…ç†é»˜è®¤å¸§ç¼“å†²ï¼Œé¿å… UI æ‹–åŠ¨äº§ç”Ÿæ®‹å½±
 			RenderCommand::SetClearColor(glm::vec4(0.10f, 0.10f, 0.10f, 1.0f));
 			RenderCommand::Clear();
 			
@@ -77,7 +77,7 @@ namespace Engine {
 			for (auto layer : m_LayerStack.m_Layers) {
 				layer->OnImGuiRender();
 			}
-			// ÏÔÊ¾ÉãÏñ»úµ÷ÊÔĞÅÏ¢
+			// æ˜¾ç¤ºæ‘„åƒæœºè°ƒè¯•ä¿¡æ¯
 			
 			m_ImGuiLayer->End();
 			
@@ -96,7 +96,7 @@ namespace Engine {
 		Camera* camera = Camera::GetInstance();
 		if (!camera) return;
 		
-		// WASD¼ü¿ØÖÆÉãÏñ»úÒÆ¶¯
+		// WASDé”®æ§åˆ¶æ‘„åƒæœºç§»åŠ¨
 		if (input->IsKeyPressed(EG_KEY_W)) {
 			camera->ProcessKeyboard(Camera_Movement::FORWARD, m_DeltaTime);
 		}
@@ -120,10 +120,10 @@ namespace Engine {
 		if (dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) { return this->OnKeyPress(e); }))return true;
 		if (dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) { return this->OnWindowClose(e); }))return true;
 		
-		// ¶ÔÓÚ´°¿Ú´óĞ¡µ÷ÕûÊÂ¼ş£¬ÏÈÔÚApplication²ã´¦Àí£¬È»ºó´«²¥¸øËùÓĞ²ã
+		// å¯¹äºçª—å£å¤§å°è°ƒæ•´äº‹ä»¶ï¼Œå…ˆåœ¨Applicationå±‚å¤„ç†ï¼Œç„¶åä¼ æ’­ç»™æ‰€æœ‰å±‚
 		dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) { 
 			this->OnWindowResize(e); 
-			return false; // ²»À¹½Ø£¬ÈÃÊÂ¼ş¼ÌĞø´«²¥
+			return false; // ä¸æ‹¦æˆªï¼Œè®©äº‹ä»¶ç»§ç»­ä¼ æ’­
 		});
 
 		if (m_LayerStack.ProcessEvents(e))return true;
@@ -143,12 +143,12 @@ namespace Engine {
 	}
 
 	bool Application::OnKeyPress(KeyPressEvent& e) {
-		// ESC¼üÇĞ»»Êó±êËø¶¨Ä£Ê½
+		// ESCé”®åˆ‡æ¢é¼ æ ‡é”å®šæ¨¡å¼
 		if (e.GetKeyCode() == EG_KEY_ESCAPE) {
 			static bool cursorDisabled = false;
 			cursorDisabled = !cursorDisabled;
 			
-			// »ñÈ¡´°¿ÚÊµÀı²¢ÉèÖÃ¹â±êÄ£Ê½
+			// è·å–çª—å£å®ä¾‹å¹¶è®¾ç½®å…‰æ ‡æ¨¡å¼
 			if (auto* windowsWindow = dynamic_cast<WindowWindows*>(m_Window.get())) {
 				windowsWindow->SetCursorMode(cursorDisabled);
 			}
@@ -165,10 +165,10 @@ namespace Engine {
 	void Application::OnWindowResize(WindowResizeEvent& e) {
 		ENGINE_CORE_INFO("Application: Window Resized to {}x{}", e.GetWindowWidth(), e.GetWindowHeight());
 
-		// ¸üĞÂäÖÈ¾Æ÷ÊÓ¿Ú£¨È«¾Ö²ãÃæµÄ´¦Àí£©
+		// æ›´æ–°æ¸²æŸ“å™¨è§†å£ï¼ˆå…¨å±€å±‚é¢çš„å¤„ç†ï¼‰
 		Renderer::OnWindowResize(e.GetWindowWidth(), e.GetWindowHeight());
 		
-		// ×¢Òâ£ºÕâ¸ö·½·¨ÏÖÔÚ±»Éè¼ÆÎªvoid£¬ÒòÎªÊÂ¼ş´«²¥ÓÉOnEvent·½·¨¿ØÖÆ
+		// æ³¨æ„ï¼šè¿™ä¸ªæ–¹æ³•ç°åœ¨è¢«è®¾è®¡ä¸ºvoidï¼Œå› ä¸ºäº‹ä»¶ä¼ æ’­ç”±OnEventæ–¹æ³•æ§åˆ¶
 	}
 
 	bool Application::OnMouseScroll(MouseScrollEvent& e) {

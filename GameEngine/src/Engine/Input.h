@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"pch.h"
 #include"core.h"
 namespace Engine {
@@ -12,7 +12,7 @@ namespace Engine {
 		virtual std::pair<float,float> GetMousePos()=0;
 
 	protected:
-		static Input* s_Instance;//Í¨¹ı¾²Ì¬±äÁ¿±£Ö¤µ¥ÀıµÄÎ¨Ò»ĞÔÊµÀı
+		static Input* s_Instance;//é€šè¿‡é™æ€å˜é‡ä¿è¯å•ä¾‹çš„å”¯ä¸€æ€§å®ä¾‹
 		static Input* Create();
 	public:
 		inline static Input* GetInstance() {

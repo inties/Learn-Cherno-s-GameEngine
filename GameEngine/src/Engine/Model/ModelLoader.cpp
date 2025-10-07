@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
 #include "ModelLoader.h"
 
@@ -27,31 +27,31 @@ bool ModelLoader::Load(const std::string& path, Ref<Model> model) {
         return false;
     }
 
-    // ÊÕ¼¯ËùÓĞ¶¥µãºÍË÷ÒıÊı¾İ
+    // æ”¶é›†æ‰€æœ‰é¡¶ç‚¹å’Œç´¢å¼•æ•°æ®
     std::vector<Vertex> allVertices;
     std::vector<uint32_t> allIndices;
     std::vector<MeshData> meshDataList;
     
-    // µİ¹éÊÕ¼¯Êı¾İ
+    // é€’å½’æ”¶é›†æ•°æ®
     CollectMeshData(scene->mRootNode, scene, path, allVertices, allIndices, meshDataList);
     
-    // ÑéÖ¤ÊÕ¼¯µÄÊı¾İ
+    // éªŒè¯æ”¶é›†çš„æ•°æ®
     if (allVertices.empty() || allIndices.empty() || meshDataList.empty()) {
         ENGINE_CORE_ERROR("No valid mesh data found in model: {}", path);
         return false;
     }
     
-    // ´´½¨¹²ÏíVAO²¢ÉÏ´«Êı¾İ
+    // åˆ›å»ºå…±äº«VAOå¹¶ä¸Šä¼ æ•°æ®
     model->m_SharedVAO = CreateSharedVAO(allVertices, allIndices);
     if (!model->m_SharedVAO) {
         ENGINE_CORE_ERROR("Failed to create shared VAO for model: {}", path);
         return false;
     }
     
-    // ´´½¨Mesh¶ÔÏó²¢ÉèÖÃÆ«ÒÆ
+    // åˆ›å»ºMeshå¯¹è±¡å¹¶è®¾ç½®åç§»
     CreateMeshesWithOffsets(meshDataList, model->m_SharedVAO);
     
-    // ¹¹½¨³¡¾°Í¼£¬Ê¹ÓÃ¾Ö²¿Ë÷Òı¼ÆÊıÆ÷
+    // æ„å»ºåœºæ™¯å›¾ï¼Œä½¿ç”¨å±€éƒ¨ç´¢å¼•è®¡æ•°å™¨
     size_t meshIndex = 0;
     model->m_RootNode = ProcessNode(scene->mRootNode, scene, path, meshDataList, meshIndex);
 
@@ -65,7 +65,7 @@ Ref<Node> ModelLoader::ProcessNode(aiNode* assimpNode, const aiScene* scene, con
     node->m_Name = assimpNode->mName.C_Str();
     node->m_LocalTransform = ToGlm(assimpNode->mTransformation);
 
-    // ²éÕÒ²¢Ìí¼Ó¶ÔÓ¦µÄMesh£¨Í¨¹ıË÷ÒıÓ³Éä£©
+    // æŸ¥æ‰¾å¹¶æ·»åŠ å¯¹åº”çš„Meshï¼ˆé€šè¿‡ç´¢å¼•æ˜ å°„ï¼‰
     for (unsigned int i = 0; i < assimpNode->mNumMeshes; ++i) {
         if (meshIndex < meshDataList.size()) {
             node->m_Meshes.push_back(meshDataList[meshIndex].mesh);
@@ -73,7 +73,7 @@ Ref<Node> ModelLoader::ProcessNode(aiNode* assimpNode, const aiScene* scene, con
         }
     }
 
-    // µİ¹é´¦Àí×Ó½Úµã
+    // é€’å½’å¤„ç†å­èŠ‚ç‚¹
     for (unsigned int i = 0; i < assimpNode->mNumChildren; ++i) {
         node->m_Children.push_back(ProcessNode(assimpNode->mChildren[i], scene, modelPath, meshDataList, meshIndex));
     }
@@ -81,7 +81,7 @@ Ref<Node> ModelLoader::ProcessNode(aiNode* assimpNode, const aiScene* scene, con
     return node;
 }
 
-// ProcessMesh·½·¨ÒÑÒÆ³ı£¬Ê¹ÓÃĞÂµÄ¹²Ïí»º³åÇøÉè¼Æ
+// ProcessMeshæ–¹æ³•å·²ç§»é™¤ï¼Œä½¿ç”¨æ–°çš„å…±äº«ç¼“å†²åŒºè®¾è®¡
 
 Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiScene* scene, const std::string& modelPath, const std::string& directory) {
     if (!assimpMaterial) {
@@ -89,11 +89,11 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
         return nullptr;
     }
 
-    // »ñÈ¡»ò´´½¨Ä¬ÈÏ×ÅÉ«Æ÷
+    // è·å–æˆ–åˆ›å»ºé»˜è®¤ç€è‰²å™¨
     Ref<Shader> shader = ShaderLibrary::Get()->Get("DefaultPBR");
     if (!shader) {
         ENGINE_CORE_WARN("DefaultPBR shader not found, attempting to load default shader");
-        // ³¢ÊÔ¼ÓÔØÄ¬ÈÏ×ÅÉ«Æ÷£¬Èç¹ûÊ§°ÜÔò´´½¨×î»ù±¾µÄ×ÅÉ«Æ÷
+        // å°è¯•åŠ è½½é»˜è®¤ç€è‰²å™¨ï¼Œå¦‚æœå¤±è´¥åˆ™åˆ›å»ºæœ€åŸºæœ¬çš„ç€è‰²å™¨
         shader = ShaderLibrary::Get()->Load("DefaultPBR", "assets/shaders/default.glsl");
         if (!shader) {
             ENGINE_CORE_ERROR("Failed to load default shader, material creation failed");
@@ -107,7 +107,7 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
         return nullptr;
     }
 
-    // ¼ÓÔØÎÆÀí£¨´ø´íÎó´¦Àí£©
+    // åŠ è½½çº¹ç†ï¼ˆå¸¦é”™è¯¯å¤„ç†ï¼‰
     for (int t = aiTextureType_DIFFUSE; t <= aiTextureType_HEIGHT; ++t) {
         aiTextureType type = static_cast<aiTextureType>(t);
         unsigned int textureCount = assimpMaterial->GetTextureCount(type);
@@ -130,7 +130,7 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
                 Ref<Texture2D> texture = TextureLibrary::Get()->Load(fullPath);
                 if (texture) {
                     std::string uniform = GetUniformName(type);
-                    if (i > 0) uniform += std::to_string(i); // Ö»ÓĞ¶à¸öÎÆÀíÊ±²ÅÌí¼ÓË÷Òı
+                    if (i > 0) uniform += std::to_string(i); // åªæœ‰å¤šä¸ªçº¹ç†æ—¶æ‰æ·»åŠ ç´¢å¼•
                     material->SetTexture(uniform, texture);
                     ENGINE_CORE_INFO("Loaded texture: {} as uniform: {}", fullPath, uniform);
                 } else {
@@ -142,7 +142,7 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
         }
     }
 
-    // ÉèÖÃÆäËû²ÎÊı
+    // è®¾ç½®å…¶ä»–å‚æ•°
 
     aiColor4D color;
 
@@ -152,7 +152,7 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
 
     }
 
-    // TODO: ¸ü¶à²ÎÊıÈç½ğÊô¶È¡¢´Ö²Ú¶ÈµÈ
+    // TODO: æ›´å¤šå‚æ•°å¦‚é‡‘å±åº¦ã€ç²—ç³™åº¦ç­‰
 
     return material;
 
@@ -181,7 +181,7 @@ void ModelLoader::CollectMeshData(aiNode* assimpNode, const aiScene* scene, cons
         return;
     }
     
-    // ´¦Àíµ±Ç°½ÚµãµÄËùÓĞMesh
+    // å¤„ç†å½“å‰èŠ‚ç‚¹çš„æ‰€æœ‰Mesh
     for (unsigned int i = 0; i < assimpNode->mNumMeshes; ++i) {
         unsigned int meshIndex = assimpNode->mMeshes[i];
         if (meshIndex >= scene->mNumMeshes) {
@@ -201,7 +201,7 @@ void ModelLoader::CollectMeshData(aiNode* assimpNode, const aiScene* scene, cons
         }
         
         MeshData meshData;
-        // ÌáÈ¡¶¥µãÊı¾İ
+        // æå–é¡¶ç‚¹æ•°æ®
         for (unsigned int v = 0; v < assimpMesh->mNumVertices; ++v) {
             Vertex vertex;
             vertex.Position = glm::vec3(assimpMesh->mVertices[v].x, assimpMesh->mVertices[v].y, assimpMesh->mVertices[v].z);
@@ -216,7 +216,7 @@ void ModelLoader::CollectMeshData(aiNode* assimpNode, const aiScene* scene, cons
             meshData.vertices.push_back(vertex);
         }
         
-        // ÌáÈ¡Ë÷ÒıÊı¾İ
+        // æå–ç´¢å¼•æ•°æ®
         for (unsigned int f = 0; f < assimpMesh->mNumFaces; ++f) {
             aiFace face = assimpMesh->mFaces[f];
             for (unsigned int j = 0; j < face.mNumIndices; ++j) {
@@ -224,11 +224,11 @@ void ModelLoader::CollectMeshData(aiNode* assimpNode, const aiScene* scene, cons
             }
         }
         
-        // ´¦Àí²ÄÖÊ£¨´ø´íÎó¼ì²é£©
+        // å¤„ç†æè´¨ï¼ˆå¸¦é”™è¯¯æ£€æŸ¥ï¼‰
         unsigned int matIndex = assimpMesh->mMaterialIndex;
         if (matIndex >= scene->mNumMaterials) {
             ENGINE_CORE_ERROR("Invalid material index {} for mesh (max: {})", matIndex, scene->mNumMaterials);
-            // Ê¹ÓÃÄ¬ÈÏ²ÄÖÊ
+            // ä½¿ç”¨é»˜è®¤æè´¨
             meshData.material = CreateDefaultMaterial();
         } else {
             std::string matKey = modelPath + "::mat::" + std::to_string(matIndex);
@@ -250,18 +250,18 @@ void ModelLoader::CollectMeshData(aiNode* assimpNode, const aiScene* scene, cons
             continue;
         }
         
-        // ¼ÆËãÆ«ÒÆ
+        // è®¡ç®—åç§»
         meshData.vertexOffset = allVertices.size();
         meshData.indexOffset = allIndices.size();
         
-        // Ìí¼Óµ½È«¾ÖÊı×é
+        // æ·»åŠ åˆ°å…¨å±€æ•°ç»„
         allVertices.insert(allVertices.end(), meshData.vertices.begin(), meshData.vertices.end());
         allIndices.insert(allIndices.end(), meshData.indices.begin(), meshData.indices.end());
         
         meshDataList.push_back(meshData);
     }
     
-    // µİ¹é´¦Àí×Ó½Úµã
+    // é€’å½’å¤„ç†å­èŠ‚ç‚¹
     for (unsigned int i = 0; i < assimpNode->mNumChildren; ++i) {
         CollectMeshData(assimpNode->mChildren[i], scene, modelPath, allVertices, allIndices, meshDataList);
     }
@@ -285,7 +285,7 @@ Ref<VertexArray> ModelLoader::CreateSharedVAO(const std::vector<Vertex>& allVert
     }
     
     try {
-        // ´´½¨²¢ÉÏ´«¶¥µã»º³åÇø
+        // åˆ›å»ºå¹¶ä¸Šä¼ é¡¶ç‚¹ç¼“å†²åŒº
         auto vbo = VertexBuffer::Create(reinterpret_cast<float*>(const_cast<Vertex*>(allVertices.data())), 
             allVertices.size() * sizeof(Vertex));
         if (!vbo) {
@@ -293,12 +293,12 @@ Ref<VertexArray> ModelLoader::CreateSharedVAO(const std::vector<Vertex>& allVert
             return nullptr;
         }
         
-        // ¶¯Ì¬¹¹½¨²¼¾Ö£¨»ùÓÚÊµ¼Ê¶¥µãÊı¾İ£©
+        // åŠ¨æ€æ„å»ºå¸ƒå±€ï¼ˆåŸºäºå®é™…é¡¶ç‚¹æ•°æ®ï¼‰
         BufferLayout layout = BuildVertexLayout(allVertices);
         vbo->SetLayout(layout);
         vao->SetVertexBuffer(vbo);
         
-        // ´´½¨²¢ÉÏ´«Ë÷Òı»º³åÇø
+        // åˆ›å»ºå¹¶ä¸Šä¼ ç´¢å¼•ç¼“å†²åŒº
         auto ibo = IndexBuffer::Create(const_cast<uint32_t*>(allIndices.data()), allIndices.size());
         if (!ibo) {
             ENGINE_CORE_ERROR("Failed to create IndexBuffer");
@@ -348,18 +348,18 @@ std::string ModelLoader::GetDirectory(const std::string& path) {
 }
 
 Ref<Material> ModelLoader::CreateDefaultMaterial() {
-    // ³¢ÊÔ»ñÈ¡»ò´´½¨×î»ù±¾µÄ×ÅÉ«Æ÷
+    // å°è¯•è·å–æˆ–åˆ›å»ºæœ€åŸºæœ¬çš„ç€è‰²å™¨
     Ref<Shader> defaultShader = ShaderLibrary::Get()->Get("Default");
     if (!defaultShader) {
         ENGINE_CORE_WARN("No default shader available, attempting to create basic shader");
-        // ÕâÀï¿ÉÒÔ´´½¨Ò»¸ö×î»ù±¾µÄ×ÅÉ«Æ÷»ò·µ»Ønullptr
-        // Êµ¼ÊÊµÏÖÖĞ¿ÉÄÜĞèÒªÓ²±àÂëÒ»¸ö×î¼òµ¥µÄ×ÅÉ«Æ÷
+        // è¿™é‡Œå¯ä»¥åˆ›å»ºä¸€ä¸ªæœ€åŸºæœ¬çš„ç€è‰²å™¨æˆ–è¿”å›nullptr
+        // å®é™…å®ç°ä¸­å¯èƒ½éœ€è¦ç¡¬ç¼–ç ä¸€ä¸ªæœ€ç®€å•çš„ç€è‰²å™¨
         return nullptr;
     }
     
     auto material = Material::Create(defaultShader);
     if (material) {
-        // ÉèÖÃÄ¬ÈÏÑÕÉ«
+        // è®¾ç½®é»˜è®¤é¢œè‰²
         material->SetFloat4("u_DiffuseColor", glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
         ENGINE_CORE_INFO("Created default material");
     }
@@ -368,8 +368,8 @@ Ref<Material> ModelLoader::CreateDefaultMaterial() {
 }
 
 BufferLayout ModelLoader::BuildVertexLayout(const std::vector<Vertex>& vertices) {
-    // Ê¼ÖÕ·µ»ØÍêÕûµÄ5¸öÊôĞÔ²¼¾Ö£¬È·±£strideÓëVertex½á¹¹Ìå´óĞ¡Ò»ÖÂ
-    // ÕâÑù¿ÉÒÔ±ÜÃâ¶¥µãÊı¾İ¶ÁÈ¡Ê±µÄ²½½ø´íÎóÎÊÌâ
+    // å§‹ç»ˆè¿”å›å®Œæ•´çš„5ä¸ªå±æ€§å¸ƒå±€ï¼Œç¡®ä¿strideä¸Vertexç»“æ„ä½“å¤§å°ä¸€è‡´
+    // è¿™æ ·å¯ä»¥é¿å…é¡¶ç‚¹æ•°æ®è¯»å–æ—¶çš„æ­¥è¿›é”™è¯¯é—®é¢˜
     ENGINE_CORE_INFO("Building fixed vertex layout with 5 attributes (stride = {})", sizeof(Vertex));
     
     return {
@@ -390,7 +390,7 @@ std::string ModelLoader::GetUniformName(aiTextureType type) {
         case aiTextureType_METALNESS: return "u_MetallicMap";
         case aiTextureType_DIFFUSE_ROUGHNESS: return "u_RoughnessMap";
         case aiTextureType_AMBIENT_OCCLUSION: return "u_AOMap";
-        // TODO: ¸ü¶àÀàĞÍ
+        // TODO: æ›´å¤šç±»å‹
         default: return "u_Texture";
     }
 }

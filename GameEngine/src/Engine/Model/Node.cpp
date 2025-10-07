@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
 #include "Node.h"
 
@@ -7,23 +7,23 @@
 namespace Engine {
 
 void Node::Draw(const glm::mat4& parentTransform) const {
-    // ¼ÆËãµ±Ç°½ÚµãµÄÊÀ½ç±ä»»
+    // è®¡ç®—å½“å‰èŠ‚ç‚¹çš„ä¸–ç•Œå˜æ¢
     glm::mat4 worldTransform = parentTransform * m_LocalTransform;
 
-    // »æÖÆµ±Ç°½ÚµãµÄËùÓÐMesh
+    // ç»˜åˆ¶å½“å‰èŠ‚ç‚¹çš„æ‰€æœ‰Mesh
     for (const auto& mesh : m_Meshes) {
         mesh->SetWorldTranform(worldTransform);
-        mesh->Draw();  // MeshÄÚ²¿»áµ÷ÓÃRenderer::Submit
+        mesh->Draw();  // Meshå†…éƒ¨ä¼šè°ƒç”¨Renderer::Submit
     }
 
-    // µÝ¹é»æÖÆ×Ó½Úµã
+    // é€’å½’ç»˜åˆ¶å­èŠ‚ç‚¹
     for (const auto& child : m_Children) {
         child->Draw(worldTransform);
     }
 }
 
 void Node::SetObjectID(int objectID) const {
-    // Îªµ±Ç°½ÚµãµÄËùÓÐMeshÉèÖÃÎïÌåID
+    // ä¸ºå½“å‰èŠ‚ç‚¹çš„æ‰€æœ‰Meshè®¾ç½®ç‰©ä½“ID
     for (const auto& mesh : m_Meshes) {
         mesh->SetObjectID(objectID);
         //auto material = mesh->GetMaterial();
@@ -32,7 +32,7 @@ void Node::SetObjectID(int objectID) const {
         //}
     }
 
-    // µÝ¹éÎª×Ó½ÚµãÉèÖÃÎïÌåID
+    // é€’å½’ä¸ºå­èŠ‚ç‚¹è®¾ç½®ç‰©ä½“ID
     for (const auto& child : m_Children) {
         child->SetObjectID(objectID);
     }

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
 #include "OpenGLMaterial.h"
 
@@ -24,7 +24,7 @@ void OpenGLMaterial::Bind() const {
 
     }
 
-    // TODO: °ó¶¨ÆäËûuniforms
+    // TODO: ç»‘å®šå…¶ä»–uniforms
 
 }
 
@@ -32,7 +32,7 @@ void OpenGLMaterial::Unbind() const {
 
     m_Shader->Unbind();
 
-    // TODO: ½â°óÎÆÀíÈç¹ûÐèÒª
+    // TODO: è§£ç»‘çº¹ç†å¦‚æžœéœ€è¦
 
 }
 

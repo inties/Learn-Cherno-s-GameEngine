@@ -1,15 +1,15 @@
-#include"pch.h"
+ï»¿#include"pch.h"
 #include"Windows.h"
 #include"Engine/platform/WindowWindows.h"
 namespace Engine {
 	Windows* Windows::Create(WindowsProps& props)
 	{
-		// ÕâÀï¿ÉÒÔ¸ù¾İÆ½Ì¨´´½¨²»Í¬µÄ Windows ÊµÏÖ
-		// ÀıÈç£¬Èç¹ûÊÇ Windows Æ½Ì¨£¬¿ÉÒÔ·µ»Ø Windows ÀàµÄÊµÀı
-		// Èç¹ûÊÇÆäËûÆ½Ì¨£¬¿ÉÒÔ·µ»ØÏàÓ¦µÄÊµÏÖ
+		// è¿™é‡Œå¯ä»¥æ ¹æ®å¹³å°åˆ›å»ºä¸åŒçš„ Windows å®ç°
+		// ä¾‹å¦‚ï¼Œå¦‚æœæ˜¯ Windows å¹³å°ï¼Œå¯ä»¥è¿”å› Windows ç±»çš„å®ä¾‹
+		// å¦‚æœæ˜¯å…¶ä»–å¹³å°ï¼Œå¯ä»¥è¿”å›ç›¸åº”çš„å®ç°
 		#ifdef ENGINE_PLATFORM_WINDOWS
 				return new WindowWindows(props);
 		#endif
-		return nullptr; // ĞèÒªÊµÏÖ¾ßÌåµÄ Windows Àà
+		return nullptr; // éœ€è¦å®ç°å…·ä½“çš„ Windows ç±»
 	}
 }

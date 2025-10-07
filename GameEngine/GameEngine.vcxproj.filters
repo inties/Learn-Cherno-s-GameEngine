@@ -215,6 +215,8 @@
       <Filter>Engine\platform</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Engine\Renderer\renderpass\Renderpipeline.h" />
+    <ClInclude Include="src\Engine\Renderer\renderpass\RenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -359,5 +361,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Engine\Renderer\renderpass\ForwardPass.h" />
+    <ClCompile Include="src\Engine\Renderer\renderpass\PostEffectPass.h" />
+    <ClCompile Include="src\Engine\Renderer\renderpass\RenderPipeline.cpp" />
+    <ClCompile Include="src\Engine\Renderer\renderpass\ForwardPass.cpp" />
   </ItemGroup>
 </Project>

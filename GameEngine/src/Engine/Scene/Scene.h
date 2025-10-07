@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 #include "Engine/Model/Model.h"
 #include "PrefabTypes.h"
@@ -14,37 +14,45 @@ namespace Engine {
         bool loadFailed = false;
     };
     
-    class Entity;//SceneÖ»ĞèÒª´´½¨¡¢É¾³ıEntity£¬¶øEntityĞèÒªÍ¨¹ıSceneµÄm_RegistryÀ´Ìí¼Ó×é¼ş¡£Òò´ËÔÚSceneÖĞÇ°ÏòÉùÃ÷Entity
+    class Entity;//Sceneåªéœ€è¦åˆ›å»ºã€åˆ é™¤Entityï¼Œè€ŒEntityéœ€è¦é€šè¿‡Sceneçš„m_Registryæ¥æ·»åŠ ç»„ä»¶ã€‚å› æ­¤åœ¨Sceneä¸­å‰å‘å£°æ˜Entity
     class Scene {
     public:
-        Scene(); // ¹¹Ôìº¯Êı£¬Ä¬ÈÏ´´½¨Ò»¸öCubeEntity
+        Scene(); // æ„é€ å‡½æ•°ï¼Œé»˜è®¤åˆ›å»ºä¸€ä¸ªCubeEntity
         Entity CreatePrefab(PrefabTypes prefabType);
-        Entity CreateEntity(const std::string& str="Undefined");//Entity±¾ÉíÖ»´æ´¢idºÍ³¡¾°Ö¸Õë£¬Òò´ËÖ±½Ó·µ»ØÒÑ¾­´´½¨µÄEntity¶ÔÏóµÄ¿½±´
+        Entity CreateEntity(const std::string& str="Undefined");//Entityæœ¬èº«åªå­˜å‚¨idå’Œåœºæ™¯æŒ‡é’ˆï¼Œå› æ­¤ç›´æ¥è¿”å›å·²ç»åˆ›å»ºçš„Entityå¯¹è±¡çš„æ‹·è´
+        void DestroyEntity(Entity entity);
+        
+        // Entity selection management
+        void SetSelectedEntity(Entity entity);
+        Entity GetSelectedEntity() const;
+        bool HasSelectedEntity() const;
+        void ClearSelection();
+        std::vector<Entity> GetAllEntities() const;
+        bool IsValid() const { return true; } // Helper method for Entity validation
+        
+        // Legacy GameObject selection (deprecated)
         int GetSelectedID() { return m_SelectedObjectIndex; }
 		entt::registry& GetRegistry() { return m_Registry; }
 
-
-
-        //ÔİÊ±ÆúÓÃËùÓĞÓÎÏ·¶ÔÏó´´½¨¡¢»ñÈ¡¡¢Ñ¡ÖĞ¡¢ÇåÀíµÄÂß¼­
-        //Í¨¹ıÄ£ĞÍ´´½¨ÓÎÏ·¶ÔÏó£¬ÔİÊ±ÆúÓÃ
+        //æš‚æ—¶å¼ƒç”¨æ‰€æœ‰æ¸¸æˆå¯¹è±¡åˆ›å»ºã€è·å–ã€é€‰ä¸­ã€æ¸…ç†çš„é€»è¾‘
+        //é€šè¿‡æ¨¡å‹åˆ›å»ºæ¸¸æˆå¯¹è±¡ï¼Œæš‚æ—¶å¼ƒç”¨
         void CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform=glm::mat4(1.0f));
-        const std::vector<GameObject>& GetObjects() const { return gObjectList; }
-        std::vector<GameObject> GetGameObjects() const { return gObjectList; }
         void SetSelectedObject(int index);
         int GetSelectedObjectIndex() const { return m_SelectedObjectIndex; }
         GameObject* GetSelectedObject();
-		void ClearSelection();
+        void ClearObjectSelection(); // Renamed to avoid conflict with Entity ClearSelection
         void CreateAsyncModelLoadingTask(const std::string& relativeModelPath, size_t objectIndex);
         static bool IsValidModelFile(const std::string& filePath);
         std::vector<GameObject> gObjectList;
         Ref<GameObject>currObj = nullptr;
-
-		
-		// ECSÏµÍ³·ÃÎÊ
+		// ECSç³»ç»Ÿè®¿é—®
 
     private:
-      
-        int m_SelectedObjectIndex = -1; 
+        // Entity selection state - using entt::entity handle to avoid circular dependency
+        entt::entity m_SelectedEntityHandle = entt::null;
+        
+        // Legacy GameObject selection (deprecated)
+        int m_SelectedObjectIndex = -1;
         entt::registry m_Registry;
         friend class Entity;
     };

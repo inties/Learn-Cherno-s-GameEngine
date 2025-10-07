@@ -10,12 +10,14 @@
                 "${workspaceFolder}/GameEngine/dependency/imgui",
                 "${workspaceFolder}/GameEngine/dependency/imgui/backends",
                 "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/dependency/entt/src",
+                "${workspaceFolder}/GameEngine/dependency/nlohmann",
                 "${workspaceFolder}/GameEngine/src",
                 "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
-                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/shared",
+                "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -32,12 +34,15 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-msvc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
                 "path": [
                     "${workspaceFolder}/GameEngine/src",
                     "${workspaceFolder}/GameEngine/dependency"
                 ],
-                "limitSymbolsToIncludedHeaders": true
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
             }
         },
         {
@@ -50,13 +55,15 @@
                 "${workspaceFolder}/GameEngine/dependency/imgui",
                 "${workspaceFolder}/GameEngine/dependency/imgui/backends",
                 "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/dependency/entt/src",
+                "${workspaceFolder}/GameEngine/dependency/nlohmann",
                 "${workspaceFolder}/GameEngine/src",
                 "${workspaceFolder}/SandBox/src",
                 "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt", 
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
-                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/ucrt", 
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/shared",
+                "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -71,13 +78,16 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-msvc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
                 "path": [
                     "${workspaceFolder}/SandBox/src",
                     "${workspaceFolder}/GameEngine/src",
                     "${workspaceFolder}/GameEngine/dependency"
                 ],
-                "limitSymbolsToIncludedHeaders": true
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
             }
         },
         {
@@ -90,12 +100,14 @@
                 "${workspaceFolder}/GameEngine/dependency/imgui",
                 "${workspaceFolder}/GameEngine/dependency/imgui/backends",
                 "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/dependency/entt/src",
+                "${workspaceFolder}/GameEngine/dependency/nlohmann",
                 "${workspaceFolder}/GameEngine/src",
                 "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
-                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/shared",
+                "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/include"
             ],
             "defines": [
                 "NDEBUG",
@@ -112,12 +124,15 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-msvc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
                 "path": [
                     "${workspaceFolder}/GameEngine/src",
                     "${workspaceFolder}/GameEngine/dependency"
                 ],
-                "limitSymbolsToIncludedHeaders": true
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
             }
         },
         {
@@ -130,13 +145,15 @@
                 "${workspaceFolder}/GameEngine/dependency/imgui",
                 "${workspaceFolder}/GameEngine/dependency/imgui/backends",
                 "${workspaceFolder}/GameEngine/dependency/glm",
+                "${workspaceFolder}/GameEngine/dependency/entt/src",
+                "${workspaceFolder}/GameEngine/dependency/nlohmann",
                 "${workspaceFolder}/GameEngine/src",
                 "${workspaceFolder}/SandBox/src",
                 "${vcpkgRoot}/installed/${vcpkgTriplet}/include",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/um",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/ucrt",
-                "C:/Program Files (x86)/Windows Kits/10/Include/*/shared",
-                "C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/include"
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/um",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/shared",
+                "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/include"
             ],
             "defines": [
                 "NDEBUG",
@@ -151,13 +168,16 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-msvc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "browse": {
                 "path": [
                     "${workspaceFolder}/SandBox/src",
                     "${workspaceFolder}/GameEngine/src",
                     "${workspaceFolder}/GameEngine/dependency"
                 ],
-                "limitSymbolsToIncludedHeaders": true
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
             }
         }
     ],

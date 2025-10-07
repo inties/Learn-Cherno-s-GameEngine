@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 namespace Engine {
 
-	//½«×ÊÔ´ºÍĞ¶ÔØº¯ÊıµÈÔªÊı¾İ°ó¶¨£¬ÔİÊ±ÆúÓÃ
+	//å°†èµ„æºå’Œå¸è½½å‡½æ•°ç­‰å…ƒæ•°æ®ç»‘å®šï¼Œæš‚æ—¶å¼ƒç”¨
 	template<typename ResourceType>
 	class ResourceEntry {
 	public:
@@ -10,14 +10,14 @@ namespace Engine {
 		Ref<ResourceType> Resource;
 		std::string Name;
 		
-		std::function<bool()> Destroy = []()->bool {return true;};//Ïú»ÙÊ±µ÷ÓÃ
+		std::function<bool()> Destroy = []()->bool {return true;};//é”€æ¯æ—¶è°ƒç”¨
 	};
 	
 	template<typename ResourceType>    
 	class ResourceRegistry {
 	public:
 		std::unordered_map<std::string, Ref<ResourceType>> Registry;
-		Ref<ResourceType> Get(const std::string& name) {//×ÊÔ´²»ÔÙ±»ÈÎºÎ¶ÔÏóÒıÓÃÊ±£¨¼ÆÊıÎª1£¿£©£¬Ó¦µ±Ö÷¶¯Ïú»Ù¡£
+		Ref<ResourceType> Get(const std::string& name) {//èµ„æºä¸å†è¢«ä»»ä½•å¯¹è±¡å¼•ç”¨æ—¶ï¼ˆè®¡æ•°ä¸º1ï¼Ÿï¼‰ï¼Œåº”å½“ä¸»åŠ¨é”€æ¯ã€‚
 			auto it = Registry.find(name);
 			if (it != Registry.end()) {
 				return it->second;
@@ -49,11 +49,11 @@ namespace Engine {
 			auto it = Registry.find(name);
 			if (it == Registry.end()) return;
 			auto res = it->second;
-			if (res.use_count() > 2) { // RegistryÖĞµÄÒıÓÃ + µ±Ç°¾Ö²¿±äÁ¿
+			if (res.use_count() > 2) { // Registryä¸­çš„å¼•ç”¨ + å½“å‰å±€éƒ¨å˜é‡
 				ENGINE_CORE_INFO("{}can't destroy", name);
 				return;
 			}
-			Registry.erase(it); // ÍêÈ«ÒÆ³ıÌõÄ¿
+			Registry.erase(it); // å®Œå…¨ç§»é™¤æ¡ç›®
 		}
 	
 	};

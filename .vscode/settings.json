@@ -81,7 +81,6 @@
         "cstdarg": "cpp",
         "set": "cpp",
         "unordered_set": "cpp",
-        "files.encoding": "gbk",
         "deque": "cpp",
         "queue": "cpp",
         "random": "cpp",
@@ -90,19 +89,20 @@
         "ranges": "cpp",
         "*.rh": "cpp"
     },
-    "cmake.sourceDirectory": "E:/myGitRepos/GameEngine/GameEngine/dependency/spdlog/tests",
+    "cmake.sourceDirectory": "${workspaceFolder}",
     "files.autoGuessEncoding": true,
+    "files.encoding": "utf8",
     "[cpp]": {
-        "files.encoding": "gb2312"
+        "files.encoding": "utf8"
     },
     "[c]": {
-        "files.encoding": "gb2312"
+        "files.encoding": "utf8"
     },
     "[h]": {
-        "files.encoding": "gb2312"
+        "files.encoding": "utf8"
     },
     "[hpp]": {
-        "files.encoding": "gb2312"
+        "files.encoding": "utf8"
     },
     "[python]": {
         "files.encoding": "utf8"
@@ -112,5 +112,12 @@
     },
     "C_Cpp.default.cppStandard": "c++17",
     "C_Cpp.default.cStandard": "c17",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.autocomplete": "default",
+    "C_Cpp.intelliSenseCachePath": "${workspaceFolder}/.vscode/ipch",
+    "C_Cpp.enhancedColorization": "enabled",
+    "C_Cpp.inlayHints.parameterNames.enabled": true,
+    "C_Cpp.inlayHints.referenceOperator.enabled": true,
     "kiroAgent.configureMCP": "Disabled"
 }

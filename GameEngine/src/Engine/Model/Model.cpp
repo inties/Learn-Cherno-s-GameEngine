@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
 #include "Model.h"
 
@@ -22,7 +22,7 @@ Ref<Model> Model::Create(const std::string& path) {
 
 void Model::Draw() const {
     if (m_RootNode) {
-        // Ó¦ÓÃÈ«¾Ö±ä»»µ½¸ù½Úµã
+        // åº”ç”¨å…¨å±€å˜æ¢åˆ°æ ¹èŠ‚ç‚¹
         m_RootNode->Draw(m_GlobalTransform);
     }
 }

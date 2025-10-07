@@ -1,23 +1,23 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Resources/ProjectManager.h"
 #include "Engine/Resources/ModelManager.h"
 
 #include "Entity.h"
 #include "Component.h"
-#include "prefabs.h"
+#include "Prefabs.h"
 #include "ScriptableEntity.h"
 namespace Engine {
 
     Scene::Scene() {
-        // Ä¬ÈÏ´´½¨Ò»¸öCubeEntity
+        // é»˜è®¤åˆ›å»ºä¸€ä¸ªCubeEntity
         Entity cube=CreatePrefab(PrefabTypes::Cube);
         auto& nsc=cube.AddComponent<NativeScriptableComponent>();
-        nsc.Bind<MoveScript>(cube);  // ´«µİEntityÖ¸Õë¶ø²»ÊÇNativeScriptableComponentÖ¸Õë
+        nsc.Bind<MoveScript>(cube);  // ä¼ é€’EntityæŒ‡é’ˆè€Œä¸æ˜¯NativeScriptableComponentæŒ‡é’ˆ
         ENGINE_CORE_INFO("Scene created with default CubeEntity");
     }
 
-    // ¼ì²éÎÄ¼şÊÇ·ñÎªÖ§³ÖµÄÄ£ĞÍ¸ñÊ½
+    // æ£€æŸ¥æ–‡ä»¶æ˜¯å¦ä¸ºæ”¯æŒçš„æ¨¡å‹æ ¼å¼
     bool Scene::IsValidModelFile(const std::string& filePath) {
         std::string extension = std::filesystem::path(filePath).extension().string();
         std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
@@ -49,32 +49,81 @@ namespace Engine {
         return e;
     }
 
+    void Scene::DestroyEntity(Entity entity)
+    {
+        if (entity.IsValid() && (entt::entity)entity == m_SelectedEntityHandle) {
+            ClearSelection();
+        }
+        m_Registry.destroy(entity);
+        ENGINE_CORE_INFO("Entity destroyed");
+    }
+
+    void Scene::SetSelectedEntity(Entity entity)
+    {
+        if (entity.IsValid()) {
+            m_SelectedEntityHandle = (entt::entity)entity;
+            ENGINE_CORE_INFO("Selected Entity set to ID: {}", (uint32_t)entity);
+        } else {
+            ENGINE_CORE_WARN("Attempted to select invalid entity");
+        }
+    }
+
+    Entity Scene::GetSelectedEntity() const
+    {
+        if (m_SelectedEntityHandle != entt::null) {
+            return Entity::CreateFromHandle(m_SelectedEntityHandle, const_cast<Scene*>(this));
+        }
+        return Entity{}; // Return invalid entity
+    }
+
+    bool Scene::HasSelectedEntity() const
+    {
+        return m_SelectedEntityHandle != entt::null;
+    }
+
+    void Scene::ClearSelection()
+    {
+        m_SelectedEntityHandle = entt::null;
+        ENGINE_CORE_INFO("Cleared entity selection");
+    }
+
+    std::vector<Entity> Scene::GetAllEntities() const
+    {
+        std::vector<Entity> entities;
+        // Iterate through all entities in the registry
+        auto view = m_Registry.view<TagComponent>();
+        for(auto& entity:view) {
+            entities.push_back(Entity::CreateFromHandle(entity, const_cast<Scene*>(this)));
+        };
+        return entities;
+    }
+
     void Scene::CreateGameObject(const std::string& relativeModelPath, const glm::mat4& transform) {
-        // Ê×ÏÈ¼ì²éÎÄ¼şÀàĞÍ£¨¸ù¾İºó×º£©£¬Èç¹ûÊÇÄ£ĞÍÀàĞÍµÄÎÄ¼ş£¬ÀıÈç.objµÈ£¬Ôò´´½¨ÓÎÏ·¶ÔÏó¡£·ñÔò´òÓ¡µ÷ÊÔĞÅÏ¢
+        // é¦–å…ˆæ£€æŸ¥æ–‡ä»¶ç±»å‹ï¼ˆæ ¹æ®åç¼€ï¼‰ï¼Œå¦‚æœæ˜¯æ¨¡å‹ç±»å‹çš„æ–‡ä»¶ï¼Œä¾‹å¦‚.objç­‰ï¼Œåˆ™åˆ›å»ºæ¸¸æˆå¯¹è±¡ã€‚å¦åˆ™æ‰“å°è°ƒè¯•ä¿¡æ¯
         if (!IsValidModelFile(relativeModelPath)) {
             ENGINE_CORE_WARN("File {} is not a loadable model file", relativeModelPath);
             return;
         }
         ENGINE_CORE_INFO("Abandoned Function:Load Model From: {}", relativeModelPath);
         return;
-        //// ´´½¨ÓÎÏ·¶ÔÏó
+        //// åˆ›å»ºæ¸¸æˆå¯¹è±¡
         //GameObject obj;
         //obj.modelPath = ProjectManager::NormalizePath(relativeModelPath);
         //obj.transform = transform;
-        //obj.isLoading = true; // ±ê¼ÇÎªÕıÔÚ¼ÓÔØ×´Ì¬
+        //obj.isLoading = true; // æ ‡è®°ä¸ºæ­£åœ¨åŠ è½½çŠ¶æ€
         //
-        //// ÏÈÌí¼Óµ½¶ÔÏóÁĞ±íÖĞ£¨ÏÔÊ¾¼ÓÔØ×´Ì¬£©
+        //// å…ˆæ·»åŠ åˆ°å¯¹è±¡åˆ—è¡¨ä¸­ï¼ˆæ˜¾ç¤ºåŠ è½½çŠ¶æ€ï¼‰
         //auto objIndex = gObjectList.size();
         //gObjectList.emplace_back(std::move(obj));
         //
         //ENGINE_CORE_INFO("Game object created, starting async model loading: {}", relativeModelPath);
         //
-        //// ´´½¨Òì²½¼ÓÔØÈÎÎñ
+        //// åˆ›å»ºå¼‚æ­¥åŠ è½½ä»»åŠ¡
         //CreateAsyncModelLoadingTask(relativeModelPath, objIndex);
     }
 
     void Scene::CreateAsyncModelLoadingTask(const std::string& relativeModelPath, size_t objectIndex) {
-        //// Ê¹ÓÃ std::async ´´½¨Òì²½ÈÎÎñ
+        //// ä½¿ç”¨ std::async åˆ›å»ºå¼‚æ­¥ä»»åŠ¡
         //auto future = std::async(std::launch::async, [this, relativeModelPath, objectIndex]() {
         //    ENGINE_CORE_INFO("Async loading task started: {}", relativeModelPath);
             
@@ -101,7 +150,7 @@ namespace Engine {
         else {
             ENGINE_CORE_ERROR("Model loading failed: {}", relativeModelPath);
 
-            // ±ê¼Ç¼ÓÔØÊ§°Ü
+            // æ ‡è®°åŠ è½½å¤±è´¥
            
             gObjectList[objectIndex].isLoading = false;
             gObjectList[objectIndex].loadFailed = true;
@@ -111,7 +160,7 @@ namespace Engine {
             //}
        
         
-        //// ´æ´¢ future ÒÔ±ãºóĞø¹ÜÀí
+        //// å­˜å‚¨ future ä»¥ä¾¿åç»­ç®¡ç†
         //m_LoadingTasks.emplace_back(std::move(future));
     }
 
@@ -129,8 +178,8 @@ namespace Engine {
         return nullptr;
     }
     
-    void Scene::ClearSelection() {
+    void Scene::ClearObjectSelection() {
         m_SelectedObjectIndex = -1;
-        ENGINE_CORE_INFO("Cleared object selection");
+        ENGINE_CORE_INFO("Cleared GameObject selection");
     }
 }

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #pragma once
 #include "Engine/core.h"
 #include <string>
@@ -109,7 +109,7 @@ namespace Engine{
 
 	/// <summary>
 	//-----------------------------------------------------------------------------
-	// MouseScrollEvent Êó±ê¹öÂÖÊÂ¼þ
+	// MouseScrollEvent é¼ æ ‡æ»šè½®äº‹ä»¶
 	/// </summary>
 	class ENGINE_API MouseScrollEvent : public Event {
 	public:

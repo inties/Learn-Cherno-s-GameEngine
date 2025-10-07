@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"pch.h"
 #include"Engine/Layer.h"
 #include"Engine/Event.h"
@@ -22,22 +22,22 @@ namespace Engine
 		float m_time = 0.0f;
 
 	private:
-		// Êó±êÊÂ¼ş´¦Àí
+		// é¼ æ ‡äº‹ä»¶å¤„ç†
 		bool OnMouseMove(MouseMoveEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 		
-		// ¼üÅÌÊÂ¼ş´¦Àí
+		// é”®ç›˜äº‹ä»¶å¤„ç†
 		bool OnKeyPressed(KeyPressEvent& e);
 		bool OnKeyReleased(KeyReleaseEvent& e);
 		
-		// ´°¿ÚÊÂ¼ş´¦Àí
+		// çª—å£äº‹ä»¶å¤„ç†
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 		
-		// ImGui ×´Ì¬¹ÜÀí
-		bool m_BlockEvents = true;  // ÊÇ·ñ×èÖ¹ÊÂ¼ş¼ÌĞø´«²¥
-		bool m_ShowDemoWindow = false;  // ÊÇ·ñÏÔÊ¾ÑİÊ¾´°¿Ú
+		// ImGui çŠ¶æ€ç®¡ç†
+		bool m_BlockEvents = true;  // æ˜¯å¦é˜»æ­¢äº‹ä»¶ç»§ç»­ä¼ æ’­
+		bool m_ShowDemoWindow = false;  // æ˜¯å¦æ˜¾ç¤ºæ¼”ç¤ºçª—å£
 		
 
 

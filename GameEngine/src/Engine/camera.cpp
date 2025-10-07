@@ -1,25 +1,25 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "camera.h"
 #include "Windows.h"
 #include "Input.h"
 namespace Engine {
 
-    // µ¥ÀıÊµÀı
+    // å•ä¾‹å®ä¾‹
     std::unique_ptr<Camera> Camera::s_Instance = nullptr;
 
-    // µ¥Àı·ÃÎÊ·½·¨
+    // å•ä¾‹è®¿é—®æ–¹æ³•
     Camera* Camera::GetInstance() {
         return s_Instance.get();
     }
 
-    // ³õÊ¼»¯µ¥Àı
+    // åˆå§‹åŒ–å•ä¾‹
     void Camera::Initialize(glm::vec3 position, glm::vec3 up, float yaw, float pitch) {
         Camera* rawPtr = new Camera(position, up, yaw, pitch);
-        // ½«Ô­Ê¼Ö¸Õë½»¸øunique_ptr¹ÜÀí
+        // å°†åŸå§‹æŒ‡é’ˆäº¤ç»™unique_ptrç®¡ç†
         s_Instance = std::unique_ptr<Camera>(rawPtr);
     }
 
-    // Ë½ÓĞ¹¹Ôìº¯Êı - vectors
+    // ç§æœ‰æ„é€ å‡½æ•° - vectors
     Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) 
         : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
@@ -33,7 +33,7 @@ namespace Engine {
         updateCameraVectors();
     }
 
-    // Ë½ÓĞ¹¹Ôìº¯Êı - scalar values
+    // ç§æœ‰æ„é€ å‡½æ•° - scalar values
     Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
         : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
@@ -54,9 +54,9 @@ namespace Engine {
 
     glm::mat4 Camera::GetProjectionMatrix() const {
 
-        // ¼ÙÉèFOV, aspect, near, far
+        // å‡è®¾FOV, aspect, near, far
 
-        return glm::perspective(glm::radians(Zoom), 1.0f, 0.1f, 100.0f); // µ÷Õû²ÎÊı
+        return glm::perspective(glm::radians(Zoom), 1.0f, 0.1f, 100.0f); // è°ƒæ•´å‚æ•°
 
     }
 

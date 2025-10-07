@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "Engine/camera.h"
@@ -33,7 +33,7 @@ namespace Engine
 		auto material = mesh->GetMaterial();
 		material->Bind();
 		
-		// ???????ÈÎ????
+		// ???????ä»»????
 		material->GetShader()->SetMat4("u_Model", transform);
 		
 		// ??Camera???????ViewProjection????

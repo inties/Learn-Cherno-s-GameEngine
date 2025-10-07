@@ -8,12 +8,12 @@
 
 namespace Engine {
 
-	Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
+	Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height,TextureFormat format,int sample)
 	{
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(width, height);
+			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(width, height,format,sample);
 		}
 
 		ENGINE_CORE_ERROR("Unknown RendererAPI!");

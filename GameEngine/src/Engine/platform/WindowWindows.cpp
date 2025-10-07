@@ -1,4 +1,4 @@
-#include"pch.h"
+ï»¿#include"pch.h"
 #include"Engine/log.h"
 #include"Engine/Event.h"
 #include"Engine/platform/WindowWindows.h"
@@ -14,20 +14,20 @@ namespace Engine {
 		m_Props.Title = props.Title;
 		ENGINE_CORE_INFO("WindowsWindow created with {0}({1}{2})", m_Props.Title, m_Props.Width, m_Props.Height);
 		
-		// ?????????
+
 		if (!glfwInit()) {
 			ENGINE_CORE_ERROR("glfw Failed to Init");
 			return;
 		}
-		// ????GLFW
+
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		
-		// ????????
+
 		m_Window = glfwCreateWindow(m_Props.Width, m_Props.Height, m_Props.Title.c_str(), nullptr, nullptr);
 		if (!m_Window) {
-			std::cout << "GLFW??????????!" << std::endl;
+			std::cout << "GLFWåˆå§‹åŒ–å¤±è´¥" << std::endl;
 			glfwTerminate();
 			return;
 		}
@@ -36,13 +36,13 @@ namespace Engine {
 
 		// ?????GLAD
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-			std::cout << "GLAD????????!" << std::endl;
+			std::cout << "GLADåˆå§‹åŒ–å¤±è´¥" << std::endl;
 			return;
 		}
 
-		std::cout << "OpenGL???:" << std::endl;
-		std::cout << "??: " << glGetString(GL_VERSION) << std::endl;
-		std::cout << "????: " << glGetString(GL_VENDOR) << std::endl;
+		std::cout << "OpenGLç‰ˆæœ¬:" << std::endl;
+		std::cout << "GL_version: " << glGetString(GL_VERSION) << std::endl;
+		std::cout << "GL_vendor: " << glGetString(GL_VENDOR) << std::endl;
 
 		glViewport(0, 0, m_Props.Width, m_Props.Height);
 
@@ -52,7 +52,7 @@ namespace Engine {
 			
 		}
 		else {
-			std::cout << "???????????" << std::endl;
+			std::cout << "çª—å£åˆ›å»ºå¤±è´¥" << std::endl;
 		}
 
 		//---------------------------???glfw??????---------------------------
@@ -159,7 +159,7 @@ namespace Engine {
 	{
 		if (disabled) {
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			// ÖØÖÃfirstMouse±êÖ¾£¬±ÜÃâÌø¶¯
+			// é‡ç½®firstMouseæ ‡å¿—ï¼Œé¿å…è·³åŠ¨
 			Camera* camera = Camera::GetInstance();
 			if (camera) {
 				camera->firstMouse = true;

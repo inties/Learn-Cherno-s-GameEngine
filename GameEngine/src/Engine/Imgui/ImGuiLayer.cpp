@@ -1,4 +1,4 @@
-#include "pch.h"  
+ï»¿#include "pch.h"  
 #include "Engine/core.h"
 #include "ImGuiLayer.h"  
 #include "imgui_internal.h"
@@ -8,14 +8,14 @@
 
 
 
-// ¶¨ÒåÊÂ¼ş°ó¶¨ºê
+// å®šä¹‰äº‹ä»¶ç»‘å®šå®
 #define BIND_CLASS_FUC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 namespace Engine {
 
 	ImguiLayer::ImguiLayer() : Layer("ImguiLayer")
 	{
-		// ¹¹Ôìº¯ÊıÏÖÔÚÕıÈ·µ÷ÓÃ»ùÀà¹¹Ôìº¯Êı
+		// æ„é€ å‡½æ•°ç°åœ¨æ­£ç¡®è°ƒç”¨åŸºç±»æ„é€ å‡½æ•°
 	}
 	ImguiLayer::~ImguiLayer(){
 
@@ -23,14 +23,14 @@ namespace Engine {
 
 	void ImguiLayer::OnAttach()
 	{
-		// ´´½¨ImGuiÉÏÏÂÎÄ
+		// åˆ›å»ºImGuiä¸Šä¸‹æ–‡
 		
 		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		// ½ûÓÃ ImGui ×Ô¶¯´Ó´ÅÅÌ¼ÓÔØ/±£´æ ini£¨ÎÒÃÇ×ÔĞĞÌá¹©±£´æ/¼ÓÔØÈë¿Ú£©
+		// ç¦ç”¨ ImGui è‡ªåŠ¨ä»ç£ç›˜åŠ è½½/ä¿å­˜ iniï¼ˆæˆ‘ä»¬è‡ªè¡Œæä¾›ä¿å­˜/åŠ è½½å…¥å£ï¼‰
 		io.IniFilename = nullptr;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -51,22 +51,22 @@ namespace Engine {
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 	
-		// ÒÆ³ıËùÓĞKeyMapÉèÖÃ - ÔÚĞÂ°æ±¾ImGuiÖĞÒÑ±»·ÏÆú
-		// ÏÖ´úImGui°æ±¾µÄºó¶Ë»á×Ô¶¯´¦Àí¼üÅÌÓ³Éä
+		// ç§»é™¤æ‰€æœ‰KeyMapè®¾ç½® - åœ¨æ–°ç‰ˆæœ¬ImGuiä¸­å·²è¢«åºŸå¼ƒ
+		// ç°ä»£ImGuiç‰ˆæœ¬çš„åç«¯ä¼šè‡ªåŠ¨å¤„ç†é”®ç›˜æ˜ å°„
 		Application& app = Application::Get();
 		Windows& window = app.GetWindow();
 		WindowWindows& windowWindows = dynamic_cast<WindowWindows&>(window);
-		// »ñÈ¡GLFW´°¿ÚÖ¸Õë
+		// è·å–GLFWçª—å£æŒ‡é’ˆ
 		GLFWwindow* glwindow = windowWindows.GetGLWindow();
 
-		// ³õÊ¼»¯ImGuiµÄGLFWºÍOpenGL3ºó¶Ë
+		// åˆå§‹åŒ–ImGuiçš„GLFWå’ŒOpenGL3åç«¯
 		ImGui_ImplGlfw_InitForOpenGL(glwindow, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
 	void ImguiLayer::OnDetach()
 	{
-		// ÇåÀíImGui×ÊÔ´
+		// æ¸…ç†ImGuièµ„æº
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -108,13 +108,13 @@ namespace Engine {
 	{
 		/*static bool show = true;
 		ImGui::ShowDemoWindow(&show);*/
-		// --- ²½Öè 1: ×¼±¸Ò»¸öÈ«ÆÁµÄËŞÖ÷´°¿Ú£¬Ëü½«×÷ÎªËùÓĞÍ£¿¿´°¿ÚµÄ¡°µ××ù¡± ---
+		// --- æ­¥éª¤ 1: å‡†å¤‡ä¸€ä¸ªå…¨å±çš„å®¿ä¸»çª—å£ï¼Œå®ƒå°†ä½œä¸ºæ‰€æœ‰åœé çª—å£çš„â€œåº•åº§â€ ---
 
-		static bool opt_fullscreen = true; // ±£³ÖÈ«ÆÁ
+		static bool opt_fullscreen = true; // ä¿æŒå…¨å±
 		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-		// ÎÒÃÇÊ¹ÓÃ ImGuiWindowFlags_NoDocking ±êÖ¾À´Ê¹¸¸´°¿Ú±¾Éí²»¿ÉÍ£¿¿£¬
-		// ÒòÎªÔÚÒ»¸öÍ£¿¿Ä¿±êÄÚ²¿ÔÙÇ¶Ì×Ò»¸öÍ£¿¿Ä¿±ê»áÁîÈËÀ§»ó¡£
+		// æˆ‘ä»¬ä½¿ç”¨ ImGuiWindowFlags_NoDocking æ ‡å¿—æ¥ä½¿çˆ¶çª—å£æœ¬èº«ä¸å¯åœé ï¼Œ
+		// å› ä¸ºåœ¨ä¸€ä¸ªåœé ç›®æ ‡å†…éƒ¨å†åµŒå¥—ä¸€ä¸ªåœé ç›®æ ‡ä¼šä»¤äººå›°æƒ‘ã€‚
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
 		{
@@ -128,23 +128,23 @@ namespace Engine {
 			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 		}
 
-		// µ±Ê¹ÓÃ ImGuiDockNodeFlags_PassthruCentralNode ±êÖ¾Ê±£¬DockSpace »áäÖÈ¾±³¾°£¬
-		// ËùÒÔÎÒÃÇÒªÇó Begin() ²»ÒªäÖÈ¾±³¾°£¬ÒÔÊµÏÖÍ¸Ã÷Ğ§¹û¡£
+		// å½“ä½¿ç”¨ ImGuiDockNodeFlags_PassthruCentralNode æ ‡å¿—æ—¶ï¼ŒDockSpace ä¼šæ¸²æŸ“èƒŒæ™¯ï¼Œ
+		// æ‰€ä»¥æˆ‘ä»¬è¦æ±‚ Begin() ä¸è¦æ¸²æŸ“èƒŒæ™¯ï¼Œä»¥å®ç°é€æ˜æ•ˆæœã€‚
 		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
 			window_flags |= ImGuiWindowFlags_NoBackground;
 
-		// **¹Ø¼ü£ºÈÃËŞÖ÷´°¿ÚÍ¸Ã÷**
-		// ÎÒÃÇÖ±½ÓÉèÖÃÒ»¸öÍ¸Ã÷µÄ±³¾°£¬ÕâÑù¾Í²»»áÓĞË«²ã±³¾°É«µÄÎÊÌâ¡£
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(0, 0, 0, 0)); // RGBA(0,0,0,0) -> ÍêÈ«Í¸Ã÷
+		// **å…³é”®ï¼šè®©å®¿ä¸»çª—å£é€æ˜**
+		// æˆ‘ä»¬ç›´æ¥è®¾ç½®ä¸€ä¸ªé€æ˜çš„èƒŒæ™¯ï¼Œè¿™æ ·å°±ä¸ä¼šæœ‰åŒå±‚èƒŒæ™¯è‰²çš„é—®é¢˜ã€‚
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(0, 0, 0, 0)); // RGBA(0,0,0,0) -> å®Œå…¨é€æ˜
 		ImGui::Begin("DockSpace Host", nullptr, window_flags);
-		ImGui::PopStyleColor(); // µ¯³öÑÕÉ«ÉèÖÃ£¬ÒÔÃâÓ°ÏìÆäËû´°¿Ú
+		ImGui::PopStyleColor(); // å¼¹å‡ºé¢œè‰²è®¾ç½®ï¼Œä»¥å…å½±å“å…¶ä»–çª—å£
 
 		if (opt_fullscreen)
-			ImGui::PopStyleVar(2); // µ¯³öÖ®Ç°ÉèÖÃµÄ rounding ºÍ border size
+			ImGui::PopStyleVar(2); // å¼¹å‡ºä¹‹å‰è®¾ç½®çš„ rounding å’Œ border size
 
-		// --- ¶¥²¿²Ëµ¥£ºÌá¹© ±£´æ/¼ÓÔØ/ÖØÖÃ ²¼¾Ö ---
+		// --- é¡¶éƒ¨èœå•ï¼šæä¾› ä¿å­˜/åŠ è½½/é‡ç½® å¸ƒå±€ ---
 		static const char* kUserLayoutPath = "SandBox/imgui_user_layout.ini";
-		static bool s_buildDefaultLayout = true; // ³ÌĞòÆô¶¯Ê±Ê¹ÓÃÄ¬ÈÏ²¼¾Ö£»ÓÃ»§¿ÉÍ¨¹ı¡°ÖØÖÃ¡±ÔÙ´Î´¥·¢
+		static bool s_buildDefaultLayout = true; // ç¨‹åºå¯åŠ¨æ—¶ä½¿ç”¨é»˜è®¤å¸ƒå±€ï¼›ç”¨æˆ·å¯é€šè¿‡â€œé‡ç½®â€å†æ¬¡è§¦å‘
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("Layout"))
@@ -156,12 +156,12 @@ namespace Engine {
 				if (ImGui::MenuItem("Load Layout"))
 				{
 					ImGui::LoadIniSettingsFromDisk(kUserLayoutPath);
-					// ¼ÓÔØ×Ô¶¨Òå²¼¾Öºó£¬²»ÔÙÇ¿ÖÆ¹¹½¨Ä¬ÈÏ²¼¾Ö
+					// åŠ è½½è‡ªå®šä¹‰å¸ƒå±€åï¼Œä¸å†å¼ºåˆ¶æ„å»ºé»˜è®¤å¸ƒå±€
 					s_buildDefaultLayout = false;
 				}
 				if (ImGui::MenuItem("Reset to Default"))
 				{
-					// ÏÂÒ»¸ö½×¶ÎÊ¹ÓÃÄ¬ÈÏ²¼¾Ö
+					// ä¸‹ä¸€ä¸ªé˜¶æ®µä½¿ç”¨é»˜è®¤å¸ƒå±€
 					s_buildDefaultLayout = true;
 				}
 				ImGui::EndMenu();
@@ -169,7 +169,7 @@ namespace Engine {
 			ImGui::EndMenuBar();
 		}
 
-		// --- ²½Öè 2: Ìá½» DockSpace ²¢ÉèÖÃÒ»´ÎĞÔÄ¬ÈÏ²¼¾Ö ---
+		// --- æ­¥éª¤ 2: æäº¤ DockSpace å¹¶è®¾ç½®ä¸€æ¬¡æ€§é»˜è®¤å¸ƒå±€ ---
 
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
@@ -177,47 +177,47 @@ namespace Engine {
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-			// Ê¹ÓÃ DockBuilder API ÉèÖÃÄ¬ÈÏ²¼¾Ö£¨½öµ± s_buildDefaultLayout Îª true Ê±´¥·¢Ò»´Î£©
+			// ä½¿ç”¨ DockBuilder API è®¾ç½®é»˜è®¤å¸ƒå±€ï¼ˆä»…å½“ s_buildDefaultLayout ä¸º true æ—¶è§¦å‘ä¸€æ¬¡ï¼‰
 			if (s_buildDefaultLayout)
 			{
-				// ¹¹½¨Íê³ÉºóÁ¢¼´¹Ø±Õ¿ª¹Ø£¬±ÜÃâÃ¿Ö¡ÖØ½¨
+				// æ„å»ºå®Œæˆåç«‹å³å…³é—­å¼€å…³ï¼Œé¿å…æ¯å¸§é‡å»º
 				s_buildDefaultLayout = false;
 
-				// Çå³ı²¢ÖØ½¨¸ù½Úµã£¨²»ÖØ¸´´´½¨ËŞÖ÷´°¿Ú£¬½öÖØ½¨ DockBuilder ½á¹¹£©
+				// æ¸…é™¤å¹¶é‡å»ºæ ¹èŠ‚ç‚¹ï¼ˆä¸é‡å¤åˆ›å»ºå®¿ä¸»çª—å£ï¼Œä»…é‡å»º DockBuilder ç»“æ„ï¼‰
 				ImGui::DockBuilderRemoveNode(dockspace_id);
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 				ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->WorkSize);
 
-				// ½«Ö÷Í£¿¿Çø·Ö¸î³É£º×ó 20%¡¢ÓÒ 25%¡¢ÏÂ 25%¡¢ÖĞ¼äÊ£Óà
+				// å°†ä¸»åœé åŒºåˆ†å‰²æˆï¼šå·¦ 20%ã€å³ 25%ã€ä¸‹ 25%ã€ä¸­é—´å‰©ä½™
 				ImGuiID dock_main_id = dockspace_id;
 				ImGuiID dock_id_left  = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left,  0.20f, nullptr, &dock_main_id);
 				ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.25f, nullptr, &dock_main_id);
 				ImGuiID dock_id_down  = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down,  0.25f, nullptr, &dock_main_id);
 
-				// °´Ô¼¶¨µÄ´°¿ÚÃû½øĞĞ Dock£ºÕâĞ©´°¿ÚÓÉ EditorLayer/RendererLayer ´´½¨
+				// æŒ‰çº¦å®šçš„çª—å£åè¿›è¡Œ Dockï¼šè¿™äº›çª—å£ç”± EditorLayer/RendererLayer åˆ›å»º
 				ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
 				ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
 				ImGui::DockBuilderDockWindow("Console",   dock_id_down);
-				ImGui::DockBuilderDockWindow("Viewport",  dock_main_id); // ÖĞÑëÇøÓò
-				ImGui::DockBuilderDockWindow("RenderInfo", dock_id_right); // Óë Inspector Í¬ÁĞ£¨Tab£©
+				ImGui::DockBuilderDockWindow("Viewport",  dock_main_id); // ä¸­å¤®åŒºåŸŸ
+				ImGui::DockBuilderDockWindow("RenderInfo", dock_id_right); // ä¸ Inspector åŒåˆ—ï¼ˆTabï¼‰
 
-				// Íê³É²¼¾ÖÉèÖÃ
+				// å®Œæˆå¸ƒå±€è®¾ç½®
 				ImGui::DockBuilderFinish(dockspace_id);
 			}
 		}
 		else
 		{
-			// ÏÔÊ¾ÌáÊ¾ĞÅÏ¢£¬Èç¹û docking Î´ÆôÓÃ
+			// æ˜¾ç¤ºæç¤ºä¿¡æ¯ï¼Œå¦‚æœ docking æœªå¯ç”¨
 			ImGui::Text("ERROR: Docking is not enabled! Please add 'io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;' to your code.");
 		}
 
-		// ½áÊøËŞÖ÷´°¿Ú
+		// ç»“æŸå®¿ä¸»çª—å£
 		ImGui::End();
 
 
-		// --- ²½Öè 3: äÖÈ¾ÄãµÄ¿ÉÍ£¿¿´°¿Ú ---
-		// ÕâĞ©´°¿ÚÓÉ EditorLayer/RendererLayer ¸÷×Ô¸ºÔğ´´½¨ÓëäÖÈ¾£¬ÕâÀïÎŞĞèÖØ¸´´´½¨Õ¼Î»´°¿Ú¡£
-		// ImGui »á¸ù¾İ DockBuilder ÉèÖÃµÄ²¼¾Ö£¬×Ô¶¯½«ËüÃÇ»æÖÆÔÚÕıÈ·µÄÎ»ÖÃ¡£
+		// --- æ­¥éª¤ 3: æ¸²æŸ“ä½ çš„å¯åœé çª—å£ ---
+		// è¿™äº›çª—å£ç”± EditorLayer/RendererLayer å„è‡ªè´Ÿè´£åˆ›å»ºä¸æ¸²æŸ“ï¼Œè¿™é‡Œæ— éœ€é‡å¤åˆ›å»ºå ä½çª—å£ã€‚
+		// ImGui ä¼šæ ¹æ® DockBuilder è®¾ç½®çš„å¸ƒå±€ï¼Œè‡ªåŠ¨å°†å®ƒä»¬ç»˜åˆ¶åœ¨æ­£ç¡®çš„ä½ç½®ã€‚
 	}
 	void ImguiLayer::ImGuiRender()
 	{
@@ -234,7 +234,7 @@ namespace Engine {
 	{
 		EventDispatcher dispatcher(e);
 		
-		// ·Ö·¢¸÷ÖÖÊÂ¼şÀàĞÍ
+		// åˆ†å‘å„ç§äº‹ä»¶ç±»å‹
 		dispatcher.Dispatch<MouseMoveEvent>(BIND_CLASS_FUC(OnMouseMove));
 		dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_CLASS_FUC(OnMouseButtonPressed));
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_CLASS_FUC(OnMouseButtonReleased));
@@ -244,14 +244,14 @@ namespace Engine {
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_CLASS_FUC(OnWindowResize));
 	}
 
-	// Êó±êÊÂ¼ş´¦Àí
+	// é¼ æ ‡äº‹ä»¶å¤„ç†
 	bool ImguiLayer::OnMouseMove(MouseMoveEvent& e)
 	{
-		// ´¦ÀíÊó±êÒÆ¶¯ÊÂ¼ş
+		// å¤„ç†é¼ æ ‡ç§»åŠ¨äº‹ä»¶
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2((float)e.getMousePos().first, (float)e.getMousePos().second);
 		
-		// Èç¹ûImGuiÏëÒª²¶»ñÊó±ê£¬Ôò×èÖ¹ÊÂ¼ş¼ÌĞø´«²¥
+		// å¦‚æœImGuiæƒ³è¦æ•è·é¼ æ ‡ï¼Œåˆ™é˜»æ­¢äº‹ä»¶ç»§ç»­ä¼ æ’­
 		return m_BlockEvents&&io.WantCaptureMouse;
 	}
 
@@ -260,15 +260,15 @@ namespace Engine {
 		ImGuiIO& io = ImGui::GetIO();
 		int button = e.getMouseButton();
 		
-		// ½«GLFWÊó±ê°´Å¥Ó³Éäµ½ImGui
+		// å°†GLFWé¼ æ ‡æŒ‰é’®æ˜ å°„åˆ°ImGui
 		if (button >= 0 && button < ImGuiMouseButton_COUNT) {
 			io.MouseDown[button] = true;
 		}
 		
-		// µ÷ÊÔÊä³ö
+		// è°ƒè¯•è¾“å‡º
 		// std::cout << "Mouse button pressed: " << button << std::endl;
 		
-		// Èç¹ûImGuiÏëÒª²¶»ñÊó±ê£¬Ôò×èÖ¹ÊÂ¼ş¼ÌĞø´«²¥
+		// å¦‚æœImGuiæƒ³è¦æ•è·é¼ æ ‡ï¼Œåˆ™é˜»æ­¢äº‹ä»¶ç»§ç»­ä¼ æ’­
 		return m_BlockEvents && io.WantCaptureMouse;
 	}
 
@@ -277,33 +277,33 @@ namespace Engine {
 		ImGuiIO& io = ImGui::GetIO();
 		int button = e.getMouseButton();
 		
-		// ½«GLFWÊó±ê°´Å¥Ó³Éäµ½ImGui
+		// å°†GLFWé¼ æ ‡æŒ‰é’®æ˜ å°„åˆ°ImGui
 		if (button >= 0 && button < ImGuiMouseButton_COUNT) {
 			io.MouseDown[button] = false;
 		}
 		
-		// µ÷ÊÔÊä³ö
+		// è°ƒè¯•è¾“å‡º
 		// std::cout << "Mouse button released: " << button << std::endl;
 		
-		// Èç¹ûImGuiÏëÒª²¶»ñÊó±ê£¬Ôò×èÖ¹ÊÂ¼ş¼ÌĞø´«²¥
+		// å¦‚æœImGuiæƒ³è¦æ•è·é¼ æ ‡ï¼Œåˆ™é˜»æ­¢äº‹ä»¶ç»§ç»­ä¼ æ’­
 		return m_BlockEvents && io.WantCaptureMouse;
 	}
 
-	// ¼üÅÌÊÂ¼ş´¦Àí
+	// é”®ç›˜äº‹ä»¶å¤„ç†
 	bool ImguiLayer::OnKeyPressed(KeyPressEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		
-		// ÌØÊâ¼ü´¦Àí
-		if (e.ToString().find("KeyPressed: 286") != std::string::npos) { // F5¼ü
+		// ç‰¹æ®Šé”®å¤„ç†
+		if (e.ToString().find("KeyPressed: 286") != std::string::npos) { // F5é”®
 			m_ShowDemoWindow = !m_ShowDemoWindow;
 			std::cout << "Demo window toggled: " << (m_ShowDemoWindow ? "ON" : "OFF") << std::endl;
 		}
 		
-		// µ÷ÊÔÊä³ö
+		// è°ƒè¯•è¾“å‡º
 		std::cout << e.ToString() << std::endl;
 		
-		// Èç¹ûImGuiÏëÒª²¶»ñ¼üÅÌ£¬Ôò×èÖ¹ÊÂ¼ş¼ÌĞø´«²¥
+		// å¦‚æœImGuiæƒ³è¦æ•è·é”®ç›˜ï¼Œåˆ™é˜»æ­¢äº‹ä»¶ç»§ç»­ä¼ æ’­
 		return m_BlockEvents && io.WantCaptureKeyboard;
 	}
 
@@ -311,20 +311,20 @@ namespace Engine {
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		
-		// µ÷ÊÔÊä³ö
+		// è°ƒè¯•è¾“å‡º
 		std::cout << e.ToString() << std::endl;
 		
-		// Èç¹ûImGuiÏëÒª²¶»ñ¼üÅÌ£¬Ôò×èÖ¹ÊÂ¼ş¼ÌĞø´«²¥
+		// å¦‚æœImGuiæƒ³è¦æ•è·é”®ç›˜ï¼Œåˆ™é˜»æ­¢äº‹ä»¶ç»§ç»­ä¼ æ’­
 		return m_BlockEvents && io.WantCaptureKeyboard;
 	}
 
-	// ´°¿ÚÊÂ¼ş´¦Àí
+	// çª—å£äº‹ä»¶å¤„ç†
 	bool ImguiLayer::OnWindowClose(WindowCloseEvent& e)
 	{
 		std::cout << "Window close event received" << std::endl;
 		
-		// ´°¿Ú¹Ø±ÕÊÂ¼şÍ¨³£²»ĞèÒª±»ImGui×èÖ¹
-		// ¿ÉÒÔÔÚÕâÀïÌí¼Ó±£´æImGui²¼¾ÖµÈÂß¼­
+		// çª—å£å…³é—­äº‹ä»¶é€šå¸¸ä¸éœ€è¦è¢«ImGuié˜»æ­¢
+		// å¯ä»¥åœ¨è¿™é‡Œæ·»åŠ ä¿å­˜ImGuiå¸ƒå±€ç­‰é€»è¾‘
 		return false;
 	}
 
@@ -332,11 +332,11 @@ namespace Engine {
 	{
 		std::cout << "Window resize event: " << e.GetWindowWidth() << "x" << e.GetWindowHeight() << std::endl;
 		
-		// ¸üĞÂImGuiµÄÏÔÊ¾³ß´ç
+		// æ›´æ–°ImGuiçš„æ˜¾ç¤ºå°ºå¯¸
 		ImGuiIO& io = ImGui::GetIO();
 		io.DisplaySize = ImVec2((float)e.GetWindowWidth(), (float)e.GetWindowHeight());
 		
-		// ´°¿Ú´óĞ¡¸Ä±äÊÂ¼şÍ¨³£²»ĞèÒª±»ImGui×èÖ¹
+		// çª—å£å¤§å°æ”¹å˜äº‹ä»¶é€šå¸¸ä¸éœ€è¦è¢«ImGuié˜»æ­¢
 		return false;
 	}
 }

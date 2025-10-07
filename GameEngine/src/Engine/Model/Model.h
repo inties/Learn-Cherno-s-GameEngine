@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "pch.h"
 #include "Node.h"
@@ -12,14 +12,14 @@ public:
 
     void Draw() const;
     
-    // ÉèÖÃÈ«¾Ö±ä»»
+    // è®¾ç½®å…¨å±€å˜æ¢
     void SetGlobalTransform(const glm::mat4& transform) { m_GlobalTransform = transform; }
     const glm::mat4& GetGlobalTransform() const { return m_GlobalTransform; }
     
-    // ÎªÄ£ĞÍµÄËùÓĞmeshÉèÖÃÎïÌåID
+    // ä¸ºæ¨¡å‹çš„æ‰€æœ‰meshè®¾ç½®ç‰©ä½“ID
     void SetObjectID(int objectID) const;
     
-    // µ÷ÊÔ½Ó¿Ú£º»ñÈ¡¹²ÏíVAO
+    // è°ƒè¯•æ¥å£ï¼šè·å–å…±äº«VAO
     const Ref<VertexArray>& GetSharedVAO() const { return m_SharedVAO; }
     
     Model() = default;
@@ -28,8 +28,8 @@ private:
     friend class ModelLoader;
 
     Ref<Node> m_RootNode;
-    glm::mat4 m_GlobalTransform = glm::mat4(1.0f);  // Ä£ĞÍÕûÌå±ä»»
-    Ref<VertexArray> m_SharedVAO;  // ¹²ÏíVAOÒıÓÃ£¨ÓÃÓÚ´«µİ¸ø×ÓMesh£©
+    glm::mat4 m_GlobalTransform = glm::mat4(1.0f);  // æ¨¡å‹æ•´ä½“å˜æ¢
+    Ref<VertexArray> m_SharedVAO;  // å…±äº«VAOå¼•ç”¨ï¼ˆç”¨äºä¼ é€’ç»™å­Meshï¼‰
 };
 
 }

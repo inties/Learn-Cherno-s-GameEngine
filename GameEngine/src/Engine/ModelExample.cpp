@@ -1,4 +1,4 @@
-// Ê¾Àı£ºÈçºÎÊ¹ÓÃĞÂµÄÄ£ĞÍ»æÖÆÏµÍ³
+ï»¿// ç¤ºä¾‹ï¼šå¦‚ä½•ä½¿ç”¨æ–°çš„æ¨¡å‹ç»˜åˆ¶ç³»ç»Ÿ
 #include "pch.h"
 // #include "Engine/Model/Model.h"
 // #include "Engine/CameraManager.h"
@@ -7,32 +7,32 @@
 // namespace Engine {
 
 // void ModelExample() {
-//     // 1. ÉèÖÃÈ«¾ÖÏà»ú
+//     // 1. è®¾ç½®å…¨å±€ç›¸æœº
 //     auto camera = std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 //     CameraManager::SetGlobalCamera(std::move(camera));
     
-//     // 2. ¼ÓÔØÄ£ĞÍ
+//     // 2. åŠ è½½æ¨¡å‹
 //     auto model = Model::Create("assets/models/example.fbx");
 //     if (!model) {
 //         ENGINE_CORE_ERROR("Failed to load model");
 //         return;
 //     }
     
-//     // 3. ÉèÖÃÄ£ĞÍ±ä»»
+//     // 3. è®¾ç½®æ¨¡å‹å˜æ¢
 //     glm::mat4 modelTransform = glm::mat4(1.0f);
 //     modelTransform = glm::translate(modelTransform, glm::vec3(0.0f, 0.0f, 0.0f));
 //     modelTransform = glm::rotate(modelTransform, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 //     model->SetGlobalTransform(modelTransform);
     
-//     // 4. ÔÚäÖÈ¾Ñ­»·ÖĞ»æÖÆ
-//     // Renderer::BeginScene(); // Èç¹ûĞèÒª
-//     model->Draw();  // ÄÚ²¿»á£º
-//                    // - Ó¦ÓÃÈ«¾Ö±ä»»
-//                    // - µİ¹é±éÀúNodeÊ÷
-//                    // - Ã¿¸öMeshµ÷ÓÃDraw(transform)
-//                    // - Mesh::Drawµ÷ÓÃRenderer::Submit
-//                    // - SubmitÊ¹ÓÃÈ«¾ÖcameraÉèÖÃViewProjection
-//                    // - Ê¹ÓÃ¹²ÏíVAOºÍÆ«ÒÆ»æÖÆ
+//     // 4. åœ¨æ¸²æŸ“å¾ªç¯ä¸­ç»˜åˆ¶
+//     // Renderer::BeginScene(); // å¦‚æœéœ€è¦
+//     model->Draw();  // å†…éƒ¨ä¼šï¼š
+//                    // - åº”ç”¨å…¨å±€å˜æ¢
+//                    // - é€’å½’éå†Nodeæ ‘
+//                    // - æ¯ä¸ªMeshè°ƒç”¨Draw(transform)
+//                    // - Mesh::Drawè°ƒç”¨Renderer::Submit
+//                    // - Submitä½¿ç”¨å…¨å±€cameraè®¾ç½®ViewProjection
+//                    // - ä½¿ç”¨å…±äº«VAOå’Œåç§»ç»˜åˆ¶
 //     // Renderer::EndScene();
 // }
 

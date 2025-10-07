@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Mesh.h"
 #include "Engine/Renderer/Renderer.h"
 #include "Engine/CameraManager.h"
@@ -13,7 +13,7 @@ Mesh::Mesh(const Ref<Material>& material, const Ref<VertexArray>& sharedVAO,
 }
 
 void Mesh::Draw() const {
-    // µ÷ÓÃRenderer::Submit£¬´«Èëtransform£¬Ê¹ÓÃÈ«¾Öcamera
+    // è°ƒç”¨Renderer::Submitï¼Œä¼ å…¥transformï¼Œä½¿ç”¨å…¨å±€camera
     m_Material->SetInt("u_ObjectID", static_cast<int>(m_ObjectID));
     Renderer::Submit(std::const_pointer_cast<Mesh>(shared_from_this()), worldTransform);
 }

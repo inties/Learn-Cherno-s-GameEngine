@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "EditorLayer.h"
 
 #include "Engine/Application.h"
@@ -307,11 +307,11 @@ namespace Engine {
             m_ViewportFocused = ImGui::IsWindowFocused();
             m_ViewportHovered = ImGui::IsWindowHovered();
 
-            // »ñÈ¡viewportÔÚÕû¸ö´°¿ÚÖÐµÄÎ»ÖÃÐÅÏ¢
-            ImVec2 viewportPos = ImGui::GetWindowPos();           // ´°¿ÚÎ»ÖÃ
-            ImVec2 contentMin = ImGui::GetWindowContentRegionMin(); // ÄÚÈÝÇøÓòÏà¶Ô´°¿ÚµÄÆ«ÒÆ
-            ImVec2 contentMax = ImGui::GetWindowContentRegionMax(); // ÄÚÈÝÇøÓòÓÒÏÂ½Ç
-            ImVec2 viewportContentPos = ImVec2(viewportPos.x + contentMin.x, viewportPos.y + contentMin.y); // ÄÚÈÝÇøÓò¾ø¶ÔÎ»ÖÃ
+            // èŽ·å–viewportåœ¨æ•´ä¸ªçª—å£ä¸­çš„ä½ç½®ä¿¡æ¯
+            ImVec2 viewportPos = ImGui::GetWindowPos();           // çª—å£ä½ç½®
+            ImVec2 contentMin = ImGui::GetWindowContentRegionMin(); // å†…å®¹åŒºåŸŸç›¸å¯¹çª—å£çš„åç§»
+            ImVec2 contentMax = ImGui::GetWindowContentRegionMax(); // å†…å®¹åŒºåŸŸå³ä¸‹è§’
+            ImVec2 viewportContentPos = ImVec2(viewportPos.x + contentMin.x, viewportPos.y + contentMin.y); // å†…å®¹åŒºåŸŸç»å¯¹ä½ç½®
 
             ImVec2 avail = ImGui::GetContentRegionAvail();
             if (m_RendererLayer) {
@@ -319,14 +319,14 @@ namespace Engine {
                 if ((m_ViewportSize.x != avail.x || m_ViewportSize.y != avail.y) && avail.x > 0 && avail.y > 0) {
                     m_ViewportSize = { avail.x, avail.y };
                     m_RendererLayer->ResizeRenderTarget((unsigned int)avail.x, (unsigned int)avail.y);
-                    ENGINE_CORE_INFO("offscreen FBO resized to{},{}", m_RendererLayer->GetRenderWidth(), m_RendererLayer->GetRenderHeight());
+                    ENGINE_CORE_INFO("ViewPortPanel resized to{},{}", m_RendererLayer->GetRenderWidth(), m_RendererLayer->GetRenderHeight());
                 }
 
                 unsigned int texID = m_RendererLayer->GetRenderTextureID();
                 if (texID) {
                     ImGui::Image((ImTextureID)(intptr_t)texID, avail, ImVec2(0, 1), ImVec2(1, 0));
                     
-                    // ¼ÆËãÊó±êÔÚviewportÖÐµÄ¹éÒ»»¯Î»ÖÃ
+                    // è®¡ç®—é¼ æ ‡åœ¨viewportä¸­çš„å½’ä¸€åŒ–ä½ç½®
                     if (m_ViewportHovered) {
                         ImVec2 mousePos = ImGui::GetMousePos();
                         ImVec2 relativePos = ImVec2(
@@ -343,12 +343,12 @@ namespace Engine {
                            m_Scene->SetSelectedObject(objectID);
                         }
 
-                        //// ¹éÒ»»¯µ½[0,1]·¶Î§
+                        //// å½’ä¸€åŒ–åˆ°[0,1]èŒƒå›´
                         //if (m_ViewportSize.x > 0 && m_ViewportSize.y > 0) {
                         //    m_mousePos.x = relativePos.x / m_ViewportSize.x;
                         //    m_mousePos.y = relativePos.y / m_ViewportSize.y;
                         //    
-                        //    // È·±£×ø±êÔÚÓÐÐ§·¶Î§ÄÚ
+                        //    // ç¡®ä¿åæ ‡åœ¨æœ‰æ•ˆèŒƒå›´å†…
                         //    m_mousePos.x = glm::clamp(m_mousePos.x, 0.0f, 1.0f);
                         //    m_mousePos.y = glm::clamp(m_mousePos.y, 0.0f, 1.0f);
                         //}
@@ -383,7 +383,7 @@ namespace Engine {
     void EditorLayer::OnUpdate()
     {
         //if (!running)return;
-        //¸üÐÂËùÓÐ½Å±¾
+        //æ›´æ–°æ‰€æœ‰è„šæœ¬
         auto& registry = m_Scene->GetRegistry();
         auto view = registry.view<NativeScriptableComponent>();
 

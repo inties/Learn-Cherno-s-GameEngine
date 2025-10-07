@@ -1,8 +1,8 @@
-#include"pch.h"
+ï»¿#include"pch.h"
 #include"Input.h"
 #include "platform/WindowsInput.h"
 namespace Engine {
-	Input* Input::s_Instance = nullptr;// ¾²Ì¬³ÉÔ±±äÁ¿µÄ¶¨Òå
+	Input* Input::s_Instance = nullptr;// é™æ€æˆå‘˜å˜é‡çš„å®šä¹‰
 	
 	Input* Input::Create() {
 		return new WindowsInput();
