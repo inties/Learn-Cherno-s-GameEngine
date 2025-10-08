@@ -11,6 +11,8 @@
 
 namespace Engine
 {
+	class Scene;
+	class RenderPipeLine;
 	// 渲染设置结构体
 	struct RendererSettings
 	{
@@ -25,8 +27,8 @@ namespace Engine
 	{
 	public:
 		RendererLayer();
-		virtual ~RendererLayer() = default;
-
+		virtual ~RendererLayer();
+		void Init(Ref<Scene> scene);
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate() override;
@@ -63,16 +65,8 @@ namespace Engine
 		void SetObjectIDForModel(const Ref<Model>& model, int objectID);
 
 	private:
-		//// 离屏渲染目标（帧缓冲）
-		//void CreateRenderTarget(unsigned int width, unsigned int height);
-		//void DestroyRenderTarget();
-
+		Scope<RenderPipeLine>m_RenderPipeLine;
 		Ref<Framebuffer> FBO = nullptr;
-	/*	unsigned int m_Framebuffer = 0;
-		unsigned int m_ColorAttachment = 0;
-		unsigned int m_DepthStencilRBO = 0;
-		unsigned int m_RTWidth = 0;
-		unsigned int m_RTHeight = 0;*/
 		RendererSettings m_Settings;
 		
 		// 渲染资源
@@ -87,12 +81,12 @@ namespace Engine
 		Ref<Shader> m_CubeShader;
 		ResourceRegistry<VertexArray>VAO_Manager;
 		ResourceRegistry<Material>Mat_Manager;
-
+		
 
 
 		// 时间和变换
 		float m_Time = 0.0f;
-		float m_Rotation = 0.0f;
+
 	
 		// 相机和投影
 		glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);

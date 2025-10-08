@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"pch.h"
 #include"Event.h"
 
@@ -7,7 +7,7 @@ namespace Engine {
 	{
 	public:
 		Layer(const std::string& name = "Layer") : m_LayerName(name) {}
-		virtual ~Layer() = default;
+		virtual ~Layer() = default;	
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}

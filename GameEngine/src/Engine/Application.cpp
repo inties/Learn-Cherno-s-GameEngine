@@ -35,10 +35,21 @@ namespace Engine {
 			});
 		
 		// 按顺序添加层：首先ImGui层、是渲染层，然后是测试层
+
+		//各层分别初始化与其他层无关的成员变量
 		m_ImGuiLayer = new ImguiLayer();
+		RendererLayer* renderlayer = new RendererLayer();
+		if (!renderlayer) {
+			std::cout << "空" << " ";
+		}
+		EditorLayer* editorlayer = new EditorLayer();
+
+		//注入各层所需依赖
+		renderlayer->Init(editorlayer->GetScene());
+		editorlayer->Init(renderlayer);
 		m_LayerStack.PushLayer(m_ImGuiLayer);
-		m_LayerStack.PushLayer(new RendererLayer());
-		m_LayerStack.PushLayer(new EditorLayer());
+		m_LayerStack.PushLayer(renderlayer);
+		m_LayerStack.PushLayer(editorlayer);
 		//m_LayerStack.PushLayer(new TestLayer());
 		
 		// 初始化Camera单例

@@ -7,13 +7,16 @@ namespace Engine {
 	class PostEffectPass :public RenderPass {
 	public:
 		struct PostEffectPassSpec {
-			FramebufferSpecification frameBufferSpecfication;
 			std::string matName;
-			ResourceRegistry<Material>* matLib;
+			ResourceRegistry<Material>* MatManager;
 		};
-		PostEffectPass(PostEffectPassSpec& spec):Spec(spec) {};
+		PostEffectPass(PostEffectPassSpec& spec):Spec(spec) {
+			if (!spec.MatManager) {
+				ENGINE_CORE_ERROR("PostEffectPass:Scene/MatManager/VAOManager is null");
+			}
+		};
 		void Init()override final{
-			Mat = Spec.matLib->Get(Spec.matName);
+			Mat = Spec.MatManager->Get(Spec.matName);
 			if(!Mat){
 				ENGINE_CORE_ERROR("PostEffectPass: Material not found");
 			}

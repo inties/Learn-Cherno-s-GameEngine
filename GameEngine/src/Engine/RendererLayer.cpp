@@ -1,23 +1,53 @@
 ﻿#include "pch.h"
 #include "RendererLayer.h"
 #include "Renderer/RenderCommand.h"
-#include "platform/OpenGL/OpenGLShader.h"
-#include "Renderer/Texture.h"
-// #include "Model/Model.h"
+#include "Renderer/Renderpass/RenderPipeline.h"
 #include "Resources/ShaderLibrary.h"
 #include "Resources/ModelManager.h"
 #include "Scene/Scene.h"
 #include <imgui.h>
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
-
 #include "Scene/Component.h"
 namespace Engine
 {
 	RendererLayer::RendererLayer()
 		: Layer("RendererLayer")
 	{
+		// 初始化渲染器
+		Renderer::Init();
+
+		// 加载默认着色器
+		LoadDefaultShaders();
+
+		// 设置立方体
+		SetupCube();
+
+		if (m_model) {
+			std::cout << "加载成功" << std::endl;
+		}
+		// 初始化相机和投影矩阵
+		m_AspectRatio = 1.0f; // 默认比例，会在第一次窗口大小调整时更新
+		UpdateProjectionMatrix();
+		SetupViewMatrix();
+
+		// 创建离屏渲染目标（使用当前窗口尺寸作为初始尺寸）
+		unsigned int initW = Application::Get().GetWindow().GetWidth();
+		unsigned int initH = Application::Get().GetWindow().GetHeight();
+		ENGINE_CORE_INFO("窗口初始 x,y,{},{}", initW, initH);
+		//CreateRenderTarget(initW, initH);
+		typedef TextureFormat format;
+		FramebufferSpecification spec = { initW,initH,{format::RGBA8,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
+		FBO = Framebuffer::Create(spec);
+		ENGINE_CORE_INFO("RendererLayer attached");
 	}
+
+	RendererLayer::~RendererLayer() = default;
+
+	void RendererLayer::Init(Ref<Scene> scene)
+	{
+		SetScene(scene);
+	}
+
 
 	std::string RendererLayer::GetShaderPath(const std::string& filename)
 	{
@@ -43,36 +73,9 @@ namespace Engine
 
 	void RendererLayer::OnAttach()
 	{
-		// 初始化渲染器
-		Renderer::Init();
-		
-		// 加载默认着色器
-		LoadDefaultShaders();
-		
-		// 设置立方体
-		SetupCube();
-		
-		// 移除硬编码模型加载（改由 Scene + ModelManager 驱动）
-		// SetupModel();
-		//const std::string s= "backpack.obj";
-		//m_model = ModelManager::Get()->LoadModel(s);
-		if (m_model) {
-			std::cout << "加载成功" << std::endl;
-		}
-		// 初始化相机和投影矩阵
-		m_AspectRatio = 1.0f; // 默认比例，会在第一次窗口大小调整时更新
-		UpdateProjectionMatrix();
-		SetupViewMatrix();
+		// 创建渲染管线
+		//RenderPipeLineSetting renderPipeLineSetting;
 
-		// 创建离屏渲染目标（使用当前窗口尺寸作为初始尺寸）
-		unsigned int initW = Application::Get().GetWindow().GetWidth();
-		unsigned int initH = Application::Get().GetWindow().GetHeight();
-		ENGINE_CORE_INFO("窗口初始 x,y,{},{}", initW, initH);
-		//CreateRenderTarget(initW, initH);
-		typedef TextureFormat format;
-		FramebufferSpecification spec = { initW,initH,{format::RGBA8,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
-		FBO = Framebuffer::Create(spec);
-		ENGINE_CORE_INFO("RendererLayer attached");
 	}
 
 	void RendererLayer::OnDetach()
@@ -176,15 +179,12 @@ namespace Engine
 	{
 		// 更新时间
 		m_Time = static_cast<float>(glfwGetTime());
-		
-		// 更新旋转
-		m_Rotation += m_Settings.rotationSpeed * 0.016f; // 假设60FPS
-		
+			
 		// 设置线框模式
 		if (m_Settings.wireframe) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			RenderCommand::SetWildFrame(true);
 		} else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			RenderCommand::SetWildFrame(false);
 		}
 		FBO->Bind();
 		// 绑定离屏帧缓冲并设置视口
@@ -195,9 +195,7 @@ namespace Engine
 		// 设置清屏颜色并清屏
 		RenderCommand::SetClearColor(glm::vec4(m_Settings.clearColor, 1.0f));
 		RenderCommand::Clear();
-		FBO->ClearAttachment(1, 0);
-		FBO->ClearAttachment(0, 0);
-
+		FBO->ClearColorAttachments(0);
 
 		// 开始场景
 		Renderer::BeginScene();

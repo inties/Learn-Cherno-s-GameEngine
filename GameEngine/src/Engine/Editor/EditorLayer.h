@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/Layer.h"
 #include "Engine/core.h"
@@ -12,20 +12,20 @@ namespace Engine {
     public:
         EditorLayer();
         virtual ~EditorLayer() = default;
-
+        void Init(RendererLayer* rendererlayer);
         void OnAttach() override;
         void OnDetach() override {};
         void OnUpdate() override;
         void OnImGuiRender() override;
         void OnEvent(Event& event) override;
-
+        Ref<Scene>GetScene() { return m_Scene; };
     private:
         void DrawHierarchyPanel();
         void DrawInspectorPanel();
         void DrawConsolePanel();
         void DrawViewportPanel();
         void DrawContentPanel();
-        void FindRendererLayer();
+        void SetRendererLayer(RendererLayer* rendererlayer);
         
 
         //bool OnFileDragDrop(FileDragDropEvent& event);

@@ -4,14 +4,15 @@
 #include "ForwardPass.h"
 #include "Engine/Scene/Scene.h"
 namespace Engine {
+	struct RenderPipeLineSetting {
+		ResourceRegistry<Material>* MatManager;
+		ResourceRegistry<VertexArray>* VAOManager;
+		Ref<Framebuffer>ScreenFBO;
+		Scene* Scene;
+	};
 	class RenderPipeLine {
 	public:
-		struct RenderPipeLineSetting {
-			ResourceRegistry<Material>* MatManager;
-			ResourceRegistry<VertexArray>* VAOManager;
-			Scene* scene;
-		};
-		RenderPipeLine(RenderPipeLineSetting& RenderPipeLineSetting);
+		RenderPipeLine(RenderPipeLineSetting& renderPipeLineSetting);
 		void Init() {
 			m_Forwardpass->Init();
 			m_Postpass->Init();
@@ -26,7 +27,7 @@ namespace Engine {
 		Ref<ForwardPass>m_Forwardpass;
 		Ref<PostEffectPass>m_Postpass;
 		Ref<Framebuffer>RenderTarget;
-		Ref<Framebuffer>OffScreenTarget;
+		//Ref<Framebuffer>OffScreenTarget;
 
 	};
 

@@ -9,14 +9,13 @@ namespace Engine {
 public:
 	
 	struct ForwardPassSpec {
-		FramebufferSpecification frameBufferSpecfication;
 		ResourceRegistry<Material>* MatManager;
 		ResourceRegistry<VertexArray>* VAOManager;
 		Scene* scene;
 	};
 	ForwardPass(ForwardPassSpec& spec):Spec(spec) {
-		if(!spec.scene){
-			ENGINE_CORE_ERROR("forwardpass:Scene is null");
+		if(!spec.scene||!spec.MatManager||!spec.VAOManager){
+			ENGINE_CORE_ERROR("forwardpass:Scene/MatManager/VAOManager is null");
 		}
 	};
 	void Init()override{};

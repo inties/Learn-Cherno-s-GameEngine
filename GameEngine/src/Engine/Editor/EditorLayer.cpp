@@ -14,30 +14,28 @@ namespace Engine {
     static const char* kPayloadAssetPath = "ASSET_PATH";
 
     EditorLayer::EditorLayer()
-        : Layer("EditorLayer") {}
-
-    void EditorLayer::OnAttach() {
-        FindRendererLayer();
-        // Create scene and set up renderer
+        : Layer("EditorLayer") {
         m_Scene = CreateRef<Scene>();
-        if (m_RendererLayer) {
-            m_RendererLayer->SetScene(m_Scene);
-        }
-        
-        // Initialize project manager and set up asset management
-        // TODO: Set up UI for project root configuration
-        // ProjectManager::Get()->SetProjectRoot(std::filesystem::current_path().string());
-        
-        // Refresh assets to load available files
         ProjectManager::Get()->RefreshAssets();
     }
 
-    void EditorLayer::FindRendererLayer() {
-        // Access layer stack via Application getter
-        auto& layers = Application::Get().GetLayerStack().m_Layers;
-        for (auto* layer : layers) {
-            auto* rl = dynamic_cast<RendererLayer*>(layer);
-            if (rl) { m_RendererLayer = rl; break; }
+    void EditorLayer::Init(RendererLayer* rendererlayer)
+    {
+        SetRendererLayer(rendererlayer);
+    }
+
+    void EditorLayer::OnAttach() {
+    /*    if (m_RendererLayer) {
+            m_RendererLayer->SetScene(m_Scene);
+        }*/
+    }
+
+    void Engine::EditorLayer::SetRendererLayer(RendererLayer* rendererlayer) {
+        if (rendererlayer) {
+            m_RendererLayer = rendererlayer;
+        }
+        else {
+			ENGINE_CORE_ERROR("EditorLayer::SetRendererLayer: rendererlayer is null");
         }
     }
 
