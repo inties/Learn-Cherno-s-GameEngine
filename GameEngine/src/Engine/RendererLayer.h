@@ -28,7 +28,7 @@ namespace Engine
 	public:
 		RendererLayer();
 		virtual ~RendererLayer();
-		void Init(Ref<Scene> scene);
+		void Init(Scene* scene);
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate() override;
@@ -50,7 +50,7 @@ namespace Engine
 		int ReadPickBuffer(uint32_t x, uint32_t y) { return FBO->ReadPixel(1, x, y); };
 
 		// 外部设置场景
-		void SetScene(const Ref<class Scene>& scene) { m_Scene = scene; }
+		void SetScene(Scene* scene) { m_Scene = scene; }
 
 	private:
 		// void SetupModel(); // 已移除：不再使用硬编码模型
@@ -71,7 +71,7 @@ namespace Engine
 		
 		// 渲染资源
 		// Ref<Model> m_Model;
-		Ref<class Scene> m_Scene;
+		Scene* m_Scene;
 		bool m_ShowCube = true; // 是否显示立方体演示
 		
 		// 立方体渲染资源

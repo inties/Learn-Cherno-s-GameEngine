@@ -4,7 +4,6 @@
 #include "Renderer/Renderpass/RenderPipeline.h"
 #include "Resources/ShaderLibrary.h"
 #include "Resources/ModelManager.h"
-#include "Scene/Scene.h"
 #include <imgui.h>
 #include <GLFW/glfw3.h>
 #include "Scene/Component.h"
@@ -43,7 +42,7 @@ namespace Engine
 
 	RendererLayer::~RendererLayer() = default;
 
-	void RendererLayer::Init(Ref<Scene> scene)
+	void RendererLayer::Init(Scene* scene)
 	{
 		SetScene(scene);
 	}
@@ -74,7 +73,9 @@ namespace Engine
 	void RendererLayer::OnAttach()
 	{
 		// 创建渲染管线
-		//RenderPipeLineSetting renderPipeLineSetting;
+		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,FBO.get(),m_Scene};
+		m_RenderPipeLine = CreateScope<RenderPipeLine>(renderPipeLineSetting);
+		m_RenderPipeLine->Init();
 
 	}
 
@@ -199,7 +200,7 @@ namespace Engine
 
 		// 开始场景
 		Renderer::BeginScene();
-		DrawRenderItems();
+		m_RenderPipeLine->Draw();
 		Renderer::EndScene();
 
 		// 解绑帧缓冲，恢复到默认帧缓冲，并将视口还原为窗口大小，供 ImGui 使用

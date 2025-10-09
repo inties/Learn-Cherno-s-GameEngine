@@ -18,7 +18,7 @@ namespace Engine {
         void OnUpdate() override;
         void OnImGuiRender() override;
         void OnEvent(Event& event) override;
-        Ref<Scene>GetScene() { return m_Scene; };
+        Scene* GetScene() { return m_Scene.get(); };
     private:
         void DrawHierarchyPanel();
         void DrawInspectorPanel();
@@ -34,7 +34,7 @@ namespace Engine {
 
     private:
         RendererLayer* m_RendererLayer = nullptr;
-        Ref<Scene> m_Scene; 
+        Scope<Scene> m_Scene; 
         glm::vec2 m_ViewportSize{0.0f, 0.0f};
         glm::vec2 m_mousePos{ 0.0f,0.0f };
         bool m_ViewportFocused = false;

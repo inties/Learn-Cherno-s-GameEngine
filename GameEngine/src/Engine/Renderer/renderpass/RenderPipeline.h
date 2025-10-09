@@ -7,7 +7,7 @@ namespace Engine {
 	struct RenderPipeLineSetting {
 		ResourceRegistry<Material>* MatManager;
 		ResourceRegistry<VertexArray>* VAOManager;
-		Ref<Framebuffer>ScreenFBO;
+		Framebuffer* ScreenFBO;
 		Scene* Scene;
 	};
 	class RenderPipeLine {
@@ -26,7 +26,7 @@ namespace Engine {
 	private:
 		Ref<ForwardPass>m_Forwardpass;
 		Ref<PostEffectPass>m_Postpass;
-		Ref<Framebuffer>RenderTarget;
+		Framebuffer* RenderTarget;
 		//Ref<Framebuffer>OffScreenTarget;
 
 	};

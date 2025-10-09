@@ -6,8 +6,7 @@
 #include "Engine/Scene/Component.h"
 namespace Engine {
 	class ForwardPass :public RenderPass {
-public:
-	
+public:	
 	struct ForwardPassSpec {
 		ResourceRegistry<Material>* MatManager;
 		ResourceRegistry<VertexArray>* VAOManager;

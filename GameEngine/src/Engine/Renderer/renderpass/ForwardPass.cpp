@@ -5,6 +5,7 @@
 #include "Engine/camera.h"
 namespace Engine {
     void ForwardPass::Draw() {
+        
         // 使用ECS系统渲染有RenderComponent的实体
         if (!Spec.scene || !Spec.VAOManager || !Spec.MatManager) {
             ENGINE_CORE_ERROR("forwardpass:Scene/VAOmanager/MatManager为空");

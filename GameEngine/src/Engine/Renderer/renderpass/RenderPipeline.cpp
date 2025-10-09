@@ -25,7 +25,7 @@ namespace Engine
 		m_Forwardpass = CreateRef<ForwardPass>(forwardPassSpec);
 		m_Forwardpass->SetFBO(RenderTarget);
 
-		PostEffectPass::PostEffectPassSpec postpassSpec = { "PostEffect",renderPipeLineSetting.MatManager };
+		PostEffectPass::PostEffectPassSpec postpassSpec = { "PostEffect",renderPipeLineSetting.MatManager,renderPipeLineSetting.VAOManager,renderPipeLineSetting.Scene };
 		m_Postpass = CreateRef<PostEffectPass>(postpassSpec);
 		m_Postpass->SetFBO(RenderTarget);
 	}

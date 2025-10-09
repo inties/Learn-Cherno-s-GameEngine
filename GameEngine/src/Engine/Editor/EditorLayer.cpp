@@ -15,7 +15,7 @@ namespace Engine {
 
     EditorLayer::EditorLayer()
         : Layer("EditorLayer") {
-        m_Scene = CreateRef<Scene>();
+        m_Scene = CreateScope<Scene>();
         ProjectManager::Get()->RefreshAssets();
     }
 
