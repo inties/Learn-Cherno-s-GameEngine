@@ -16,10 +16,10 @@ namespace Engine
 		Renderer::Init();
 
 		// 加载默认着色器
-		LoadDefaultShaders();
+		SetUpShaders_Materials();
 
-		// 设置立方体
-		SetupCube();
+		// 设置默认几何体
+		SetUPGeoMetry();
 
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
@@ -52,16 +52,11 @@ namespace Engine
 	{
 		// 尝试多个可能的路径
 		std::vector<std::string> possiblePaths = {
-			"GameEngine/Shader/" + filename,
-			"../GameEngine/Shader/" + filename,
-			"../../GameEngine/Shader/" + filename,
-			"../../../GameEngine/Shader/" + filename,
-			"../../../../GameEngine/Shader/" + filename
+			"Shader/" + filename,
 		};
 		
 		for (const auto& path : possiblePaths) {
 			if (std::filesystem::exists(path)) {
-				ENGINE_CORE_INFO("Found shader file: {}", path);
 				return path;
 			}
 		}
@@ -85,32 +80,33 @@ namespace Engine
 		//DestroyRenderTarget();
 	}
 
-	void RendererLayer::LoadDefaultShaders()
+	void RendererLayer::SetUpShaders_Materials()
 	{
 		// 加载默认PBR着色器到ShaderLibrary
 		std::string shaderPath = GetShaderPath("default.glsl");
-		ENGINE_CORE_INFO("Loading default shader from: {}", shaderPath);
 		
 		auto defaultShader = ShaderLibrary::Get()->Load("DefaultPBR", shaderPath);
-		if (!defaultShader) {
-			ENGINE_CORE_ERROR("Failed to load DefaultPBR shader");
-		} else {
-			ENGINE_CORE_INFO("Successfully loaded DefaultPBR shader");
-		}
+		std::string shaderPath_vs = GetShaderPath("PostEffect/postEffect_vs.glsl");
+		std::string shaderPath_fs = GetShaderPath("PostEffect/postEffect_fs.glsl");
+
+		//创建后处理shader和材质
+		auto postEffectShader = ShaderLibrary::Get()->Load("posteffect", shaderPath_vs,shaderPath_fs);
+
+		auto postEffectMat = Material::Create(postEffectShader);
+		Mat_Manager.Regist("posteffect", postEffectMat);
+
+		shaderPath_fs= GetShaderPath("PostEffect/defaultBlit_fs.glsl");
+		auto defaultBlitShader = ShaderLibrary::Get()->Load("defaultblit", shaderPath_vs, shaderPath_fs);
+
+		auto defaultBlitMat = Material::Create(defaultBlitShader);
+		Mat_Manager.Regist("defaultblit", defaultBlitMat);
+
+		// 创建立方体着色器
+		std::string cubeShaderPath = GetShaderPath("cube.glsl");
+		auto CubeShader = Shader::Create(cubeShaderPath);
+		auto CubeDefaultMat = Material::Create(CubeShader);
+		Mat_Manager.Regist("cube", CubeDefaultMat);
 		
-		// 也注册为"Default"以防万一
-		ShaderLibrary::Get()->Add("Default", defaultShader);
-		
-		// 加载测试着色器
-		std::string testShaderPath = GetShaderPath("test_simple.glsl");
-		ENGINE_CORE_INFO("Loading test shader from: {}", testShaderPath);
-		
-		m_DebugShader = Shader::Create(testShaderPath);
-		if (!m_DebugShader) {
-			ENGINE_CORE_ERROR("Failed to load test shader");
-		} else {
-			ENGINE_CORE_INFO("Successfully loaded test shader");
-		}
 	}
 
 	void RendererLayer::SetupCube()
@@ -161,19 +157,48 @@ namespace Engine
 		auto CubeIBO = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
 		CubeVAO->SetIndexBuffer(CubeIBO);
 		VAO_Manager.Regist("cube", CubeVAO);
-		// 创建立方体着色器
-		std::string cubeShaderPath = GetShaderPath("cube.glsl");
-		//m_CubeShader = Shader::Create(cubeShaderPath);
-		auto CubeShader = Shader::Create(cubeShaderPath);
-		auto CubeDefaultMat = Material::Create(CubeShader);
-		if (!CubeShader) {
-			ENGINE_CORE_ERROR("Failed to load cube shader");
-		}
-		else {
-			ENGINE_CORE_INFO("Successfully loaded cube shader");
-		}
-		Mat_Manager.Regist("cube", CubeDefaultMat);
-		
+
+	}
+
+	void RendererLayer::SetupQuad()
+	{
+		// 立方体顶点数据：位置(x, y, z) + 颜色(r, g, b, a)
+		float quadVertices[] = {
+			// 位置           颜色 (RGBA)
+			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+
+		unsigned int quadIndices[] = {
+			// 前面
+			0,1,3,0,3,2
+		};
+
+		// 创建VAO
+		auto quadVAO = VertexArray::Create();
+
+		// 创建VBO
+		auto quadVBO = VertexBuffer::Create(quadVertices, sizeof(quadVertices));
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float2, "a_TexCoord" }
+		};
+		quadVBO->SetLayout(layout);
+		quadVAO->SetVertexBuffer(quadVBO);
+
+		// 创建IBO
+		auto quadIBO = IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(unsigned int));
+		quadVAO->SetIndexBuffer(quadIBO);
+		VAO_Manager.Regist("quad", quadVAO);
+	}
+
+	void RendererLayer::SetUPGeoMetry()
+	{
+		SetupCube();
+		SetupQuad();
+
 	}
 
 	void RendererLayer::OnUpdate()

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/core.h"
 
@@ -20,7 +20,9 @@ public:
 
     Ref<Shader> Load(const std::string& name, const std::string& filepath);
 
-    Ref<Shader> Load(const std::string& filepath);
+    Ref<Shader> Load(const std::string& name, const std::string& vertexfilepath,const std::string& fragfilepath);
+
+
 
     Ref<Shader> Get(const std::string& name);
 

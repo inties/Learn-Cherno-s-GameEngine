@@ -15,17 +15,14 @@ namespace Engine {
 			Scene* scene;
 		};
 		PostEffectPass(PostEffectPassSpec& spec):Spec(spec) {
-			if (!spec.MatManager) {
+			if (!spec.MatManager||!spec.VAOManager||!spec.scene) {
 				ENGINE_CORE_ERROR("PostEffectPass:Scene/MatManager/VAOManager is null");
 			}
+			m_MatManager = spec.MatManager;
+			m_VAOManager = spec.VAOManager;
 		};
-		void Init()override final{
-			Mat = Spec.MatManager->Get(Spec.matName);
-			if(!Mat){
-				ENGINE_CORE_ERROR("PostEffectPass: Material {} not found",Spec.matName);
-			}
-		};
-		void Draw()override final{};
+		void Init()override final;
+		void Draw()override final;
 		inline void SetMat(Ref<Material>mat) {
 			Mat = mat;
 		}
@@ -33,6 +30,11 @@ namespace Engine {
 		Ref<Texture>InputTexture;
 		Ref<Material>Mat;
 		PostEffectPassSpec Spec;
+		Ref<Framebuffer>InterMediateFBO;
+		Ref<Shader>PostEffectShader;
+		Ref<Shader>DefaultBlitShader;
+		ResourceRegistry<Material>* m_MatManager;
+		ResourceRegistry<VertexArray>* m_VAOManager;
 	};
 
 

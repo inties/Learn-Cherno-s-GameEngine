@@ -28,14 +28,13 @@ Ref<Shader> ShaderLibrary::Load(const std::string& name, const std::string& file
 
 }
 
-Ref<Shader> ShaderLibrary::Load(const std::string& filepath) {
+Ref<Shader> ShaderLibrary::Load(const std::string& name, const std::string& vertexfilepath, const std::string& fragfilepath)
+{
+    Ref<Shader> shader = Shader::CreateFromFiles(name,vertexfilepath,fragfilepath);
 
-    Ref<Shader> shader = Shader::Create(filepath);
-
-    Add(filepath, shader);
+    Add(name, shader);
 
     return shader;
-
 }
 
 Ref<Shader> ShaderLibrary::Get(const std::string& name) {

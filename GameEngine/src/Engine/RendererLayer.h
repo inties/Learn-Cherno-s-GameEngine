@@ -54,11 +54,13 @@ namespace Engine
 
 	private:
 		// void SetupModel(); // 已移除：不再使用硬编码模型
+		void SetUPGeoMetry();
 		void SetupCube();
+		void SetupQuad();
 		std::string GetShaderPath(const std::string& filename);
 		void UpdateProjectionMatrix();
 		void SetupViewMatrix();
-		void LoadDefaultShaders();
+		void SetUpShaders_Materials();
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
 		void DrawRenderItems();
 		// 为模型设置物体ID

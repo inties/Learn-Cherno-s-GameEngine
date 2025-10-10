@@ -41,7 +41,7 @@ namespace Engine {
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 		: m_Path(path)
 	{
-		HZ_PROFILE_FUNCTION();
+		ENGINE_PROFILE_FUNCTION();
 
 		int width, height, channels;
 		// 使用线程安全的stbi_set_flip_vertically_on_load_thread替代全局设置
@@ -124,14 +124,14 @@ namespace Engine {
 
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
-		HZ_PROFILE_FUNCTION();
+		ENGINE_PROFILE_FUNCTION();
 
 		glDeleteTextures(1, &m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
-		HZ_PROFILE_FUNCTION();
+		ENGINE_PROFILE_FUNCTION();
 
 		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
 		ENGINE_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
@@ -140,7 +140,7 @@ namespace Engine {
 
 	void OpenGLTexture2D::Bind(uint32_t slot) const
 	{
-		HZ_PROFILE_FUNCTION();
+		ENGINE_PROFILE_FUNCTION();
 
 		glBindTextureUnit(slot, m_RendererID);
 	}

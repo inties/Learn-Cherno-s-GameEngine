@@ -97,6 +97,7 @@ project "SandBox"
 
     targetdir ("./")
     objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
+    debugdir ("%{cfg.buildtarget.directory}")
  
     files {
         "%{prj.name}/src/**.h",

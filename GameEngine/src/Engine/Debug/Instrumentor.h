@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <algorithm>
 #include <chrono>
@@ -236,5 +236,5 @@ namespace Engine {
 	#define HZ_PROFILE_BEGIN_SESSION(name, filepath)
 	#define HZ_PROFILE_END_SESSION()
 	#define HZ_PROFILE_SCOPE(name)
-	#define HZ_PROFILE_FUNCTION()
+	#define ENGINE_PROFILE_FUNCTION()
 #endif
