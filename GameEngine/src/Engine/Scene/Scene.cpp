@@ -12,8 +12,8 @@ namespace Engine {
     Scene::Scene() {
         // 默认创建一个CubeEntity
         Entity cube=CreatePrefab(PrefabTypes::Cube);
-        auto& nsc=cube.AddComponent<NativeScriptableComponent>();
-        nsc.Bind<MoveScript>(cube);  // 传递Entity指针而不是NativeScriptableComponent指针
+        // auto& nsc=cube.AddComponent<NativeScriptableComponent>();
+        // nsc.Bind<MoveScript>(cube);  // 传递Entity指针而不是NativeScriptableComponent指针
         ENGINE_CORE_INFO("Scene created with default CubeEntity");
     }
 
@@ -44,8 +44,9 @@ namespace Engine {
     Entity Scene::CreateEntity(const std::string& str)
     {
         Entity e (m_Registry.create(),this );
-        e.AddComponent<TransformComponent>(glm::vec3(1.0f, 1.0f, 1.0f));
-        e.AddComponent<TagComponent>(str);
+        if (e.HasComponent<TagComponent>()) {
+            e.GetComponent<TagComponent>().Name = str;
+        }
         return e;
     }
 

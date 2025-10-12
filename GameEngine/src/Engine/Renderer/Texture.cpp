@@ -33,4 +33,28 @@ namespace Engine {
 		return nullptr;
 	}
 
+	Scope<TextureCube> TextureCube::Create(const std::vector<std::string>& faces)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLTextureCube>(faces);
+		}
+
+		ENGINE_CORE_ERROR("Unknown RendererAPI!");
+		return nullptr;
+	}
+
+	Scope<TextureCube> TextureCube::Create(const std::string& path)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLTextureCube>(path);
+		}
+
+		ENGINE_CORE_ERROR("Unknown RendererAPI!");
+		return nullptr;
+	}
+
 }

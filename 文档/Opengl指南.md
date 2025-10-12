@@ -2,7 +2,7 @@ Opengl指南
 
 
 
-opengl的顶点数据输入：
+##### opengl的顶点数据输入
 
 用VAO描述顶点布局，并将顶点属性元素绑定到指定绑定点上，glsl中顶点属性从相应绑定点获取数据。
 
@@ -16,7 +16,7 @@ glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0)
 
 
 
-纹理绑定方案：
+##### 纹理绑定方案
 
 传统方式激活全局的活动纹理单元，将纹理单元和纹理绑定，同时将shader变量绑定到特定的纹理单元上。即以纹理单元作为中间“介质”。
 
@@ -35,12 +35,15 @@ DSA方案相当于DX12中的根描述符
 
 
 
-帧缓冲的完整性：
+##### 帧缓冲的完整性
+
 现代opengl允许只有颜色纹理或者深度纹理附件，各纹理附件应该有相同的采样数目和尺寸。
 
 在没有深度附件的情况下，深度测试默认通过
 
 
+
+##### 绑定和解绑操作
 
 opengl更换绑定前，不需要做解绑操作，调用glbind*()会直接覆盖当前的全局状态
 
@@ -48,3 +51,27 @@ texture绑定到纹理单元是全局操作，和shader无关，“**Shader 并�
 
 而shader的uniform变量被shader program持有，shader切换后，uniform变量也会随之切换
 
+
+
+GL纹理格式
+对于漫反射纹理，总是使用**`GL_SRGB8_ALPHA8`**
+
+HDR和环境贴图使用**`GL_RGBA16F`**
+
+#### 和AI的讨论
+
+GL的纹理绑定现代方法
+
+https://g.co/gemini/share/fc217cde0e0c
+
+GL绑定和解绑问题的讨论
+
+https://chatgpt.com/share/68e93232-3f8c-8003-a8a9-69a2ed817660
+
+后处理pass减小切换FBO开销的最佳实践
+
+https://g.co/gemini/share/f58a49fa0124
+
+GL纹理格式
+
+https://chat.deepseek.com/share/q86orala4e3cfvgs3k

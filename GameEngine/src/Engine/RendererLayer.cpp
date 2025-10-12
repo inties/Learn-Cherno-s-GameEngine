@@ -20,7 +20,7 @@ namespace Engine
 
 		// 设置默认几何体
 		SetUPGeoMetry();
-
+		SetupTexture();
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
 		}
@@ -68,7 +68,7 @@ namespace Engine
 	void RendererLayer::OnAttach()
 	{
 		// 创建渲染管线
-		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,FBO.get(),m_Scene};
+		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,&Texture_Manager,FBO.get(),m_Scene};
 		m_RenderPipeLine = CreateScope<RenderPipeLine>(renderPipeLineSetting);
 		m_RenderPipeLine->Init();
 
@@ -192,6 +192,23 @@ namespace Engine
 		auto quadIBO = IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(unsigned int));
 		quadVAO->SetIndexBuffer(quadIBO);
 		VAO_Manager.Regist("quad", quadVAO);
+	}
+
+	void RendererLayer::SetupTexture()
+	{
+		std::string base_path = "Resources/SkyBox/sea";
+		std::vector<std::string>cubemap_paths = {
+			(std::filesystem::path(base_path) / "right.jpg").string(),
+			(std::filesystem::path(base_path) / "left.jpg").string(),
+			(std::filesystem::path(base_path) / "top.jpg").string(),
+			(std::filesystem::path(base_path) / "bottom.jpg").string(),
+			(std::filesystem::path(base_path) / "front.jpg").string(),
+			(std::filesystem::path(base_path) / "back.jpg").string()
+		};
+		auto SkyBox = TextureCube::Create(cubemap_paths);
+
+		Ref<TextureCube>SkyBox_ref = std::move(SkyBox);
+		Texture_Manager.Regist("skybox", SkyBox_ref);
 	}
 
 	void RendererLayer::SetUPGeoMetry()

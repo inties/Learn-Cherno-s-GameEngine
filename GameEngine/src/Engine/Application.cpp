@@ -53,7 +53,7 @@ namespace Engine {
 		//m_LayerStack.PushLayer(new TestLayer());
 		
 		// 初始化Camera单例
-		Camera::Initialize(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+		Camera::Initialize(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
 		
 		// 初始化帧计时
 		m_LastFrameTime = glfwGetTime();

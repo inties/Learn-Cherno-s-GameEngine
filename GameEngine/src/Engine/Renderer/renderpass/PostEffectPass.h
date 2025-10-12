@@ -14,8 +14,8 @@ namespace Engine {
 			ResourceRegistry<VertexArray>* VAOManager;
 			Scene* scene;
 		};
-		PostEffectPass(PostEffectPassSpec& spec):Spec(spec) {
-			if (!spec.MatManager||!spec.VAOManager||!spec.scene) {
+		PostEffectPass(PostEffectPassSpec& spec) :Spec(spec) {
+			if (!spec.MatManager || !spec.VAOManager || !spec.scene) {
 				ENGINE_CORE_ERROR("PostEffectPass:Scene/MatManager/VAOManager is null");
 			}
 			m_MatManager = spec.MatManager;

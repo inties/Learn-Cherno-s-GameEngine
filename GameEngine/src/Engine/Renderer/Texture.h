@@ -15,6 +15,7 @@ namespace Engine {
 		// Color
 		RGBA8,
 		RED_INTEGER,
+		RGB8,
 
 		// Depth/stencil
 		DEPTH24STENCIL8,
@@ -44,6 +45,14 @@ namespace Engine {
 	public:
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureFormat format = TextureFormat::RGBA8, int sample = 1);
 		static Ref<Texture2D> Create(const std::string& path);
+	};
+
+	class TextureCube : public Texture {
+	public:
+		// 从6张图片创建立方体贴图
+		static Scope<TextureCube> Create(const std::vector<std::string>& faces);
+		// 从单张图片创建立方体贴图（所有面使用同一张图）
+		static Scope<TextureCube> Create(const std::string& path);
 	};
 
 }

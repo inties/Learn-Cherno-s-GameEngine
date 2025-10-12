@@ -144,4 +144,129 @@ namespace Engine {
 
 		glBindTextureUnit(slot, m_RendererID);
 	}
+	// 从6张图片加载立方体贴图
+	OpenGLTextureCube::OpenGLTextureCube(const std::vector<std::string>& faces)
+		: m_Width(0), m_Height(0)
+	{
+		ENGINE_CORE_ASSERT(faces.size() == 6, "Cubemap requires exactly 6 faces!");
+
+		// 创建立方体贴图纹理
+		glGenTextures(1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
+
+		// 立方体贴图不需要翻转
+		stbi_set_flip_vertically_on_load(false);
+
+		// 加载6个面的纹理
+		for (unsigned int i = 0; i < faces.size(); i++)
+		{
+			int width, height, nrChannels;
+			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+			
+			if (data)
+			{
+				// 记录第一个面的尺寸
+				if (i == 0) {
+					m_Width = width;
+					m_Height = height;
+				}
+
+				// 确定格式
+				GLenum format = GL_RGB;
+				if (nrChannels == 4)
+					format = GL_RGBA;
+				else if (nrChannels == 3)
+					format = GL_RGB;
+
+				// 加载到立方体贴图的第 i 个面
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+				
+				ENGINE_CORE_INFO("Loaded cubemap face {}: {}", i, faces[i]);
+			}
+			else
+			{
+				ENGINE_CORE_ERROR("Cubemap texture failed to load at path: {}", faces[i]);
+			}
+			stbi_image_free(data);
+		}
+
+		// 设置纹理参数
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		
+	}
+
+	// 从单张图片加载（简化实现，可用于天空盒的简单测试）
+	OpenGLTextureCube::OpenGLTextureCube(const std::string& path, TextureFormat format)
+		: m_Path(path), m_Width(0), m_Height(0)
+	{
+		// 创建立方体贴图纹理
+		glGenTextures(1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
+
+		// 立方体贴图不需要翻转
+		stbi_set_flip_vertically_on_load(false);
+
+		// 加载图片
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+		
+		if (data)
+		{
+			m_Width = width;
+			m_Height = height;
+
+			// 确定格式
+			GLenum glFormat = GL_RGB;
+			if (nrChannels == 4)
+				glFormat = GL_RGBA;
+			else if (nrChannels == 3)
+				glFormat = GL_RGB;
+
+			m_DataFormat = glFormat;
+			m_InternalFormat = (nrChannels == 4) ? GL_RGBA8 : GL_RGB8;
+
+			// 将同一张图片应用到立方体的所有6个面（仅用于测试）
+			for (unsigned int i = 0; i < 6; i++)
+			{
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, m_InternalFormat, width, height, 0, glFormat, GL_UNSIGNED_BYTE, data);
+			}
+
+			ENGINE_CORE_INFO("Loaded cubemap from single image: {}", path);
+		}
+		else
+		{
+			ENGINE_CORE_ERROR("Cubemap texture failed to load at path: {}", path);
+		}
+		stbi_image_free(data);
+
+		// 设置纹理参数
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	}
+
+	OpenGLTextureCube::~OpenGLTextureCube()
+	{
+		glDeleteTextures(1, &m_RendererID);
+	}
+
+	void OpenGLTextureCube::SetData(void* data, uint32_t size)
+	{
+		// 立方体贴图的SetData实现（如需动态更新）
+		ENGINE_CORE_WARN("OpenGLTextureCube::SetData not fully implemented");
+	}
+
+	void OpenGLTextureCube::Bind(uint32_t slot) const
+	{
+		glBindTextureUnit(slot, m_RendererID);
+	}
 }

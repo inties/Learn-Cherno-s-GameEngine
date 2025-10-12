@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // Standard library includes first
 #include <vector>
@@ -15,6 +15,7 @@
 #include <memory>
 #include <chrono>
 #include <cstdint>
+#include <FileSystem>
 // Engine core - before platform specific includes
 #include "Engine/core.h"
 

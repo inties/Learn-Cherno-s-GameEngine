@@ -18,18 +18,18 @@ void Engine::PostEffectPass::Init()
 
 void Engine::PostEffectPass::Draw()
 {
-	//ÀëÆÁäÖÈ¾
+	//ç¦»å±æ¸²æŸ“
 	InterMediateFBO->Bind();
 	InterMediateFBO->ClearColorAttachments(0);
-	auto quadVAO=m_VAOManager->Get("quad");
+	auto quadVAO = m_VAOManager->Get("quad");
 	InputTexture->Bind(0);
 	PostEffectShader->Bind();
 	quadVAO->Bind();
 	RenderCommand::DrawIndexed(quadVAO);
 
-	
 
-	//äÖÈ¾µ½FBO
+
+	//æ¸²æŸ“åˆ°FBO
 	FBO->Bind();
 	RenderCommand::Clear();
 	DefaultBlitShader->Bind();

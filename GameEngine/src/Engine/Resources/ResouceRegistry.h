@@ -34,7 +34,7 @@ namespace Engine {
 			}
 			Registry[name] = resource;
 		}
-		void Regist(const std::string& name, Ref<ResourceType>&res) {
+		void Regist(const std::string& name, const Ref<ResourceType>&res) {
 			if (Get(name)) {
 				ENGINE_INFO("{}twice registered", name);
 				return;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "pch.h"
 #include "Entity.h"
 #include "Component.h"
@@ -32,8 +32,9 @@ namespace Engine {
 		}
 		
 		void OnUpdate() override {
-			auto& transform = GetComponent<TransformComponent>();
-			transform.Translate(glm::vec3(0.01f, 0.0f, 0.0f));
+			//auto& transform = GetComponent<TransformComponent>();
+			//transform.Translate(glm::vec3(0.01f, 0.0f, 0.0f));
+			
 		}
 		
 	};

@@ -22,12 +22,20 @@ namespace Engine
 
 		//创建pass并附加渲染目标
 		ForwardPass::ForwardPassSpec forwardPassSpec = {renderPipeLineSetting.MatManager,renderPipeLineSetting.VAOManager,renderPipeLineSetting.Scene };
-		m_Forwardpass = CreateRef<ForwardPass>(forwardPassSpec);
+		m_Forwardpass = CreateScope<ForwardPass>(forwardPassSpec);
 		m_Forwardpass->SetFBO(RenderTarget);
 
 		PostEffectPass::PostEffectPassSpec postpassSpec = { "posteffect",renderPipeLineSetting.MatManager,renderPipeLineSetting.VAOManager,renderPipeLineSetting.Scene };
-		m_Postpass = CreateRef<PostEffectPass>(postpassSpec);
+		m_Postpass = CreateScope<PostEffectPass>(postpassSpec);
 		m_Postpass->SetFBO(RenderTarget);
+
+
+		SkyBoxPass::SkyBoxPassSpec sky_box_pass_spec= { "sea",renderPipeLineSetting.VAOManager,renderPipeLineSetting.TexManager};
+
+		m_Postpass = CreateScope<PostEffectPass>(postpassSpec);
+		//m_Postpass->SetShader();
+		m_Postpass->SetFBO(RenderTarget);
+
 	}
 
 	void RenderPipeLine::Resize() {

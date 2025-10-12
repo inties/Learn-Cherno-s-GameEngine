@@ -57,6 +57,7 @@ namespace Engine
 		void SetUPGeoMetry();
 		void SetupCube();
 		void SetupQuad();
+		void SetupTexture();
 		std::string GetShaderPath(const std::string& filename);
 		void UpdateProjectionMatrix();
 		void SetupViewMatrix();
@@ -83,6 +84,8 @@ namespace Engine
 		Ref<Shader> m_CubeShader;
 		ResourceRegistry<VertexArray>VAO_Manager;
 		ResourceRegistry<Material>Mat_Manager;
+		ResourceRegistry<Texture>Texture_Manager;
+		//ResourceRegistry<Shader>Shader_Manager;
 		
 
 
