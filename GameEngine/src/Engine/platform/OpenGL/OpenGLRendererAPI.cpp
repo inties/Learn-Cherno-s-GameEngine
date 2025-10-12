@@ -45,6 +45,12 @@ namespace Engine
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 	}
 
+	void OpenGLRendererAPI::DrawIndexed(const VertexArray* vertexArray, uint32_t indexCount)
+	{
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	}
+
 	void OpenGLRendererAPI::DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount)
 	{
 		uint32_t count = vertexCount ? vertexCount : vertexArray->GetVertexCount();

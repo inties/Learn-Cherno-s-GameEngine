@@ -61,7 +61,7 @@ namespace Engine
 		std::string GetShaderPath(const std::string& filename);
 		void UpdateProjectionMatrix();
 		void SetupViewMatrix();
-		void SetUpShaders_Materials();
+		void SetUpShadersMaterials();
 		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
 		void DrawRenderItems();
 		// 为模型设置物体ID
@@ -85,7 +85,7 @@ namespace Engine
 		ResourceRegistry<VertexArray>VAO_Manager;
 		ResourceRegistry<Material>Mat_Manager;
 		ResourceRegistry<Texture>Texture_Manager;
-		//ResourceRegistry<Shader>Shader_Manager;
+		ResourceRegistry<Shader>Shader_Manager;
 		
 
 

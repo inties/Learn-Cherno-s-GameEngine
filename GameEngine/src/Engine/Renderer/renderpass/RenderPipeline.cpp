@@ -30,11 +30,10 @@ namespace Engine
 		m_Postpass->SetFBO(RenderTarget);
 
 
-		SkyBoxPass::SkyBoxPassSpec sky_box_pass_spec= { "sea",renderPipeLineSetting.VAOManager,renderPipeLineSetting.TexManager};
+		SkyBoxPass::SkyBoxPassSpec skybox_spec= { "sea",renderPipeLineSetting.VAOManager,renderPipeLineSetting.TexManager,renderPipeLineSetting.ShaderManager};
 
-		m_Postpass = CreateScope<PostEffectPass>(postpassSpec);
-		//m_Postpass->SetShader();
-		m_Postpass->SetFBO(RenderTarget);
+		m_skyBoxPass = CreateScope<SkyBoxPass>(skybox_spec);
+		m_skyBoxPass->SetFBO(RenderTarget);
 
 	}
 

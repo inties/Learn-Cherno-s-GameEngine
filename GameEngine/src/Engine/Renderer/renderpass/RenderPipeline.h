@@ -9,7 +9,7 @@ namespace Engine {
 		ResourceRegistry<Material>* MatManager;
 		ResourceRegistry<VertexArray>* VAOManager;
 		ResourceRegistry<Texture>* TexManager;
-
+		ResourceRegistry<Shader>* ShaderManager;
 		Framebuffer* ScreenFBO;
 		Scene* Scene;
 	};
@@ -19,10 +19,12 @@ namespace Engine {
 		void Init() {
 			m_Forwardpass->Init();
 			m_Postpass->Init();
+			m_skyBoxPass->Init();
 		};
 
 		void Draw() {
 			m_Forwardpass->Draw();
+			m_skyBoxPass->Draw();
 			m_Postpass->Draw();
 		};
 		void Resize();

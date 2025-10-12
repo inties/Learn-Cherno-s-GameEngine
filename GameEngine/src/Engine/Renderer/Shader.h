@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "pch.h"
 
@@ -24,6 +24,7 @@ namespace Engine
 
 		static std::shared_ptr<Shader> Create(const std::string& filepath);
 		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
-		static std::shared_ptr<Shader> CreateFromFiles(const std::string& name, const std::string& vertexFilePath, const std::string& fragmentFilePath);
+		static std::shared_ptr<Shader> Create(const std::string& vertexFilePath, const std::string& fragmentFilePath);
+		static Scope<Shader>CreateUniqueShader(const std::string& vertexFilePath, const std::string& fragmentFilePath);
 	};
 } 

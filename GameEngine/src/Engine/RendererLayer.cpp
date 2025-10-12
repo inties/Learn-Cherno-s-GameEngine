@@ -2,7 +2,7 @@
 #include "RendererLayer.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Renderpass/RenderPipeline.h"
-#include "Resources/ShaderLibrary.h"
+#include "Engine/Renderer/Shader.h"
 #include "Resources/ModelManager.h"
 #include <imgui.h>
 #include <GLFW/glfw3.h>
@@ -16,7 +16,7 @@ namespace Engine
 		Renderer::Init();
 
 		// 加载默认着色器
-		SetUpShaders_Materials();
+		SetUpShadersMaterials();
 
 		// 设置默认几何体
 		SetUPGeoMetry();
@@ -68,7 +68,7 @@ namespace Engine
 	void RendererLayer::OnAttach()
 	{
 		// 创建渲染管线
-		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,&Texture_Manager,FBO.get(),m_Scene};
+		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,&Texture_Manager,&Shader_Manager,FBO.get(),m_Scene};
 		m_RenderPipeLine = CreateScope<RenderPipeLine>(renderPipeLineSetting);
 		m_RenderPipeLine->Init();
 
@@ -80,32 +80,35 @@ namespace Engine
 		//DestroyRenderTarget();
 	}
 
-	void RendererLayer::SetUpShaders_Materials()
+	void RendererLayer::SetUpShadersMaterials()
 	{
 		// 加载默认PBR着色器到ShaderLibrary
 		std::string shaderPath = GetShaderPath("default.glsl");
-		
-		auto defaultShader = ShaderLibrary::Get()->Load("DefaultPBR", shaderPath);
+		auto defaultShader = Shader::Create(shaderPath);
+
 		std::string shaderPath_vs = GetShaderPath("PostEffect/postEffect_vs.glsl");
 		std::string shaderPath_fs = GetShaderPath("PostEffect/postEffect_fs.glsl");
-
-		//创建后处理shader和材质
-		auto postEffectShader = ShaderLibrary::Get()->Load("posteffect", shaderPath_vs,shaderPath_fs);
-
+		auto postEffectShader = Shader::Create(shaderPath_vs, shaderPath_fs);
 		auto postEffectMat = Material::Create(postEffectShader);
-		Mat_Manager.Regist("posteffect", postEffectMat);
+		Mat_Manager.Regist("posteffect",std::move(postEffectMat));
+
 
 		shaderPath_fs= GetShaderPath("PostEffect/defaultBlit_fs.glsl");
-		auto defaultBlitShader = ShaderLibrary::Get()->Load("defaultblit", shaderPath_vs, shaderPath_fs);
-
+		auto defaultBlitShader = Shader::Create(shaderPath_vs, shaderPath_fs);
 		auto defaultBlitMat = Material::Create(defaultBlitShader);
-		Mat_Manager.Regist("defaultblit", defaultBlitMat);
+		Mat_Manager.Regist("defaultblit", std::move(defaultBlitMat));
+
+		shaderPath_vs = GetShaderPath("skybox/skybox_vs.glsl");
+		shaderPath_fs = GetShaderPath("skybox/skybox_fs.glsl");
+		auto skybox_shader = Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
 
 		// 创建立方体着色器
 		std::string cubeShaderPath = GetShaderPath("cube.glsl");
 		auto CubeShader = Shader::Create(cubeShaderPath);
 		auto CubeDefaultMat = Material::Create(CubeShader);
-		Mat_Manager.Regist("cube", CubeDefaultMat);
+		Mat_Manager.Regist("cube", std::move(CubeDefaultMat));
+
+		Shader_Manager.Regist("skybox", std::move(skybox_shader));
 		
 	}
 
@@ -125,7 +128,9 @@ namespace Engine
 			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, // 6 - 白色
 			-0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.5f, 1.0f  // 7 - 灰色
 		};
-
+		for (int i = 0; i < sizeof(cubeVertices)/sizeof(float); i++) {
+			cubeVertices[i] *= 2;
+		}
 		unsigned int cubeIndices[] = {
 			// 前面
 			0, 1, 2,  2, 3, 0,
@@ -156,7 +161,7 @@ namespace Engine
 		// 创建IBO
 		auto CubeIBO = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
 		CubeVAO->SetIndexBuffer(CubeIBO);
-		VAO_Manager.Regist("cube", CubeVAO);
+		VAO_Manager.Regist("cube", std::move(CubeVAO));
 
 	}
 
@@ -191,7 +196,7 @@ namespace Engine
 		// 创建IBO
 		auto quadIBO = IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(unsigned int));
 		quadVAO->SetIndexBuffer(quadIBO);
-		VAO_Manager.Regist("quad", quadVAO);
+		VAO_Manager.Regist("quad", std::move(quadVAO));
 	}
 
 	void RendererLayer::SetupTexture()
@@ -205,10 +210,8 @@ namespace Engine
 			(std::filesystem::path(base_path) / "front.jpg").string(),
 			(std::filesystem::path(base_path) / "back.jpg").string()
 		};
-		auto SkyBox = TextureCube::Create(cubemap_paths);
-
-		Ref<TextureCube>SkyBox_ref = std::move(SkyBox);
-		Texture_Manager.Regist("skybox", SkyBox_ref);
+		auto skybox = TextureCube::Create(cubemap_paths);
+		Texture_Manager.Regist("sea", std::move(skybox));
 	}
 
 	void RendererLayer::SetUPGeoMetry()

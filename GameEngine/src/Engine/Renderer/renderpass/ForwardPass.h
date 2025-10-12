@@ -17,7 +17,7 @@ public:
 			ENGINE_CORE_ERROR("forwardpass:Scene/MatManager/VAOManager is null");
 		}
 	};
-	void Init()override{};
+	void Init()override {};
 	void Draw()override;
 	private:
 

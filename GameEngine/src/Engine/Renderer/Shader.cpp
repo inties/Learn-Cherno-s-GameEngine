@@ -15,8 +15,12 @@ namespace Engine
 		return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc, true);
 	}
 
-	std::shared_ptr<Shader> Shader::CreateFromFiles(const std::string& name, const std::string& vertexFilePath, const std::string& fragmentFilePath)
+	std::shared_ptr<Shader> Shader::Create(const std::string& vertexFilePath, const std::string& fragmentFilePath)
 	{
-		return std::make_shared<OpenGLShader>(name, vertexFilePath, fragmentFilePath);
+		return std::make_shared<OpenGLShader>("shader", vertexFilePath, fragmentFilePath);
+	}
+	Scope<Shader> Shader::CreateUniqueShader(const std::string& vertexFilePath, const std::string& fragmentFilePath)
+	{
+		return CreateScope<OpenGLShader>("shader", vertexFilePath, fragmentFilePath);
 	}
 } 

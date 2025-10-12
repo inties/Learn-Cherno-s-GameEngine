@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "pch.h"
 #include "Engine/Renderer/Buffer.h"
@@ -23,6 +23,6 @@ namespace Engine
 		virtual bool HasIndexBuffer() const = 0;
 		virtual uint32_t GetVertexCount() const = 0;  // Calculate total vertex count
 
-		static std::shared_ptr<VertexArray> Create();
+		static Scope<VertexArray> Create();
 	};
 } 

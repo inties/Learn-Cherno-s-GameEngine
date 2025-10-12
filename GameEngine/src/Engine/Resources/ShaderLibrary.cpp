@@ -30,7 +30,7 @@ Ref<Shader> ShaderLibrary::Load(const std::string& name, const std::string& file
 
 Ref<Shader> ShaderLibrary::Load(const std::string& name, const std::string& vertexfilepath, const std::string& fragfilepath)
 {
-    Ref<Shader> shader = Shader::CreateFromFiles(name,vertexfilepath,fragfilepath);
+    Ref<Shader> shader = Shader::Create(vertexfilepath,fragfilepath);
 
     Add(name, shader);
 

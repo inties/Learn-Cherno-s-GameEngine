@@ -12,7 +12,7 @@ class Material {
 
 public:
 
-    static Ref<Material> Create(const Ref<Shader>& shader);
+    static Scope<Material> Create(const Ref<Shader>& shader);
 
     virtual ~Material() = default;
 

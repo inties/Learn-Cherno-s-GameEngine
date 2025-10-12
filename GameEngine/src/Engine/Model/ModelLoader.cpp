@@ -101,7 +101,8 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
         }
     }
 
-    Ref<Material> material = Material::Create(shader);
+    auto material_unique = Material::Create(shader);
+    Ref<Material>material(material_unique.get());
     if (!material) {
         ENGINE_CORE_ERROR("Failed to create material");
         return nullptr;
@@ -357,7 +358,8 @@ Ref<Material> ModelLoader::CreateDefaultMaterial() {
         return nullptr;
     }
     
-    auto material = Material::Create(defaultShader);
+    auto material_unique = Material::Create(defaultShader);
+    Ref<Material>material(material_unique.get());
     if (material) {
         // 设置默认颜色
         material->SetFloat4("u_DiffuseColor", glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));

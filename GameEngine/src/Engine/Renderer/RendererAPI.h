@@ -23,6 +23,7 @@ namespace Engine
 		virtual void Clear() = 0;
 		virtual void SetWildFrame(bool enable) = 0;
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
+		virtual void DrawIndexed(const VertexArray* vertexArray, uint32_t indexCount = 0) = 0;
 		virtual void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount = 0) = 0;
 		virtual void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset) = 0;

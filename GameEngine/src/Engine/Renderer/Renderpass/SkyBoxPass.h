@@ -15,6 +15,8 @@ namespace Engine {
 			std::string SkyBoxName;
 			ResourceRegistry<VertexArray>* VAOManager;
 			ResourceRegistry<Texture>* TexManager;
+			ResourceRegistry<Shader>* ShaderManager;
+
 		};
 		SkyBoxPass(SkyBoxPassSpec& spec);
 		void Init()override;

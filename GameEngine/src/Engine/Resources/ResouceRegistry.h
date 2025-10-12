@@ -13,28 +13,28 @@ namespace Engine {
 		std::function<bool()> Destroy = []()->bool {return true;};//销毁时调用
 	};
 	
-	template<typename ResourceType>    
+	template<typename ResourceType>
 	class ResourceRegistry {
 	public:
-		std::unordered_map<std::string, Ref<ResourceType>> Registry;
+		std::unordered_map<std::string, Scope<ResourceType>> Registry;
 		Ref<ResourceType> Get(const std::string& name) {//资源不再被任何对象引用时（计数为1？），应当主动销毁。
 			auto it = Registry.find(name);
 			if (it != Registry.end()) {
-				return it->second;
+				return Ref<ResourceType>(it->second.get(), [](ResourceType*) {});
 			}
 			ENGINE_CORE_INFO("{} unloaded resource", name);
 			return nullptr;
 		}
 		template<typename...Args>
 		void Create(const std::string& name, Args&&...args) {
-			Ref<ResourceType> resource = CreateRef<ResourceType>(std::forward<Args>(args)...);
+			Scope<ResourceType> resource = CreateScope<ResourceType>(std::forward<Args>(args)...);
 			if (!resource) {
 				ENGINE_CORE_ERROR("{}failed to create resource", name);
 				return;
 			}
-			Registry[name] = resource;
+			Registry[name] = std::move(resource);
 		}
-		void Regist(const std::string& name, const Ref<ResourceType>&res) {
+		void Regist(const std::string& name, Scope<ResourceType>&& res) {
 			if (Get(name)) {
 				ENGINE_INFO("{}twice registered", name);
 				return;
@@ -43,18 +43,17 @@ namespace Engine {
 				ENGINE_INFO("{}registing a nullptr", name);
 				return;
 			}
-			Registry[name] = res;
+			//再次使用std::move，将res作为右值处理
+			Registry[name] = std::move(res);
 		}
+
+		//移除后可能出现悬空指针错误
 		void Remove(const std::string& name) {
 			auto it = Registry.find(name);
 			if (it == Registry.end()) return;
-			auto res = it->second;
-			if (res.use_count() > 2) { // Registry中的引用 + 当前局部变量
-				ENGINE_CORE_INFO("{}can't destroy", name);
-				return;
-			}
+			auto res = it->second;		
 			Registry.erase(it); // 完全移除条目
 		}
-	
+
 	};
 }
