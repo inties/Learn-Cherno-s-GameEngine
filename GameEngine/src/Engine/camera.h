@@ -40,6 +40,9 @@ namespace Engine {
         float MouseLastX;
         float MouseLastY;
         bool firstMouse;
+		float near_ = 0.1f;
+		float far_ = 100.0f;
+		float aspect_ = 1.0f;
 
 
         static Camera* GetInstance();

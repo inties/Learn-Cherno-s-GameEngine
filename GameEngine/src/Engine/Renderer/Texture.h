@@ -16,7 +16,7 @@ namespace Engine {
 		RGBA8,
 		RED_INTEGER,
 		RGB8,
-
+		SRGBA,
 		// Depth/stencil
 		DEPTH24STENCIL8,
 
@@ -45,6 +45,8 @@ namespace Engine {
 	public:
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureFormat format = TextureFormat::RGBA8, int sample = 1);
 		static Ref<Texture2D> Create(const std::string& path);
+
+		static Scope<Texture2D> CreateTexScope(const std::string& path,TextureFormat format);
 	};
 
 	class TextureCube : public Texture {

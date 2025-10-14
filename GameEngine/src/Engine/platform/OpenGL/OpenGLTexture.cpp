@@ -5,10 +5,31 @@
 #include <cstring> // for memcpy
 
 namespace Engine {
-	static GLenum TextureTarget(bool multisampled)
+	GLenum GLTextureFormat(TextureFormat format) {
+		GLenum glformat = GL_RGB8;
+		switch (format) {
+		case TextureFormat::RGBA8:
+			glformat = GL_RGBA8;
+
+			break;
+		case TextureFormat::RED_INTEGER:
+			glformat = GL_R32I;
+
+			break;
+		case TextureFormat::DEPTH24STENCIL8:
+			glformat = GL_DEPTH24_STENCIL8;
+			break;
+		case TextureFormat::SRGBA:
+			glformat = GL_SRGB8_ALPHA8;
+			break;
+		}
+		return glformat;
+
+	};
+	GLenum TextureTarget(bool multisampled)
 	{
 		return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-	}
+	};
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format,int samples)
 		: m_Width(width), m_Height(height)
 	{
@@ -38,72 +59,36 @@ namespace Engine {
 
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path,TextureFormat format)
 		: m_Path(path)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
 		int width, height, channels;
-		// 使用线程安全的stbi_set_flip_vertically_on_load_thread替代全局设置
-		// 这避免了多线程环境下的数据竞争问题
-#ifdef STBI_THREAD_LOCAL
-		stbi_set_flip_vertically_on_load_thread(1);
-#else
-		// 如果不支持线程局部变量，手动翻转
-		bool manual_flip = true;
-#endif
-		stbi_uc* data = nullptr;
-		{
-			HZ_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std:string&)");
-#ifdef STBI_THREAD_LOCAL
-			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-#else
-			// 不设置全局翻转，避免线程竞争
-			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-			if (!data) {
-				ENGINE_CORE_ERROR("stbi_load failed for path: {}, reason: {}", path, stbi_failure_reason());
-			}
+		
 
-#endif
+		//翻转
+
+		stbi_uc* data = nullptr;
+		stbi_set_flip_vertically_on_load(1);
+		
+		data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+		if (!data) {
+			ENGINE_CORE_ERROR("stbi_load failed for path: {}, reason: {}", path, stbi_failure_reason());
 		}
 		ENGINE_CORE_ASSERT(data, "Failed to load image!");
 		m_Width = width;
 		m_Height = height;
-
-#ifndef STBI_THREAD_LOCAL
-		// 手动翻转图像数据（从底部到顶部）
-		if (manual_flip && data) {
-			int bytes_per_pixel = channels;
-			int row_bytes = width * bytes_per_pixel;
-			stbi_uc* temp_row = new stbi_uc[row_bytes];
-			
-			for (int y = 0; y < height / 2; ++y) {
-				stbi_uc* row1 = data + y * row_bytes;
-				stbi_uc* row2 = data + (height - 1 - y) * row_bytes;
-				
-				// 交换行
-				memcpy(temp_row, row1, row_bytes);
-				memcpy(row1, row2, row_bytes);
-				memcpy(row2, temp_row, row_bytes);
-			}
-			
-			delete[] temp_row;
-		}
-#endif
-
-		GLenum internalFormat = 0, dataFormat = 0;
+		GLenum internalFormat =GLTextureFormat(format);
+		GLenum dataFormat = 0;
 		if (channels == 4)
 		{
-			internalFormat = GL_RGBA8;
 			dataFormat = GL_RGBA;
 		}
 		else if (channels == 3)
 		{
-			internalFormat = GL_RGB8;
 			dataFormat = GL_RGB;
 		}
-
-		m_InternalFormat = internalFormat;
 		m_DataFormat = dataFormat;
 
 		ENGINE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
@@ -112,7 +97,7 @@ namespace Engine {
 		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);

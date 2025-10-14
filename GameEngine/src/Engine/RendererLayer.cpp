@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <GLFW/glfw3.h>
 #include "Scene/Component.h"
+#include "Engine/Utils/Timer.h"
 namespace Engine
 {
 	RendererLayer::RendererLayer()
@@ -15,17 +16,16 @@ namespace Engine
 		// 初始化渲染器
 		Renderer::Init();
 
+		SetupTexture();
 		// 加载默认着色器
+		SetUPGeoMetry();
 		SetUpShadersMaterials();
 
 		// 设置默认几何体
-		SetUPGeoMetry();
-		SetupTexture();
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
 		}
 		// 初始化相机和投影矩阵
-		m_AspectRatio = 1.0f; // 默认比例，会在第一次窗口大小调整时更新
 		UpdateProjectionMatrix();
 		SetupViewMatrix();
 
@@ -45,6 +45,7 @@ namespace Engine
 	void RendererLayer::Init(Scene* scene)
 	{
 		SetScene(scene);
+
 	}
 
 
@@ -72,6 +73,7 @@ namespace Engine
 		m_RenderPipeLine = CreateScope<RenderPipeLine>(renderPipeLineSetting);
 		m_RenderPipeLine->Init();
 
+		GameTimer::Init();
 	}
 
 	void RendererLayer::OnDetach()
@@ -106,6 +108,7 @@ namespace Engine
 		std::string cubeShaderPath = GetShaderPath("cube.glsl");
 		auto CubeShader = Shader::Create(cubeShaderPath);
 		auto CubeDefaultMat = Material::Create(CubeShader);
+		CubeDefaultMat->SetTexture("wood", Texture_Manager.Get("wood"), 0);
 		Mat_Manager.Regist("cube", std::move(CubeDefaultMat));
 
 		Shader_Manager.Regist("skybox", std::move(skybox_shader));
@@ -114,36 +117,53 @@ namespace Engine
 
 	void RendererLayer::SetupCube()
 	{
-		// 立方体顶点数据：位置(x, y, z) + 颜色(r, g, b, a)
+		// 立方体顶点数据：位置(x,y,z) + 颜色(r,g,b,a) + uv(u,v)
+		// 6 个面，每面 4 顶点，共 24 顶点
 		float cubeVertices[] = {
-			// 位置           颜色 (RGBA)
-			// 前面 (z = 0.5)
-			-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 1.0f, // 0 - 红色
-			 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, // 1 - 绿色
-			 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, // 2 - 蓝色
-			-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 1.0f, // 3 - 黄色
-			// 后面 (z = -0.5)
-			-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 1.0f, 1.0f, // 4 - 洋红
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 1.0f, 1.0f, // 5 - 青色
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, // 6 - 白色
-			-0.5f,  0.5f, -0.5f,  0.5f, 0.5f, 0.5f, 1.0f  // 7 - 灰色
+			// 前面 (+Z)
+			-0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+			// 后面 (-Z)
+			-0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f, 1.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 1.0f, 1.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   0.5f, 0.5f, 0.5f, 1.0f,   1.0f, 1.0f,
+			// 左面 (-X)
+			-0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+			// 右面 (+X)
+			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f, 1.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 1.0f, 1.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,   0.5f, 0.5f, 0.5f, 1.0f,   1.0f, 1.0f,
+			// 下面 (-Y)
+			-0.5f, -0.5f, -0.5f,   0.2f, 0.2f, 0.8f, 1.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,   0.2f, 0.8f, 0.2f, 1.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.8f, 0.2f, 0.2f, 1.0f,   1.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,   0.8f, 0.8f, 0.2f, 1.0f,   0.0f, 1.0f,
+			// 上面 (+Y)
+			-0.5f,  0.5f, -0.5f,   0.2f, 0.8f, 0.8f, 1.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,   0.8f, 0.2f, 0.8f, 1.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   0.8f, 0.8f, 0.8f, 1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,   0.5f, 0.5f, 0.2f, 1.0f,   0.0f, 1.0f,
 		};
-		for (int i = 0; i < sizeof(cubeVertices)/sizeof(float); i++) {
-			cubeVertices[i] *= 2;
-		}
 		unsigned int cubeIndices[] = {
 			// 前面
 			0, 1, 2,  2, 3, 0,
 			// 后面
 			4, 5, 6,  6, 7, 4,
 			// 左面
-			4, 0, 3,  3, 7, 4,
+			8, 9, 10,  10, 11, 8,
 			// 右面
-			1, 5, 6,  6, 2, 1,
+			12, 13, 14,  14, 15, 12,
 			// 下面
-			4, 5, 1,  1, 0, 4,
+			16, 17, 18,  18, 19, 16,
 			// 上面
-			3, 2, 6,  6, 7, 3
+			20, 21, 22,  22, 23, 20
 		};
 
 		// 创建VAO
@@ -153,7 +173,8 @@ namespace Engine
 		auto CubeVBO = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float4, "a_Color" }
+			{ ShaderDataType::Float4, "a_Color" },
+			{ ShaderDataType::Float2, "a_TexCoord" }
 		};
 		CubeVBO->SetLayout(layout);
 		CubeVAO->SetVertexBuffer(CubeVBO);
@@ -201,7 +222,7 @@ namespace Engine
 
 	void RendererLayer::SetupTexture()
 	{
-		std::string base_path = "Resources/SkyBox/sea";
+		std::string base_path = "resources/skybox/sea";
 		std::vector<std::string>cubemap_paths = {
 			(std::filesystem::path(base_path) / "right.jpg").string(),
 			(std::filesystem::path(base_path) / "left.jpg").string(),
@@ -212,6 +233,9 @@ namespace Engine
 		};
 		auto skybox = TextureCube::Create(cubemap_paths);
 		Texture_Manager.Regist("sea", std::move(skybox));
+
+		auto wood_tex = Texture2D::CreateTexScope("resources/textures/wood.png", TextureFormat::SRGBA);
+		Texture_Manager.Regist("wood", std::move(wood_tex));
 	}
 
 	void RendererLayer::SetUPGeoMetry()
@@ -223,9 +247,6 @@ namespace Engine
 
 	void RendererLayer::OnUpdate()
 	{
-		// 更新时间
-		m_Time = static_cast<float>(glfwGetTime());
-			
 		// 设置线框模式
 		if (m_Settings.wireframe) {
 			RenderCommand::SetWildFrame(true);
@@ -239,7 +260,7 @@ namespace Engine
 		//glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
 		 
 		// 设置清屏颜色并清屏
-		RenderCommand::SetClearColor(glm::vec4(m_Settings.clearColor, 1.0f));
+		RenderCommand::SetClearColor(glm::vec4(0.0f,0.0f,0.0f, 1.0f));
 		RenderCommand::Clear();
 		FBO->ClearColorAttachments(0);
 
@@ -255,15 +276,10 @@ namespace Engine
 		unsigned int winH = Application::Get().GetWindow().GetHeight();
 		//glViewport(0, 0, (GLint)winW, (GLint)winH);
 		RenderCommand::SetViewport(0, 0, (GLint)winW, (GLint)winH);
+
+		GameTimer::Tick();
+
 		
-		// 更新FPS统计
-		m_FrameCount++;
-		if (m_Time - m_LastFPSUpdate >= 1.0f)
-		{
-			m_FPS = m_FrameCount / (m_Time - m_LastFPSUpdate);
-			m_FrameCount = 0;
-			m_LastFPSUpdate = m_Time;
-		}
 	}
 
 	void RendererLayer::OnImGuiRender()
@@ -276,46 +292,8 @@ namespace Engine
 			
 			// 基本渲染设置
 			ImGui::Text("Basic Settings:");
-			ImGui::ColorEdit3("Clear Color", &m_Settings.clearColor.x);
 			ImGui::Checkbox("Wireframe", &m_Settings.wireframe);
-			ImGui::Checkbox("Show Cube", &m_ShowCube);
-			
-			ImGui::Separator();
-			
-			// 立方体变换设置
-			ImGui::Text("Cube Transform:");
-			ImGui::SliderFloat("Rotation Speed", &m_Settings.rotationSpeed, 0.0f, 5.0f, "%.2f");
-			ImGui::SliderFloat3("Position", &m_Settings.position.x, -5.0f, 5.0f, "%.2f");
-			ImGui::SliderFloat3("Scale", &m_Settings.scale.x, 0.1f, 3.0f, "%.2f");
-			
-			ImGui::Separator();
-			
-			// 相机设置
-			ImGui::Text("Camera Settings:");
-			bool projectionChanged = false;
-			projectionChanged |= ImGui::SliderFloat("FOV", &m_FOV, 10.0f, 120.0f, "%.1f");
-			projectionChanged |= ImGui::SliderFloat("Near Plane", &m_NearPlane, 0.01f, 1.0f, "%.3f");
-			projectionChanged |= ImGui::SliderFloat("Far Plane", &m_FarPlane, 10.0f, 1000.0f, "%.1f");
-			ImGui::Text("Aspect Ratio: %.3f", m_AspectRatio);
-			
-			if (projectionChanged) {
-				UpdateProjectionMatrix();
-			}
-			
-			ImGui::Separator();
-			
-			// 调试选项
-			ImGui::Separator();
-			ImGui::Text("Debug Options:");
-			ImGui::Checkbox("Use Debug Shader", &m_UseDebugShader);
-			
-			if (m_UseDebugShader) {
-				const char* debugModes[] = {
-					"Normal", "Position Colors", "Normal Colors", 
-					"Texture Coords", "Solid Red"
-				};
-				ImGui::Combo("Debug Mode", &m_DebugMode, debugModes, 5);
-			}
+
 			
 			ImGui::Separator();
 			
@@ -350,7 +328,7 @@ namespace Engine
 		ENGINE_CORE_INFO("RendererLayer: Updating projection matrix for {}x{}", e.GetWindowWidth(), e.GetWindowHeight());
 		
 		// 更新纵横比（窗口尺寸变化时，仅更新投影矩阵；渲染目标由 Editor 控制）
-		m_AspectRatio = static_cast<float>(e.GetWindowWidth()) / static_cast<float>(e.GetWindowHeight());
+		//m_AspectRatio = static_cast<float>(e.GetWindowWidth()) / static_cast<float>(e.GetWindowHeight());
 		UpdateProjectionMatrix();
 		
 		// 不拦截事件，让其他层也能处理
@@ -359,7 +337,7 @@ namespace Engine
 
 	void RendererLayer::UpdateProjectionMatrix()
 	{
-		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearPlane, m_FarPlane);
+		//m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearPlane, m_FarPlane);
 	}
 
 	void RendererLayer::SetupViewMatrix()
@@ -376,7 +354,7 @@ namespace Engine
 		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 		
-		m_ViewMatrix = glm::lookAt(cameraPos, cameraTarget, upVector);
+		//m_ViewMatrix = glm::lookAt(cameraPos, cameraTarget, upVector);
 	}
 
 	void RendererLayer::RenderModelWithDebugShader(const glm::mat4& modelMatrix)

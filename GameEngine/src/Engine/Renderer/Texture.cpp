@@ -8,6 +8,7 @@
 
 namespace Engine {
 
+	
 	Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height,TextureFormat format,int sample)
 	{
 		switch (Renderer::GetAPI())
@@ -27,6 +28,18 @@ namespace Engine {
 		{
 			case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(path);
+		}
+
+		ENGINE_CORE_ERROR("Unknown RendererAPI!");
+		return nullptr;
+	}
+
+	Scope<Texture2D> Texture2D::CreateTexScope(const std::string& path,TextureFormat format)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLTexture2D>(path,format);
 		}
 
 		ENGINE_CORE_ERROR("Unknown RendererAPI!");

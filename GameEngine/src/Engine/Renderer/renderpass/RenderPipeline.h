@@ -25,7 +25,7 @@ namespace Engine {
 		void Draw() {
 			m_Forwardpass->Draw();
 			m_skyBoxPass->Draw();
-			m_Postpass->Draw();
+			//m_Postpass->Draw();
 		};
 		void Resize();
 	private:

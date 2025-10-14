@@ -132,7 +132,7 @@ Ref<Material> ModelLoader::ProcessMaterial(aiMaterial* assimpMaterial, const aiS
                 if (texture) {
                     std::string uniform = GetUniformName(type);
                     if (i > 0) uniform += std::to_string(i); // 只有多个纹理时才添加索引
-                    material->SetTexture(uniform, texture);
+                    material->SetTexture(uniform, texture,0);
                     ENGINE_CORE_INFO("Loaded texture: {} as uniform: {}", fullPath, uniform);
                 } else {
                     ENGINE_CORE_WARN("Failed to load texture: {}", fullPath);

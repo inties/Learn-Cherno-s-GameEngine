@@ -211,6 +211,7 @@
     <ClInclude Include="src\Engine\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Engine\TestLayer.h" />
     <ClInclude Include="src\Engine\Utils.h" />
+    <ClInclude Include="src\Engine\Utils\Timer.h" />
     <ClInclude Include="src\Engine\Windows.h" />
     <ClInclude Include="src\Engine\camera.h" />
     <ClInclude Include="src\Engine\core.h" />
@@ -265,6 +266,7 @@
     <ClCompile Include="src\Engine\Scene\Entity.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\TestLayer.cpp" />
+    <ClCompile Include="src\Engine\Utils\Timer.cpp" />
     <ClCompile Include="src\Engine\Windows.cpp" />
     <ClCompile Include="src\Engine\camera.cpp" />
     <ClCompile Include="src\Engine\log.cpp" />

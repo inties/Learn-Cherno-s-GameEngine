@@ -38,7 +38,7 @@ public:
 
     // 纹理设置
 
-    virtual void SetTexture(const std::string& name, const Ref<Texture2D>& texture) = 0;
+    virtual void SetTexture(const std::string& name, const Ref<Texture>& texture,int slot) = 0;
     
 
 

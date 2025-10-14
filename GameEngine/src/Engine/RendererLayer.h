@@ -16,10 +16,6 @@ namespace Engine
 	// 渲染设置结构体
 	struct RendererSettings
 	{
-		glm::vec3 clearColor{0.1f, 0.1f, 0.1f};  // 清屏颜色
-		float rotationSpeed = 1.0f;              // 旋转速度
-		glm::vec3 position{5.0f, 0.0f, 0.0f};    // 模型位置
-		glm::vec3 scale{1.0f, 1.0f, 1.0f};       // 模型缩放
 		bool wireframe = false;                   // 线框模式
 	};
 
@@ -75,7 +71,7 @@ namespace Engine
 		// 渲染资源
 		// Ref<Model> m_Model;
 		Scene* m_Scene;
-		bool m_ShowCube = true; // 是否显示立方体演示
+
 		
 		// 立方体渲染资源
 		Ref<VertexArray> m_CubeVAO;
@@ -92,15 +88,6 @@ namespace Engine
 		// 时间和变换
 		float m_Time = 0.0f;
 
-	
-		// 相机和投影
-		glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
-		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
-		float m_AspectRatio = 1.0f;
-		float m_FOV = 45.0f;
-		float m_NearPlane = 0.1f;
-		float m_FarPlane = 100.0f;
-		
 		// 统计信息
 		int m_FrameCount = 0;
 		float m_FPS = 0.0f;

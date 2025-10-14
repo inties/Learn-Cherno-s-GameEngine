@@ -14,13 +14,9 @@ void OpenGLMaterial::Bind() const {
 
     m_Shader->Bind();
 
-    m_TextureSlot = 0;
+    for (const auto& [name,pair] : m_Textures) {
 
-    for (const auto& [name, texture] : m_Textures) {
-
-        texture->Bind(m_TextureSlot);
-
-        m_Shader->SetInt(name, m_TextureSlot++);
+        pair.first->Bind(pair.second);
 
     }
 
@@ -66,9 +62,10 @@ void OpenGLMaterial::SetMat4(const std::string& name, const glm::mat4& value) {
 
 }
 
-void OpenGLMaterial::SetTexture(const std::string& name, const Ref<Texture2D>& texture) {
+//name暂时没有用
+void OpenGLMaterial::SetTexture(const std::string& name, const Ref<Texture>& texture,int slot) {
 
-    m_Textures[name] = texture;
+    m_Textures[name] = { texture,slot };
 
 }
 

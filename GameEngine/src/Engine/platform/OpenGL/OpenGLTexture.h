@@ -12,7 +12,7 @@ namespace Engine {
 	public:
 		//constTexture表示纹理尺寸和mipmap层级不可变
 		OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format=TextureFormat::RGBA8,int samples=1);
-		OpenGLTexture2D(const std::string& path);
+		OpenGLTexture2D(const std::string& path, TextureFormat format = TextureFormat::RGB8);
 		virtual ~OpenGLTexture2D();
 
 		virtual uint32_t GetWidth() const override { return m_Width;  }

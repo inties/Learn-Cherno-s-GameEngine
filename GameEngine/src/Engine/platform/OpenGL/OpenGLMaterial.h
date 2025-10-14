@@ -34,13 +34,13 @@ public:
 
     virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
 
-    virtual void SetTexture(const std::string& name, const Ref<Texture2D>& texture) override;
+    virtual void SetTexture(const std::string& name, const Ref<Texture>& texture,int slot) override;
 
 private:
 
     
 
-    std::unordered_map<std::string, Ref<Texture2D>> m_Textures;
+    std::unordered_map<std::string, std::pair<Ref<Texture>,int>> m_Textures;
 
     // TODO: 其他uniform缓存，如floats, vec3等
 

@@ -35,7 +35,7 @@ namespace Engine {
                 glm::mat4 viewMatrix = camera->GetViewMatrix();
                 glm::mat4 projMatrix = camera->GetProjectionMatrix();
                 glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-
+				renderComp.Mat->Bind();
                 // 绑定着色器并设置uniforms
                 auto shader = renderComp.Mat->GetShader();
                 shader->Bind();
