@@ -7,11 +7,16 @@
 #include "Component.h"
 #include "Prefabs.h"
 #include "ScriptableEntity.h"
+
 namespace Engine {
 
     Scene::Scene() {
         // 默认创建一个CubeEntity
-        Entity cube=CreatePrefab(PrefabTypes::Cube);
+        for (int i = 0; i < 10000; i++) {
+            Entity cube=CreatePrefab(PrefabTypes::Cube);
+        }
+
+
         // auto& nsc=cube.AddComponent<NativeScriptableComponent>();
         // nsc.Bind<MoveScript>(cube);  // 传递Entity指针而不是NativeScriptableComponent指针
         ENGINE_CORE_INFO("Scene created with default CubeEntity");

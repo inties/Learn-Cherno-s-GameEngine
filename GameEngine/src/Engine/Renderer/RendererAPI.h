@@ -27,6 +27,12 @@ namespace Engine
 		virtual void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount = 0) = 0;
 		virtual void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset) = 0;
+		
+		// 实例化绘制
+		virtual void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, 
+			uint32_t indexCount, uint32_t instanceCount) = 0;
+		virtual void DrawIndexedInstanced(const VertexArray* vertexArray, 
+			uint32_t indexCount, uint32_t instanceCount) = 0;
 
 		static API GetAPI() { return s_API; }
 		static std::unique_ptr<RendererAPI> Create();

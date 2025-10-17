@@ -232,6 +232,7 @@
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Engine\Renderer\Renderpass\SkyBoxPass.h" />
     <ClInclude Include="src\Engine\Utils\Timer.h" />
+    <ClInclude Include="src\Engine\Renderer\InstancedRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -385,5 +386,6 @@
     <ClCompile Include="src\Engine\Renderer\Renderpass\PostEffectPass.cpp" />
     <ClCompile Include="src\Engine\Renderer\Renderpass\SkyBoxPass.cpp" />
     <ClCompile Include="src\Engine\Utils\Timer.cpp" />
+    <ClCompile Include="src\Engine\Renderer\InstancedRenderer.cpp" />
   </ItemGroup>
 </Project>

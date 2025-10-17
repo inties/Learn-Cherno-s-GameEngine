@@ -106,7 +106,9 @@ namespace Engine
 
 		// 创建立方体着色器
 		std::string cubeShaderPath = GetShaderPath("cube.glsl");
-		auto CubeShader = Shader::Create(cubeShaderPath);
+		shaderPath_vs = GetShaderPath("cube_vs.glsl");
+		shaderPath_fs = GetShaderPath("cube_fs.glsl");
+		auto CubeShader = Shader::Create(shaderPath_vs,shaderPath_fs);
 		auto CubeDefaultMat = Material::Create(CubeShader);
 		CubeDefaultMat->SetTexture("wood", Texture_Manager.Get("wood"), 0);
 		Mat_Manager.Regist("cube", std::move(CubeDefaultMat));
@@ -310,6 +312,9 @@ namespace Engine
 			}
 			
 			ImGui::Separator();
+				ImGui::Text("FPS: %.2f", GameTimer::GetFPB());
+			ImGui::Separator();
+
 			
 		}
 		ImGui::End();

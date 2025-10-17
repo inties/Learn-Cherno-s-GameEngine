@@ -6,7 +6,13 @@ namespace Engine {
 	Entity::Entity(entt::entity handle, Scene* scene)
 		: m_EntityHandle(handle), m_Scene(scene)
 	{
-		AddComponent<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
+		// 随机生成TransformComponent初始位置
+		{
+			float x = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 100.0f - 50.0f;
+			float y = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 100.0f - 50.0f;
+			float z = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 100.0f - 50.0f;
+			AddComponent<TransformComponent>(glm::vec3(x, y, z));
+		}
 		AddComponent<TagComponent>();
 	}
 

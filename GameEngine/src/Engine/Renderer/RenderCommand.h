@@ -54,6 +54,19 @@ namespace Engine
 			s_RendererAPI->DrawIndexedWithOffset(vertexArray, indexOffset, indexCount, vertexOffset);
 		}
 
+		// 实例化绘制
+		static void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, 
+			uint32_t indexCount, uint32_t instanceCount)
+		{
+			s_RendererAPI->DrawIndexedInstanced(vertexArray, indexCount, instanceCount);
+		}
+
+		static void DrawIndexedInstanced(VertexArray* vertexArray, 
+			uint32_t indexCount, uint32_t instanceCount)
+		{
+			s_RendererAPI->DrawIndexedInstanced(vertexArray, indexCount, instanceCount);
+		}
+
 	private:
 		static std::unique_ptr<RendererAPI> s_RendererAPI;
 	};

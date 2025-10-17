@@ -13,6 +13,15 @@ namespace Engine
 {
 	class Scene;
 	class RenderPipeLine;
+	// 实例化数据结构体 - 确保std140对齐
+	struct InstanceData {
+		glm::mat4 modelMatrix;    // 64 bytes (16 * 4)
+		glm::vec4 extraData;      // 16 bytes (x: objectID, yzw: 自定义数据)
+		
+		InstanceData() = default;
+		InstanceData(const glm::mat4& model, int objectId) 
+			: modelMatrix(model), extraData(objectId, 0.0f, 0.0f, 0.0f) {}
+	};
 	// 渲染设置结构体
 	struct RendererSettings
 	{
@@ -64,6 +73,7 @@ namespace Engine
 		void SetObjectIDForModel(const Ref<Model>& model, int objectID);
 
 	private:
+		std::unordered_map<Material*, std::unordered_map<VertexArray*, std::vector<InstanceData>>>renderer_resource;
 		Scope<RenderPipeLine>m_RenderPipeLine;
 		Ref<Framebuffer> FBO = nullptr;
 		RendererSettings m_Settings;

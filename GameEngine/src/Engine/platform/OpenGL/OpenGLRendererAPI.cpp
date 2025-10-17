@@ -65,4 +65,20 @@ namespace Engine
 		glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 
 			(void*)(indexOffset * sizeof(uint32_t)), vertexOffset);
 	}
+
+	void OpenGLRendererAPI::DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, 
+		uint32_t indexCount, uint32_t instanceCount)
+	{
+		vertexArray->Bind();
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr, instanceCount);
+	}
+
+	void OpenGLRendererAPI::DrawIndexedInstanced(const VertexArray* vertexArray, 
+		uint32_t indexCount, uint32_t instanceCount)
+	{
+		vertexArray->Bind();
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr, instanceCount);
+	}
 } 

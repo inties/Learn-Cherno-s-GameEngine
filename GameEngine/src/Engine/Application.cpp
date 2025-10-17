@@ -55,8 +55,8 @@ namespace Engine {
 		// 初始化Camera单例
 		Camera::Initialize(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
 		
-		// 初始化帧计时
-		m_LastFrameTime = glfwGetTime();
+
+
 		
 		// 注意：Renderer::Init() 现在在 RendererLayer::OnAttach() 中调用
 		
@@ -176,8 +176,8 @@ namespace Engine {
 	void Application::OnWindowResize(WindowResizeEvent& e) {
 		ENGINE_CORE_INFO("Application: Window Resized to {}x{}", e.GetWindowWidth(), e.GetWindowHeight());
 
-		// 更新渲染器视口（全局层面的处理）
-		Renderer::OnWindowResize(e.GetWindowWidth(), e.GetWindowHeight());
+		//// 更新渲染器视口（全局层面的处理）
+		//Renderer::OnWindowResize(e.GetWindowWidth(), e.GetWindowHeight());
 		
 		// 注意：这个方法现在被设计为void，因为事件传播由OnEvent方法控制
 	}

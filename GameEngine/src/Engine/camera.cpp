@@ -56,7 +56,7 @@ namespace Engine {
 
         // 假设FOV, aspect, near, far
 
-        return glm::perspective(glm::radians(Zoom), 1.0f, 0.1f, 100.0f); // 调整参数
+        return glm::perspective(glm::radians(Zoom), aspect_,near_,far_); // 调整参数
 
     }
 

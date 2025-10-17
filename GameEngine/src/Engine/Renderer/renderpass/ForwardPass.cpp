@@ -5,12 +5,21 @@
 #include "Engine/camera.h"
 namespace Engine {
     void ForwardPass::Draw() {
-        
         // 使用ECS系统渲染有RenderComponent的实体
         if (!Spec.scene || !Spec.VAOManager || !Spec.MatManager) {
             ENGINE_CORE_ERROR("forwardpass:Scene/VAOmanager/MatManager为空");
-                return;
+            return;
         }
+
+        // 根据设置选择渲染方式
+        if (Spec.useInstancing) {
+            DrawEntitiesInstanced();
+        } else {
+            DrawEntitiesIndividually();
+        }
+    }
+
+    void ForwardPass::DrawEntitiesIndividually() {
         // 获取场景的registry
         auto& registry = Spec.scene->GetRegistry();
 
@@ -18,7 +27,6 @@ namespace Engine {
         auto view = registry.view<RenderComponent, TransformComponent>();
 
         for (auto& [entity, renderComp, TransComp] : view.each()) {
-
             // 绑定资源（如果还未绑定）
             if (!renderComp.IsValid()) {
                 renderComp.BindResources(*(Spec.VAOManager), *(Spec.MatManager));
@@ -31,11 +39,11 @@ namespace Engine {
 
                 // 获取视图矩阵
                 Camera* camera = Camera::GetInstance();
-                /*ENGINE_CORE_INFO("{}Zoom", camera->Zoom);*/
                 glm::mat4 viewMatrix = camera->GetViewMatrix();
                 glm::mat4 projMatrix = camera->GetProjectionMatrix();
                 glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-				renderComp.Mat->Bind();
+                
+                renderComp.Mat->Bind();
                 // 绑定着色器并设置uniforms
                 auto shader = renderComp.Mat->GetShader();
                 shader->Bind();
@@ -47,7 +55,14 @@ namespace Engine {
                 RenderCommand::DrawIndexed(renderComp.VAO);
             }
         }
+    }
 
+    void ForwardPass::DrawEntitiesInstanced() {
+        // 收集实例数据
+        m_InstancedRenderer->CollectInstances(Spec.scene, Spec.VAOManager, Spec.MatManager);
+        
+        // 执行实例化渲染
+        m_InstancedRenderer->RenderInstanced();
     }
 
 };
