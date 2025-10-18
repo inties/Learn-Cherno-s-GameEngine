@@ -1,7 +1,7 @@
 #version 450 core
 
 layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec3 a_Normal;
+layout(location = 1) in vec4 a_Normal;
 layout(location = 2) in vec2 a_TexCoord;
 
 // 视图投影矩阵（每批次设置一次）
@@ -17,8 +17,8 @@ layout(std430, binding = 2) buffer Instances {
 };
 
 // 输出到片段着色器
-out vec3 v_Position;
-out vec3 v_Normal;
+out vec3 Position_ws;
+out vec3 Normal_ws;
 out vec2 v_TexCoord;
 flat out int v_ObjectID;
 
@@ -39,11 +39,11 @@ void main()
     gl_Position = u_ViewProjection * worldPosition;
     
     // 变换法线
-    v_Normal = mat3(transpose(inverse(modelMatrix))) * a_Normal;
+    Normal_ws = mat3(transpose(inverse(modelMatrix))) * a_Normal.xyz;
     
     // 传递纹理坐标
     v_TexCoord = a_TexCoord;
     
     // 传递世界空间位置
-    v_Position = worldPosition.xyz;
+    Position_ws = worldPosition.xyz;
 }

@@ -61,6 +61,14 @@ InstanceData currentInstance = instances[gl_InstanceID];
 
 
 
+
+
+现代方案：
+
+DSA、内存映射和手动管理内存屏障
+
+
+
 ##### 结构体对齐方案比较
 
 

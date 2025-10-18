@@ -28,31 +28,53 @@ namespace Engine
 		}
 
 		// 清空之前的批次
-		 Clear();
+		 //Clear();
 
 		// 获取场景的registry
 		auto& registry = scene->GetRegistry();
 
 		// 使用entt的view方法遍历有RenderComponent和TransformComponent的实体
-		auto view = registry.view<RenderComponent, TransformComponent>();
-		for (auto& [entity, renderComp, transComp] : view.each()) {
-			// 绑定资源（如果还未绑定）
-			if (!renderComp.IsValid()) {
-				renderComp.BindResources(*vaoManager, *matManager);
-			}
+		static int i = 0;
+		auto group = registry.group<RenderComponent>(entt::get<TransformComponent>);
+		if (i == 0) {
+			group.each([&](auto entity, auto& renderComp, auto& transComp) {
+				// 绑定资源（如果还未绑定）
+				if (!renderComp.IsValid()) {
+					renderComp.BindResources(*vaoManager, *matManager);
 
-			// 如果资源绑定成功，添加到批次
-			if (renderComp.IsValid()) {
-				BatchKey key{ renderComp.VAO.get(), renderComp.Mat.get() };
 
-				// 创建实例数据
-				InstanceData instanceData;
-				instanceData.modelMatrix = transComp.GetTransform();
-				instanceData.extraData = glm::vec4(static_cast<float>(static_cast<int>(entity)), 0.0f, 0.0f, 0.0f);
-				// 添加到对应批次
-				m_Batches[key].instances.push_back(instanceData);
-			}
+					// 如果资源绑定成功，添加到批次
+					if (renderComp.IsValid()) {
+						BatchKey key{ renderComp.VAO.get(), renderComp.Mat.get() };
+					}
+
+
+
+					// 创建实例数据
+					InstanceData instanceData;
+
+
+					instanceData.modelMatrix = transComp.GetTransform();
+					instanceData.extraData = glm::vec4(static_cast<float>(static_cast<int>(entity)), 0.0f, 0.0f, 0.0f);
+
+					// 添加到对应批次
+
+					BatchKey key{ renderComp.VAO.get(), renderComp.Mat.get() };
+					m_Batches[key].instances.push_back(instanceData);
+
+				}
+
+				});
 		}
+
+		/*group.each([&](auto entity, auto& renderComp, auto& transComp) {
+			});*/
+
+		i++;
+		//auto view = registry.view<RenderComponent, TransformComponent>();
+	/*	for (auto& [entity, renderComp, transComp] : view.each()) {
+			
+		}*/
 		// 为每个批次创建SSBO
 		for (auto& [key, batchData] : m_Batches) {
 			uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
@@ -79,7 +101,7 @@ namespace Engine
 			batchData.maxInstances = instanceCount;
 		}
 
-		ENGINE_CORE_INFO("Collected {} batches with total instances", m_Batches.size());
+		// ENGINE_CORE_INFO("Collected {} batches with total instances", m_Batches.size());
 	}
 
 	void InstancedRenderer::RenderInstanced()
@@ -106,7 +128,8 @@ namespace Engine
 			
 			// 设置视图投影矩阵
 			shader->SetMat4("u_ViewProjection", viewProjMatrix);
-			
+			shader->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
+			shader->SetFloat3("cameraPos_ws", camera->GetPosition());
 			// 绑定SSBO
 			batchData.ssbo->Bind();
 			

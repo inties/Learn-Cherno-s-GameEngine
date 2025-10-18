@@ -110,7 +110,11 @@ namespace Engine
 		shaderPath_fs = GetShaderPath("cube_fs.glsl");
 		auto CubeShader = Shader::Create(shaderPath_vs,shaderPath_fs);
 		auto CubeDefaultMat = Material::Create(CubeShader);
-		CubeDefaultMat->SetTexture("wood", Texture_Manager.Get("wood"), 0);
+		CubeDefaultMat->SetTexture("u_DiffuseTexture", Texture_Manager.Get("container"), 0);
+		CubeDefaultMat->SetTexture("u_SpecularTexture", Texture_Manager.Get("specular"), 1);
+		CubeDefaultMat->SetFloat("roughness", 0.5);
+		CubeDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
+		CubeDefaultMat->SetFloat3("cameraPos_ws", glm::vec3(0.0f, 0.0f, 0.0f));
 		Mat_Manager.Regist("cube", std::move(CubeDefaultMat));
 
 		Shader_Manager.Regist("skybox", std::move(skybox_shader));
@@ -119,39 +123,39 @@ namespace Engine
 
 	void RendererLayer::SetupCube()
 	{
-		// 立方体顶点数据：位置(x,y,z) + 颜色(r,g,b,a) + uv(u,v)
+		// 立方体顶点数据：位置(x,y,z) + 法线(nx,ny,nz,w) + uv(u,v)
 		// 6 个面，每面 4 顶点，共 24 顶点
 		float cubeVertices[] = {
-			// 前面 (+Z)
-			-0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,
-			// 后面 (-Z)
-			-0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f, 1.0f,   1.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 1.0f, 1.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,   0.5f, 0.5f, 0.5f, 1.0f,   1.0f, 1.0f,
-			// 左面 (-X)
-			-0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,
-			// 右面 (+X)
-			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f, 1.0f,   1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 1.0f, 1.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,   0.5f, 0.5f, 0.5f, 1.0f,   1.0f, 1.0f,
-			// 下面 (-Y)
-			-0.5f, -0.5f, -0.5f,   0.2f, 0.2f, 0.8f, 1.0f,   0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,   0.2f, 0.8f, 0.2f, 1.0f,   1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,   0.8f, 0.2f, 0.2f, 1.0f,   1.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,   0.8f, 0.8f, 0.2f, 1.0f,   0.0f, 1.0f,
-			// 上面 (+Y)
-			-0.5f,  0.5f, -0.5f,   0.2f, 0.8f, 0.8f, 1.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,   0.8f, 0.2f, 0.8f, 1.0f,   1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,   0.8f, 0.8f, 0.8f, 1.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,   0.5f, 0.5f, 0.2f, 1.0f,   0.0f, 1.0f,
+			// 前面 (+Z) - 法线指向 +Z 方向
+			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+			// 后面 (-Z) - 法线指向 -Z 方向
+			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   0.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   1.0f, 1.0f,
+			// 左面 (-X) - 法线指向 -X 方向
+			-0.5f, -0.5f, -0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			// 右面 (+X) - 法线指向 +X 方向
+			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+			// 下面 (-Y) - 法线指向 -Y 方向
+			-0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			// 上面 (+Y) - 法线指向 +Y 方向
+			-0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
 		};
 		unsigned int cubeIndices[] = {
 			// 前面
@@ -175,9 +179,10 @@ namespace Engine
 		auto CubeVBO = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float4, "a_Color" },
+			{ ShaderDataType::Float4, "a_Normal" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		};
+		
 		CubeVBO->SetLayout(layout);
 		CubeVAO->SetVertexBuffer(CubeVBO);
 
@@ -238,6 +243,12 @@ namespace Engine
 
 		auto wood_tex = Texture2D::CreateTexScope("resources/textures/wood.png", TextureFormat::SRGBA);
 		Texture_Manager.Regist("wood", std::move(wood_tex));
+		auto container_tex = Texture2D::CreateTexScope("resources/textures/container_box.png", TextureFormat::SRGBA);
+		Texture_Manager.Regist("container", std::move(container_tex));
+		auto specular= Texture2D::CreateTexScope("resources/textures/specular.png", TextureFormat::RED32F);
+		Texture_Manager.Regist("specular", std::move(specular));
+
+
 	}
 
 	void RendererLayer::SetUPGeoMetry()

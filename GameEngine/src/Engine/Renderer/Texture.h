@@ -1,4 +1,3 @@
-﻿//******************************************************************
 //steal form hazel
 #pragma once
 
@@ -17,6 +16,10 @@ namespace Engine {
 		RED_INTEGER,
 		RGB8,
 		SRGBA,
+		// Single channel
+		RED,
+		RED32F,
+
 		// Depth/stencil
 		DEPTH24STENCIL8,
 
@@ -51,9 +54,9 @@ namespace Engine {
 
 	class TextureCube : public Texture {
 	public:
-		// 从6张图片创建立方体贴图
+		// 6张图片创建立方体贴图
 		static Scope<TextureCube> Create(const std::vector<std::string>& faces);
-		// 从单张图片创建立方体贴图（所有面使用同一张图）
+		// 从单张图片创建立方体贴图（所有面使用同一张图
 		static Scope<TextureCube> Create(const std::string& path);
 	};
 

@@ -37,9 +37,9 @@ namespace Engine {
 	{
 	public:
 		// 从6张图片路径加载立方体贴图（按照 +X, -X, +Y, -Y, +Z, -Z 顺序）
-		OpenGLTextureCube(const std::vector<std::string>& faces);
+		OpenGLTextureCube(const std::vector<std::string>& faces,TextureFormat format=TextureFormat::SRGBA);
 		// 从单张等距柱状投影图加载（简化版本，暂不实现）
-		OpenGLTextureCube(const std::string& path, TextureFormat format = TextureFormat::RGB8);
+		OpenGLTextureCube(const std::string& path, TextureFormat format = TextureFormat::SRGBA);
 		virtual ~OpenGLTextureCube();
 
 		virtual uint32_t GetWidth() const override { return m_Width; }

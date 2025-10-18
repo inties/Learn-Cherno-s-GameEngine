@@ -33,31 +33,31 @@ void OpenGLMaterial::Unbind() const {
 }
 
 void OpenGLMaterial::SetInt(const std::string& name, int value) {
-
+    m_Shader->Bind();
     m_Shader->SetInt(name, value);
 
 }
 
 void OpenGLMaterial::SetFloat(const std::string& name, float value) {
-
+    m_Shader->Bind();
     m_Shader->SetFloat(name, value);
 
 }
 
 void OpenGLMaterial::SetFloat3(const std::string& name, const glm::vec3& value) {
-
+    m_Shader->Bind();
     m_Shader->SetFloat3(name, value);
 
 }
 
 void OpenGLMaterial::SetFloat4(const std::string& name, const glm::vec4& value) {
-
+    m_Shader->Bind();
     m_Shader->SetFloat4(name, value);
 
 }
 
 void OpenGLMaterial::SetMat4(const std::string& name, const glm::mat4& value) {
-
+    m_Shader->Bind();
     m_Shader->SetMat4(name, value);
 
 }

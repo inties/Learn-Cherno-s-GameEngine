@@ -10,22 +10,41 @@ namespace Engine {
 		switch (format) {
 		case TextureFormat::RGBA8:
 			glformat = GL_RGBA8;
-
+			break;
+		case TextureFormat::RGB8:
+			glformat = GL_RGB8;
 			break;
 		case TextureFormat::RED_INTEGER:
 			glformat = GL_R32I;
-
 			break;
-		case TextureFormat::DEPTH24STENCIL8:
-			glformat = GL_DEPTH24_STENCIL8;
+		case TextureFormat::RED:
+			glformat = GL_R8;
+			break;
+		case TextureFormat::RED32F:
+			glformat = GL_R32F;
 			break;
 		case TextureFormat::SRGBA:
 			glformat = GL_SRGB8_ALPHA8;
 			break;
+		case TextureFormat::DEPTH24STENCIL8:
+			glformat = GL_DEPTH24_STENCIL8;
+			break;
 		}
 		return glformat;
-
 	};
+	GLenum GLDataFormat(int channels) {
+		if (channels == 4)
+		{
+			return GL_RGBA;
+		}
+		else if (channels == 3)
+		{
+			return GL_RGB;
+		}
+		else if (channels == 1) {
+			return GL_RED;
+		}
+	}
 	GLenum TextureTarget(bool multisampled)
 	{
 		return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -33,19 +52,7 @@ namespace Engine {
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format,int samples)
 		: m_Width(width), m_Height(height)
 	{
-		switch (format) {
-			case TextureFormat::RGBA8:
-				m_InternalFormat = GL_RGBA8;
-				m_DataFormat = GL_RGBA;
-				break;
-			case TextureFormat::RED_INTEGER:
-				m_InternalFormat = GL_R32I;
-				m_DataFormat = GL_RED_INTEGER;
-				break;
-			case TextureFormat::DEPTH24STENCIL8:
-				m_InternalFormat = GL_DEPTH24_STENCIL8;
-				break;
-		}
+		m_InternalFormat=GLTextureFormat(format);
 		bool multisample = samples > 1;
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
@@ -80,16 +87,9 @@ namespace Engine {
 		m_Width = width;
 		m_Height = height;
 		GLenum internalFormat =GLTextureFormat(format);
-		GLenum dataFormat = 0;
-		if (channels == 4)
-		{
-			dataFormat = GL_RGBA;
-		}
-		else if (channels == 3)
-		{
-			dataFormat = GL_RGB;
-		}
-		m_DataFormat = dataFormat;
+		GLenum dataFormat = GLDataFormat(channels);
+	
+		m_DataFormat =dataFormat ;
 
 		ENGINE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 
@@ -118,7 +118,20 @@ namespace Engine {
 	{
 		ENGINE_PROFILE_FUNCTION();
 
-		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+		uint32_t bpp = 4; // 默认RGBA
+		if (m_DataFormat == GL_RGBA) {
+			bpp = 4;
+		}
+		else if (m_DataFormat == GL_RGB) {
+			bpp = 3;
+		}
+		else if (m_DataFormat == GL_RED) {
+			bpp = 1;
+		}
+		else if (m_DataFormat == GL_RED_INTEGER) {
+			bpp = 4; // 32位整数
+		}
+		
 		ENGINE_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 	}
@@ -130,7 +143,7 @@ namespace Engine {
 		glBindTextureUnit(slot, m_RendererID);
 	}
 	// 从6张图片加载立方体贴图
-	OpenGLTextureCube::OpenGLTextureCube(const std::vector<std::string>& faces)
+	OpenGLTextureCube::OpenGLTextureCube(const std::vector<std::string>& faces,TextureFormat format)
 		: m_Width(0), m_Height(0)
 	{
 		ENGINE_CORE_ASSERT(faces.size() == 6, "Cubemap requires exactly 6 faces!");
@@ -157,15 +170,12 @@ namespace Engine {
 				}
 
 				// 确定格式
-				GLenum format = GL_RGB;
-				if (nrChannels == 4)
-					format = GL_RGBA;
-				else if (nrChannels == 3)
-					format = GL_RGB;
+				GLenum internalFormat = GLTextureFormat(format);
+				GLenum dataFormat = GLDataFormat(nrChannels);
 
 				// 加载到立方体贴图的第 i 个面
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-					0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+					0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
 				
 				ENGINE_CORE_INFO("Loaded cubemap face {}: {}", i, faces[i]);
 			}
@@ -207,20 +217,13 @@ namespace Engine {
 			m_Height = height;
 
 			// 确定格式
-			GLenum glFormat = GL_RGB;
-			if (nrChannels == 4)
-				glFormat = GL_RGBA;
-			else if (nrChannels == 3)
-				glFormat = GL_RGB;
-
-			m_DataFormat = glFormat;
-			m_InternalFormat = (nrChannels == 4) ? GL_RGBA8 : GL_RGB8;
+			GLenum glFormat = GLTextureFormat(format);
 
 			// 将同一张图片应用到立方体的所有6个面（仅用于测试）
 			for (unsigned int i = 0; i < 6; i++)
 			{
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+					0, glFormat, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			}
 
 			ENGINE_CORE_INFO("Loaded cubemap from single image: {}", path);

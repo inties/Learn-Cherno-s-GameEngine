@@ -12,7 +12,7 @@ namespace Engine {
 
     Scene::Scene() {
         // 默认创建一个CubeEntity
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             Entity cube=CreatePrefab(PrefabTypes::Cube);
         }
 
