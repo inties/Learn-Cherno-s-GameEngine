@@ -15,7 +15,8 @@ namespace Engine
 
 		virtual void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) = 0;
 		virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
-
+		
+		virtual TopologyType GetTopologyType() const = 0;
 		virtual const std::shared_ptr<VertexBuffer>& GetVertexBuffer() const = 0;
 		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const = 0;
 
@@ -23,6 +24,6 @@ namespace Engine
 		virtual bool HasIndexBuffer() const = 0;
 		virtual uint32_t GetVertexCount() const = 0;  // Calculate total vertex count
 
-		static Scope<VertexArray> Create();
+		static Scope<VertexArray> Create(TopologyType=TopologyType::TriangleList);
 	};
 } 

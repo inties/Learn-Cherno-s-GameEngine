@@ -112,7 +112,7 @@ namespace Engine
 		auto CubeDefaultMat = Material::Create(CubeShader);
 		CubeDefaultMat->SetTexture("u_DiffuseTexture", Texture_Manager.Get("container"), 0);
 		CubeDefaultMat->SetTexture("u_SpecularTexture", Texture_Manager.Get("specular"), 1);
-		CubeDefaultMat->SetFloat("roughness", 0.5);
+		CubeDefaultMat->SetFloat("roughness", 0.9);
 		CubeDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
 		CubeDefaultMat->SetFloat3("cameraPos_ws", glm::vec3(0.0f, 0.0f, 0.0f));
 		Mat_Manager.Regist("cube", std::move(CubeDefaultMat));
@@ -127,35 +127,35 @@ namespace Engine
 		// 6 个面，每面 4 顶点，共 24 顶点
 		float cubeVertices[] = {
 			// 前面 (+Z) - 法线指向 +Z 方向
-			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
 			// 后面 (-Z) - 法线指向 -Z 方向
-			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   1.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   0.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   0.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   1.0f, 1.0f,
 			// 左面 (-X) - 法线指向 -X 方向
-			-0.5f, -0.5f, -0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,   -1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,   -1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,   -1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,   -1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   -1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
 			// 右面 (+X) - 法线指向 +X 方向
-			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
 			// 下面 (-Y) - 法线指向 -Y 方向
-			-0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f,   0.0f, 1.0f,
 			// 上面 (+Y) - 法线指向 +Y 方向
-			-0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
 		};
 		unsigned int cubeIndices[] = {
 			// 前面
@@ -179,7 +179,7 @@ namespace Engine
 		auto CubeVBO = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float4, "a_Normal" },
+			{ ShaderDataType::Float3, "a_Normal" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		};
 		
@@ -191,6 +191,82 @@ namespace Engine
 		CubeVAO->SetIndexBuffer(CubeIBO);
 		VAO_Manager.Regist("cube", std::move(CubeVAO));
 
+	}
+
+	void RendererLayer::SetupSphere()
+	{
+		struct Vertice {
+			glm::vec3 position;
+			glm::vec3 normal;
+			glm::vec2 uv;
+			
+			Vertice() = default;
+			Vertice(const glm::vec3& pos, const glm::vec2& texCoord, const glm::vec3& norm)
+				: position(pos), uv(texCoord), normal(norm) {}
+			
+			// 直接构造，避免临时对象
+			Vertice(float x, float y, float z, float u, float v, float nx, float ny, float nz)
+				: position(x, y, z), uv(u, v), normal(nx, ny, nz) {}
+		};
+		std::vector<Vertice>vertexs;
+		std::vector<unsigned int> indices;
+
+		const unsigned int X_SEGMENTS = 64;
+		const unsigned int Y_SEGMENTS = 64;
+		const float PI = 3.14159265359f;
+		for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+		{
+			for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
+			{
+				float xSegment = (float)x / (float)X_SEGMENTS;
+				float ySegment = (float)y / (float)Y_SEGMENTS;
+				float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+				float yPos = std::cos(ySegment * PI);
+				float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+				vertexs.emplace_back(xPos, yPos, zPos, xSegment, ySegment, xPos, yPos, zPos);
+			}
+		}
+
+		bool oddRow = false;
+		for (unsigned int y = 0; y < Y_SEGMENTS; ++y)
+		{
+			if (!oddRow) // even rows: y == 0, y == 2; and so on
+			{
+				for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+				{
+					indices.push_back(y * (X_SEGMENTS + 1) + x);
+					indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+				}
+			}
+			else
+			{
+				for (int x = X_SEGMENTS; x >= 0; --x)
+				{
+					indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+					indices.push_back(y * (X_SEGMENTS + 1) + x);
+				}
+			}
+			oddRow = !oddRow;
+		}
+		// 创建VAO
+		auto SphereVAO = VertexArray::Create(TopologyType::TriangleStrip);
+
+		// 创建VBO
+		auto SphereVBO = VertexBuffer::Create(vertexs.size() * sizeof(Vertice));
+		SphereVBO->SetData(vertexs.data(), vertexs.size() * sizeof(Vertice));
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float3, "a_Normal" },
+			{ ShaderDataType::Float2, "a_TexCoord" }
+		};
+
+		SphereVBO->SetLayout(layout);
+		SphereVAO->SetVertexBuffer(SphereVBO);
+
+		// 创建IBO
+		auto SphereIBO = IndexBuffer::Create(indices.data(), indices.size());
+		SphereVAO->SetIndexBuffer(SphereIBO);
+		VAO_Manager.Regist("sphere", std::move(SphereVAO));
 	}
 
 	void RendererLayer::SetupQuad()
@@ -255,7 +331,7 @@ namespace Engine
 	{
 		SetupCube();
 		SetupQuad();
-
+		SetupSphere();
 	}
 
 	void RendererLayer::OnUpdate()

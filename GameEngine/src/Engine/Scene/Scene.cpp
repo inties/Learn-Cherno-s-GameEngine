@@ -15,6 +15,9 @@ namespace Engine {
         for (int i = 0; i < 1000; i++) {
             Entity cube=CreatePrefab(PrefabTypes::Cube);
         }
+        for (int i = 0; i < 1000; i++) {
+            auto sphere= CreatePrefab(PrefabTypes::Sphere);
+        }
 
 
         // auto& nsc=cube.AddComponent<NativeScriptableComponent>();
@@ -40,6 +43,8 @@ namespace Engine {
         switch (prefabType) {
             case PrefabTypes::Cube:
                 return CubeEntity(handle, this);
+            case PrefabTypes::Sphere:
+                return SphereEntity(handle, this);
             case PrefabTypes::None:
             default:
                 return Entity(handle, this);

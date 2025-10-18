@@ -1,14 +1,14 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/Renderer/Buffer.h"
 
 namespace Engine
 {
-	class OpenGLVertexBuffer : public VertexBuffer
+	class OpenGLVertexBuffer final : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(uint32_t size);
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(uint32_t);
+		OpenGLVertexBuffer(void*, uint32_t);
 		virtual ~OpenGLVertexBuffer();
 
 		virtual void Bind() const override;

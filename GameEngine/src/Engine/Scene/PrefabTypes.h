@@ -1,8 +1,9 @@
-#pragma once
+﻿#pragma once
 #include "pch.h"
 namespace Engine {
 	enum class PrefabTypes {
 		Cube,
+		Sphere,
 		None
 	};
 }

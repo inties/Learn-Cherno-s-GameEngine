@@ -1,10 +1,28 @@
 ﻿#include "pch.h"
 #include "OpenGLRendererAPI.h"
-
+#include "Engine/Renderer/Buffer.h"
 #include <glad/glad.h>
 
 namespace Engine
 {
+	GLenum GLTypologyType(TopologyType topology) {
+		switch (topology)
+		{
+			case TopologyType::TriangleList:
+				return GL_TRIANGLES;
+			case TopologyType::TriangleStrip:
+				return GL_TRIANGLE_STRIP;
+			case TopologyType::Point:
+				return GL_POINTS;
+			case TopologyType::LineList:
+				return GL_LINES;
+			case TopologyType::LineStrip:
+				return GL_LINE_STRIP;
+			default:
+				ENGINE_CORE_ERROR("Unknown topology type: {}", static_cast<int>(topology));
+				return GL_TRIANGLES; // 默认返回三角形
+		}
+	}
 	void OpenGLRendererAPI::Init()
 	{
 		glEnable(GL_BLEND);
@@ -42,27 +60,34 @@ namespace Engine
 	void OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		vertexArray->Bind();
+		GLenum mode = GLTypologyType(vertexArray->GetTopologyType());
+		glDrawElements(mode, count, GL_UNSIGNED_INT, nullptr);
 	}
 
 	void OpenGLRendererAPI::DrawIndexed(const VertexArray* vertexArray, uint32_t indexCount)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		vertexArray->Bind();
+		GLenum mode = GLTypologyType(vertexArray->GetTopologyType());
+		glDrawElements(mode, count, GL_UNSIGNED_INT, nullptr);
 	}
 
 	void OpenGLRendererAPI::DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount)
 	{
 		uint32_t count = vertexCount ? vertexCount : vertexArray->GetVertexCount();
-		glDrawArrays(GL_TRIANGLES, 0, count);
+		vertexArray->Bind();
+		GLenum mode = GLTypologyType(vertexArray->GetTopologyType());
+		glDrawArrays(mode, 0, count);
 	}
 
 	void OpenGLRendererAPI::DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
 		uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
 	{
 		vertexArray->Bind();
+		GLenum mode = GLTypologyType(vertexArray->GetTopologyType());
 		// 使用glDrawElementsBaseVertex支持偏移绘制
-		glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 
+		glDrawElementsBaseVertex(mode, indexCount, GL_UNSIGNED_INT, 
 			(void*)(indexOffset * sizeof(uint32_t)), vertexOffset);
 	}
 
@@ -70,15 +95,17 @@ namespace Engine
 		uint32_t indexCount, uint32_t instanceCount)
 	{
 		vertexArray->Bind();
+		GLenum mode = GLTypologyType(vertexArray->GetTopologyType());
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-		glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr, instanceCount);
+		glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, nullptr, instanceCount);
 	}
 
 	void OpenGLRendererAPI::DrawIndexedInstanced(const VertexArray* vertexArray, 
 		uint32_t indexCount, uint32_t instanceCount)
 	{
 		vertexArray->Bind();
+		GLenum mode = GLTypologyType(vertexArray->GetTopologyType());
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-		glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr, instanceCount);
+		glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, nullptr, instanceCount);
 	}
 } 

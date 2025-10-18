@@ -61,6 +61,7 @@ namespace Engine
 		// void SetupModel(); // 已移除：不再使用硬编码模型
 		void SetUPGeoMetry();
 		void SetupCube();
+		void SetupSphere();
 		void SetupQuad();
 		void SetupTexture();
 		std::string GetShaderPath(const std::string& filename);

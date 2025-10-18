@@ -27,9 +27,10 @@ namespace Engine
 		return 0;
 	}
 
-	OpenGLVertexArray::OpenGLVertexArray()
+	OpenGLVertexArray::OpenGLVertexArray(TopologyType topology)
 	{
 		glCreateVertexArrays(1, &m_RendererID);
+		m_topology = topology;
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()

@@ -30,7 +30,14 @@ namespace Engine {
 		ENGINE_CORE_ERROR("Unknown ShaderDataType!");
 		return 0;
 	}
-
+	enum class TopologyType {
+		Point,
+		LineList,
+		LineStrip,
+		TriangleList,
+		TriangleStrip,
+		None
+	};
 	struct BufferElement
 	{
 		std::string Name;

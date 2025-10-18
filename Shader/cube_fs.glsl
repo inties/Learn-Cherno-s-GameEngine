@@ -47,10 +47,10 @@ void main()
 
     // 获取材质属性
     vec3 albedo = texture(u_DiffuseTexture, v_TexCoord).rgb;
-    float metal = 0.5;
+    float metal = texture(u_SpecularTexture, v_TexCoord).r;
+    
     float roughness_2 = roughness * roughness;
-    vec3 F0 = mix(vec3(0.04, 0.04, 0.04), albedo, metal);
-
+    vec3 F0 = mix(vec3(0.004, 0.004, 0.004), albedo, metal);
     // 漫反射
     vec3 diffuse = (1.0 - metal) * albedo / PI;
 
@@ -60,6 +60,7 @@ void main()
     float G = G_smith(NdotV, NdotL, roughness);
     vec3 F = F_Schlick(F0, VdotH);
     vec3 specular = NDF * G * F / max(4.0 * NdotL * NdotV, 0.001);
+    
 
     specular = specular * NdotL*lightColor;
     diffuse = diffuse *NdotL*lightColor;
