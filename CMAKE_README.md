@@ -4,8 +4,9 @@
 
 ## 构建要求
 
+- **Windows平台** (项目仅支持Windows)
 - CMake 3.16 或更高版本
-- Visual Studio 2019/2022 (Windows)
+- Visual Studio 2019/2022
 - C++17 支持的编译器
 
 ## 快速开始
@@ -25,14 +26,9 @@
    cmake --build . --config Debug
    ```
 
-### Linux/macOS
+### 其他平台
 
-```bash
-mkdir build
-cd build
-cmake ..
-make -j$(nproc)
-```
+**注意**: 此项目仅支持Windows平台。在其他平台上运行CMake将显示错误信息。
 
 ## 项目结构
 
@@ -60,16 +56,17 @@ GameEngine/
 
 ## 输出目录
 
-- 可执行文件: `build/bin/<配置>/`
-- 静态库: `build/lib/<配置>/`
-- SandBox 可执行文件: `build/bin/<配置>/SandBox.exe`
+- 可执行文件: `bin/<配置>-<系统>-<架构>/<项目>/`
+- 静态库: `bin/<配置>-<系统>-<架构>/<项目>/`
+- SandBox 可执行文件: `bin/<配置>-<系统>-<架构>/SandBox/SandBox.exe`
+- GameEngine DLL: `bin/<配置>-<系统>-<架构>/GameEngine/GameEngine.dll`
 
 ## 与 Premake 的差异
 
-1. **输出目录**: CMake使用 `build/` 目录而不是项目根目录
+1. **输出目录**: 现在与Premake保持一致，使用 `bin/<配置>-<系统>-<架构>/<项目>/` 结构
 2. **配置方式**: 使用CMake的配置系统替代Premake的filter系统
 3. **依赖管理**: CMake的target-based依赖管理
-4. **跨平台**: 更好的跨平台支持
+4. **平台支持**: 与Premake一样，仅支持Windows平台
 
 ## IDE 支持
 
@@ -96,8 +93,30 @@ cmake -B build
 cmake --build build --target GameEngine
 cmake --build build --target SandBox
 
-# 安装 (如果配置了安装目标)
+# 构建所有目标
+cmake --build build --config Debug
+
+# 安装/打包 (复制依赖库和资源文件到输出目录)
+cmake --build build --target install --config Debug
+```
+
+## 安装/打包
+
+项目配置了自动安装功能，会将以下内容复制到可执行文件目录：
+
+- **可执行文件**: SandBox.exe, GameEngine.dll
+- **依赖库**: glfw3.dll 等外部依赖
+- **资源文件**: Shader/, Resources/ 目录
+- **配置文件**: config.json 等
+
+### 安装命令
+```bash
+# 安装到默认目录 (通常是 build/install/)
 cmake --build build --target install
+
+# 指定安装目录
+cmake --build build --target install --config Debug
+cmake -DCMAKE_INSTALL_PREFIX=./dist -P build/cmake_install.cmake
 ```
 
 ## 故障排除

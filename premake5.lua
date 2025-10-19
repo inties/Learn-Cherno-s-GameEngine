@@ -1,6 +1,6 @@
 workspace"GameEngine"
     architecture "x64"
-    configurations { "Debug", "Release","Dist" }
+    configurations { "Debug", "Release" }
     startproject "SandBox"
 
 -- Include directories relative to root folder (solution directory)
@@ -11,6 +11,9 @@ IncludeDir["ImGui"] = "GameEngine/dependency/imgui"
 IncludeDir["glm"] = "GameEngine/dependency/glm_99"
 IncludeDir["entt"]="GameEngine/dependency/entt/src/entt"
 IncludeDir["nlohmann"]="GameEngine/dependency/nlohmann"
+IncludeDir["spdlog"]="GameEngine/dependency/spdlog/include"
+IncludeDir["common"]="GameEngine/dependency/include"
+
 -- 包含glad/imgui两个子项目
 include "GameEngine/dependency/glad"
 include "GameEngine/dependency/imgui"
@@ -40,7 +43,6 @@ project "GameEngine"
     }
     libdirs {
         "%{prj.name}/dependency/GLFW_3_4/lib",
-        "%{prj.name}/dependency/glew",
         "%{prj.name}/dependency/libs"
     }
     
@@ -56,7 +58,6 @@ project "GameEngine"
             "Glad",
             "glfw3",
             "opengl32.lib",
-            "glew32s",
             "user32.lib",
             "gdi32.lib",
             "shell32.lib",
@@ -72,7 +73,6 @@ project "GameEngine"
         }
         
         postbuildcommands {
-            -- "{MKDIR} ../bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/SandBox",
             "{COPYFILE} %{cfg.buildtarget.relpath} ../"
         }
 
@@ -81,9 +81,6 @@ project "GameEngine"
         symbols "On"
     filter "configurations:Release"
         defines { "ENGINE_RELEASE" }
-        optimize "On"
-    filter "configurations:Dist"
-        defines { "ENGINE_DIST" }
         optimize "On"
 
 
@@ -104,16 +101,16 @@ project "SandBox"
 
     }
     includedirs {
-        "./GameEngine/dependency/spdlog/include",
-        "./GameEngine/dependency/include",
-        "./GameEngine/dependency/GLFW_3_4/include",
-        "./GameEngine/dependency/glad/include",
-        "./GameEngine/dependency/imgui",
+        "./GameEngine/src",
+        "%{IncludeDir.spdlog}",
+        "%{IncludeDir.common}",
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.nlohmann}",
-        "./GameEngine/src",
-        "%{prj.name}/src"
+        "%{prj.name}/src",
     }
     libdirs {
         "./GameEngine/dependency/GLFW_3_4/lib",
@@ -138,7 +135,4 @@ project "SandBox"
         symbols "On"
     filter "configurations:Release"
         defines { "ENGINE_RELEASE" }
-        optimize "On"
-    filter "configurations:Dist"
-        defines { "ENGINE_DIST" }
         optimize "On"

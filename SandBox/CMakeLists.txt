@@ -17,18 +17,12 @@ set_target_properties(SandBox PROPERTIES
 
 # Include directories
 target_include_directories(SandBox PRIVATE
-    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/spdlog/include
-    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/include
-    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/GLFW_3_4/include
-    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/glad/include
-    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/glm_99
-    ${CMAKE_SOURCE_DIR}/GameEngine/src
+    src
 )
 
 # Link directories
 target_link_directories(SandBox PRIVATE
     ${CMAKE_SOURCE_DIR}/GameEngine/dependency/GLFW_3_4/lib
-    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/glew
     ${CMAKE_SOURCE_DIR}/GameEngine/dependency/libs
 )
 
@@ -63,13 +57,11 @@ if(WIN32)
     endif()
 endif()
 
-# Set output directory
+# Set output directory to match Premake structure
 set_target_properties(SandBox PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release"
-    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/bin/RelWithDebInfo"
-    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/bin/MinSizeRel"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/SandBox"
+    # Set intermediate directory to match Premake structure
+    BINARY_DIR "${CMAKE_SOURCE_DIR}/bin-int/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/SandBox"
 )
 
 # Make SandBox depend on GameEngine

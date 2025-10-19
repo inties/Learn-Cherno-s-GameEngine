@@ -28,6 +28,9 @@
     <Filter Include="Engine\Scene">
       <UniqueIdentifier>{386D1796-24D0-A63A-CD55-DFF0B99772BD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Utils">
+      <UniqueIdentifier>{7B014596-6764-D43A-10EA-0CF1FC2BA0BD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\platform">
       <UniqueIdentifier>{AFA6F61D-1B32-64E2-2443-E7D6904DC0E2}</UniqueIdentifier>
     </Filter>
@@ -103,6 +106,9 @@
     <ClInclude Include="src\Engine\Renderer\FrameBuffer.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\InstancedRenderer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Material.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
@@ -128,6 +134,9 @@
       <Filter>Engine\Renderer\Renderpass</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Renderpass\RenderPipeline.h">
+      <Filter>Engine\Renderer\Renderpass</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Renderpass\SkyBoxPass.h">
       <Filter>Engine\Renderer\Renderpass</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Shader.h">
@@ -190,6 +199,9 @@
     <ClInclude Include="src\Engine\Utils.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Utils\Timer.h">
+      <Filter>Engine\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Windows.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -230,9 +242,6 @@
       <Filter>Engine\platform</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Engine\Renderer\Renderpass\SkyBoxPass.h" />
-    <ClInclude Include="src\Engine\Utils\Timer.h" />
-    <ClInclude Include="src\Engine\Renderer\InstancedRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -280,6 +289,9 @@
     <ClCompile Include="src\Engine\Renderer\FrameBuffer.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\InstancedRenderer.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Material.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
@@ -298,7 +310,13 @@
     <ClCompile Include="src\Engine\Renderer\Renderpass\ForwardPass.cpp">
       <Filter>Engine\Renderer\Renderpass</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Renderpass\PostEffectPass.cpp">
+      <Filter>Engine\Renderer\Renderpass</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Renderpass\RenderPipeline.cpp">
+      <Filter>Engine\Renderer\Renderpass</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Renderpass\SkyBoxPass.cpp">
       <Filter>Engine\Renderer\Renderpass</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Shader.cpp">
@@ -343,6 +361,9 @@
     <ClCompile Include="src\Engine\TestLayer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Utils\Timer.cpp">
+      <Filter>Engine\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Windows.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -383,9 +404,5 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\Engine\Renderer\Renderpass\PostEffectPass.cpp" />
-    <ClCompile Include="src\Engine\Renderer\Renderpass\SkyBoxPass.cpp" />
-    <ClCompile Include="src\Engine\Utils\Timer.cpp" />
-    <ClCompile Include="src\Engine\Renderer\InstancedRenderer.cpp" />
   </ItemGroup>
 </Project>

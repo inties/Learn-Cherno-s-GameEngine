@@ -14,3 +14,7 @@ SandBox/assets
 *.exe
 *.dll
 BROWSE.VC.DB
+*.sln
+*pdb
+imgui.ini
+

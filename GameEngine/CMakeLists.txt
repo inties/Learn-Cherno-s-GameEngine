@@ -21,18 +21,19 @@ target_precompile_headers(GameEngine PRIVATE src/pch.h)
 # Include directories
 target_include_directories(GameEngine PUBLIC
     src
-    dependency/spdlog/include
-    dependency/include
+    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/spdlog/include
+    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/include
     ${CMAKE_SOURCE_DIR}/GameEngine/dependency/GLFW_3_4/include
     ${CMAKE_SOURCE_DIR}/GameEngine/dependency/glad/include
     ${CMAKE_SOURCE_DIR}/GameEngine/dependency/imgui
     ${CMAKE_SOURCE_DIR}/GameEngine/dependency/glm_99
+    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/entt/src/entt
+    ${CMAKE_SOURCE_DIR}/GameEngine/dependency/nlohmann
 )
 
 # Link directories
 target_link_directories(GameEngine PRIVATE
     dependency/GLFW_3_4/lib
-    dependency/glew
     dependency/libs
 )
 
@@ -48,11 +49,11 @@ if(WIN32)
     target_link_libraries(GameEngine
         glfw3
         opengl32
-        glew32s
         user32
         gdi32
         shell32
         kernel32
+        assimp-vc143-mtd
     )
     
     # Compiler definitions - PUBLIC for consumers, PRIVATE for internal
@@ -86,19 +87,19 @@ if(WIN32)
     # Post-build step to copy DLL to SandBox directory
     add_custom_command(TARGET GameEngine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory 
-            "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/SandBox"
+            "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/SandBox"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "$<TARGET_FILE:GameEngine>"
-            "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/SandBox/"
+            "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/SandBox/"
         COMMENT "Copying GameEngine DLL to SandBox directory"
     )
 endif()
 
-# Set output directory
+# Set output directory to match Premake structure
 set_target_properties(GameEngine PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release"
-    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/bin/RelWithDebInfo"
-    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/bin/MinSizeRel"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/GameEngine"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/GameEngine"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/GameEngine"
+    # Set intermediate directory to match Premake structure
+    BINARY_DIR "${CMAKE_SOURCE_DIR}/bin-int/$<CONFIG>-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}/GameEngine"
 ) 
