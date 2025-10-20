@@ -8,7 +8,7 @@ flat in int v_ObjectID;
 
 // 材质属性
 layout (binding = 0) uniform sampler2D u_DiffuseTexture;
-layout (binding = 1) uniform sampler2D u_SpecularTexture;
+layout (binding = 1) uniform sampler2D u_MetalRoughness;
 uniform float roughness;
 
 // 光照
@@ -47,9 +47,13 @@ void main()
 
     // 获取材质属性
     vec3 albedo = texture(u_DiffuseTexture, v_TexCoord).rgb;
-    float metal = texture(u_SpecularTexture, v_TexCoord).r;
+    float metal = 0.5;
+
+    float roughness_2;
     
-    float roughness_2 = roughness * roughness;
+    roughness_2=roughness*roughness;
+    
+
     vec3 F0 = mix(vec3(0.004, 0.004, 0.004), albedo, metal);
     // 漫反射
     vec3 diffuse = (1.0 - metal) * albedo / PI;
@@ -68,7 +72,7 @@ void main()
     vec3 ambient = vec3(0.1) * albedo;
     vec3 color= diffuse + specular+ambient;
     // 输出最终颜色 - 显示lightDir的值用于调试
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(specular, 1.0);
     
     
     // 对象ID用于拾取

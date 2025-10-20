@@ -35,7 +35,7 @@ namespace Engine
 		ENGINE_CORE_INFO("窗口初始 x,y,{},{}", initW, initH);
 		//CreateRenderTarget(initW, initH);
 		typedef TextureFormat format;
-		FramebufferSpecification spec = { initW,initH,{format::RGBA8,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
+		FramebufferSpecification spec = { initW,initH,{format::RGB16,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
 		FBO = Framebuffer::Create(spec);
 		ENGINE_CORE_INFO("RendererLayer attached");
 	}
@@ -111,13 +111,26 @@ namespace Engine
 		auto CubeShader = Shader::Create(shaderPath_vs,shaderPath_fs);
 		auto CubeDefaultMat = Material::Create(CubeShader);
 		CubeDefaultMat->SetTexture("u_DiffuseTexture", Texture_Manager.Get("container"), 0);
-		CubeDefaultMat->SetTexture("u_SpecularTexture", Texture_Manager.Get("specular"), 1);
+		CubeDefaultMat->SetTexture("u_MetalRoughness", Texture_Manager.Get("specular"), 1);
 		CubeDefaultMat->SetFloat("roughness", 0.9);
 		CubeDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
 		CubeDefaultMat->SetFloat3("cameraPos_ws", glm::vec3(0.0f, 0.0f, 0.0f));
 		Mat_Manager.Regist("cube", std::move(CubeDefaultMat));
 
 		Shader_Manager.Regist("skybox", std::move(skybox_shader));
+
+
+		shaderPath_fs = GetShaderPath("sphere_fs.glsl");
+
+		auto SphereShader = Shader::Create(shaderPath_vs, shaderPath_fs);
+
+		auto SphereDefaultMat = Material::Create(SphereShader);
+		SphereDefaultMat->SetTexture("u_DiffuseTexture", Texture_Manager.Get("iron"), 0);
+		SphereDefaultMat->SetTexture("u_MetalRoughness", Texture_Manager.Get("iron_metal_roughness"), 1);
+		SphereDefaultMat->SetFloat("roughness", 0.9);
+		SphereDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
+		SphereDefaultMat->SetFloat3("cameraPos_ws", glm::vec3(0.0f, 0.0f, 0.0f));
+		Mat_Manager.Regist("sphere", std::move(SphereDefaultMat));
 		
 	}
 
@@ -319,10 +332,17 @@ namespace Engine
 
 		auto wood_tex = Texture2D::CreateTexScope("resources/textures/wood.png", TextureFormat::SRGBA);
 		Texture_Manager.Regist("wood", std::move(wood_tex));
-		auto container_tex = Texture2D::CreateTexScope("resources/textures/container_box.png", TextureFormat::SRGBA);
+		auto container_tex = Texture2D::CreateTexScope("resources/textures/container_box.png", TextureFormat::SRGBA,true);
 		Texture_Manager.Regist("container", std::move(container_tex));
 		auto specular= Texture2D::CreateTexScope("resources/textures/specular.png", TextureFormat::RED32F);
 		Texture_Manager.Regist("specular", std::move(specular));
+		auto iron = Texture2D::CreateTexScope("resources/textures/pbr_sphere/albedo_metal.png", TextureFormat::SRGBA,true);
+		Texture_Manager.Regist("iron", std::move(iron));
+		auto iron_metal_roughness = Texture2D::CreateTexScope("resources/textures/pbr_sphere/metal_roughness.png", TextureFormat::RGB8,true);
+		Texture_Manager.Regist("iron_metal_roughness", std::move(iron_metal_roughness));
+		auto hdr_env_house = Texture2D::CreateTexScope("resources/envmap/skybox.hdr", TextureFormat::RGB16, true,true);
+		Texture_Manager.Regist("hdr_env_house", std::move(hdr_env_house));
+
 
 
 	}

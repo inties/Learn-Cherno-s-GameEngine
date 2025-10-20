@@ -3,6 +3,8 @@
 
 #include <stb_image.h>
 #include <cstring> // for memcpy
+#include <algorithm>
+#include <cmath>
 
 namespace Engine {
 	GLenum GLTextureFormat(TextureFormat format) {
@@ -13,6 +15,18 @@ namespace Engine {
 			break;
 		case TextureFormat::RGB8:
 			glformat = GL_RGB8;
+			break;
+		case TextureFormat::RGBA16:
+			glformat = GL_RGBA16F;
+			break;
+		case TextureFormat::RGBA32:
+			glformat = GL_RGBA32F;
+			break;
+		case TextureFormat::RGB16:
+			glformat = GL_RGB16F;
+			break;
+		case TextureFormat::RGB32:
+			glformat = GL_RGB32F;
 			break;
 		case TextureFormat::RED_INTEGER:
 			glformat = GL_R32I;
@@ -49,15 +63,17 @@ namespace Engine {
 	{
 		return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 	};
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format,int samples)
+	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format,int samples,bool enable_mipmap)
 		: m_Width(width), m_Height(height)
 	{
 		m_InternalFormat=GLTextureFormat(format);
 		bool multisample = samples > 1;
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
+		// 计算总的mipmap层级：floor(log2(max(w, h))) + 1
+		int mipLevels = enable_mipmap ? (int)std::floor(std::log2((double)std::max(m_Width, m_Height))) + 1 : 1;
+		glTextureStorage2D(m_RendererID, mipLevels, m_InternalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, enable_mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -66,7 +82,7 @@ namespace Engine {
 
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path,TextureFormat format)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path,TextureFormat format,bool enable_mipmap,bool HDRsource)
 		: m_Path(path)
 	{
 		ENGINE_PROFILE_FUNCTION();
@@ -75,15 +91,27 @@ namespace Engine {
 		
 
 		//翻转
+		
 
 		stbi_uc* data = nullptr;
+		float* hdrdata = nullptr;
 		stbi_set_flip_vertically_on_load(1);
 		
-		data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-		if (!data) {
-			ENGINE_CORE_ERROR("stbi_load failed for path: {}, reason: {}", path, stbi_failure_reason());
+		
+		if (HDRsource) {
+			hdrdata = stbi_loadf(path.c_str(), &width, &height, &channels, 0);
+			if (!hdrdata) {
+				ENGINE_CORE_ERROR("stbi_load failed for path: {}, reason: {}", path, stbi_failure_reason());
+			}
 		}
-		ENGINE_CORE_ASSERT(data, "Failed to load image!");
+		else {
+			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+			if (!data) {
+				ENGINE_CORE_ERROR("stbi_load failed for path: {}, reason: {}", path, stbi_failure_reason());
+			}
+		}
+		
+		
 		m_Width = width;
 		m_Height = height;
 		GLenum internalFormat =GLTextureFormat(format);
@@ -94,15 +122,27 @@ namespace Engine {
 		ENGINE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+		// 计算总的mipmap层级
+		int mipLevels = enable_mipmap ? (int)std::floor(std::log2((double)std::max(m_Width, m_Height))) + 1 : 1;
+		glTextureStorage2D(m_RendererID, mipLevels, internalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, enable_mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		if (HDRsource) {
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_FLOAT, hdrdata);
+		}
+		else {
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
+		}
+		// 生成mipmap
+		if (enable_mipmap)
+		{
+			glGenerateTextureMipmap(m_RendererID);
+		}
 
 		stbi_image_free(data);
 	}

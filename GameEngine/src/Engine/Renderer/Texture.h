@@ -1,4 +1,4 @@
-//steal form hazel
+﻿//steal form hazel
 #pragma once
 
 #include "pch.h"
@@ -13,8 +13,13 @@ namespace Engine {
 
 		// Color
 		RGBA8,
+		RGBA16,
+		RGBA32,
+		
 		RED_INTEGER,
 		RGB8,
+		RGB16,
+		RGB32,
 		SRGBA,
 		// Single channel
 		RED,
@@ -49,7 +54,7 @@ namespace Engine {
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureFormat format = TextureFormat::RGBA8, int sample = 1);
 		static Ref<Texture2D> Create(const std::string& path);
 
-		static Scope<Texture2D> CreateTexScope(const std::string& path,TextureFormat format);
+		static Scope<Texture2D> CreateTexScope(const std::string& path,TextureFormat format,bool enable_mipmap=false,bool HDRsource=false);
 	};
 
 	class TextureCube : public Texture {

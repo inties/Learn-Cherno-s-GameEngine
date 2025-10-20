@@ -34,12 +34,12 @@ namespace Engine {
 		return nullptr;
 	}
 
-	Scope<Texture2D> Texture2D::CreateTexScope(const std::string& path,TextureFormat format)
+	Scope<Texture2D> Texture2D::CreateTexScope(const std::string& path,TextureFormat format,bool enable_mipmap,bool HDRsource)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLTexture2D>(path,format);
+		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLTexture2D>(path,format,enable_mipmap,HDRsource);
 		}
 
 		ENGINE_CORE_ERROR("Unknown RendererAPI!");

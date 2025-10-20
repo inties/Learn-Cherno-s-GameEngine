@@ -42,15 +42,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin\Debug-windows-x86_64\GameEngine\</OutDir>
-    <IntDir>..\bin-int\Debug-windows-x86_64\GameEngine\</IntDir>
+    <OutDir>..\bin\Debug-windows-x86_64\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\</IntDir>
     <TargetName>GameEngine</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release-windows-x86_64\GameEngine\</OutDir>
-    <IntDir>..\bin-int\Release-windows-x86_64\GameEngine\</IntDir>
+    <OutDir>..\bin\Release-windows-x86_64\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\</IntDir>
     <TargetName>GameEngine</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
@@ -73,10 +73,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;kernel32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependency\GLFW_3_4\lib;dependency\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\bin\Debug-windows-x86_64\GameEngine\GameEngine.lib</ImportLibrary>
+      <ImportLibrary>..\bin\Debug-windows-x86_64\GameEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y ..\bin\Debug-windows-x86_64\GameEngine\GameEngine.dll ..</Command>
+      <Command>copy /B /Y ..\bin\Debug-windows-x86_64\GameEngine.dll ..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -102,10 +102,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;kernel32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependency\GLFW_3_4\lib;dependency\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\bin\Release-windows-x86_64\GameEngine\GameEngine.lib</ImportLibrary>
+      <ImportLibrary>..\bin\Release-windows-x86_64\GameEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y ..\bin\Release-windows-x86_64\GameEngine\GameEngine.dll ..</Command>
+      <Command>copy /B /Y ..\bin\Release-windows-x86_64\GameEngine.dll ..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

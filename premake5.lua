@@ -22,8 +22,8 @@ project "GameEngine"
     kind "SharedLib"
     language "C++"
 
-    targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
-    objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
+    targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}")
+    objdir ("bin-int/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}")
     pchheader "pch.h"
     pchsource "GameEngine/src/pch.cpp"
     files {
@@ -129,6 +129,10 @@ project "SandBox"
             "ENGINE_PLATFORM_WINDOWS",
              "GLAD_GLAPI_EXPORT"
         }
+        
+        -- postbuildcommands {
+        --     "{COPYFILE} GameEngine/dependency/GLFW_3_4/lib/glfw3.dll ./"
+        -- }
 
     filter "configurations:Debug"
         defines { "ENGINE_DEBUG" }

@@ -12,7 +12,7 @@ namespace Engine {
 	class SphereEntity :public Entity {
 	public:
 		SphereEntity(entt::entity handle, Scene* scene) :Entity(handle, scene) {
-			AddComponent<RenderComponent>("sphere", "cube");
+			AddComponent<RenderComponent>("sphere", "sphere");
 		}
 	};
 }

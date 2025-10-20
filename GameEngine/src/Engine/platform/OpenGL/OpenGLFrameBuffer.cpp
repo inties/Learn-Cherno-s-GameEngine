@@ -5,7 +5,7 @@
 namespace Engine {
 
 	static const uint32_t s_MaxFramebufferSize = 8192;//静态函数和常量只对当前编译单元可见
-
+	GLenum GLTextureFormat(TextureFormat format);
 	namespace Utils {
 
 		static GLenum TextureTarget(bool multisampled)
@@ -140,16 +140,6 @@ namespace Engine {
 				m_ColorAttachments[i] = colortexture->GetRendererID();
 				
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, multi, m_ColorAttachments[i], 0);
-				//Utils::BindTexture(multisample, m_ColorAttachments[i]);
-				//switch (m_ColorAttachmentSpecifications[i].TextureFormat)
-				//{
-				//case TextureFormat::RGBA8:
-				//	Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
-				//	break;
-				//case TextureFormat::RED_INTEGER:
-				//	Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
-				//	break;
-				//}
 			}
 		}
 
@@ -159,15 +149,6 @@ namespace Engine {
 			m_RenderTextures.push_back(depthtexture);
 			m_DepthAttachment = depthtexture->GetRendererID();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,multi, m_DepthAttachment, 0);
-
-			//Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
-			//Utils::BindTexture(multisample, m_DepthAttachment);
-			//switch (m_DepthAttachmentSpecification.TextureFormat)
-			//{
-			//case TextureFormat::DEPTH24STENCIL8:
-			//	Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
-			//	break;
-			//}
 		}
 
 		if (m_ColorAttachments.size() > 1)
@@ -232,14 +213,14 @@ namespace Engine {
 
 		auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
 		glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
-			Utils::TextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+			GLTextureFormat(spec.TextureFormat), GL_INT, &value);
 	}
 	void OpenGLFramebuffer::ClearColorAttachments(int value)
 	{
 		for(uint32_t i=0;i< m_ColorAttachments.size();i++){
 			auto& spec = m_ColorAttachmentSpecifications[i];
 			glClearTexImage(m_ColorAttachments[i], 0,
-				Utils::TextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+				GLTextureFormat(spec.TextureFormat), GL_INT, &value);
 		}
 	
 	}

@@ -6,7 +6,8 @@ Engine::SkyBoxPass::SkyBoxPass(SkyBoxPassSpec& spec):Spec(spec)
 	m_cubeVAO = spec.VAOManager->Get("cube").get();
 
 	m_shader = spec.ShaderManager->Get("skybox").get();
-	
+
+	envMap = static_cast<Texture2D*>(spec.TexManager->Get("hdr_env_house").get());
 	// 获取纹理并转换为 TextureCube*
 	auto texture = spec.TexManager->Get(spec.SkyBoxName);
 	if (!texture) {
@@ -23,19 +24,20 @@ Engine::SkyBoxPass::SkyBoxPass(SkyBoxPassSpec& spec):Spec(spec)
 
 void Engine::SkyBoxPass::Init()
 {
-
+	
 }
 
 void Engine::SkyBoxPass::Draw()
 {
-	//glDisable(GL_CULL_FACE);
+
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	m_cubeVAO->Bind();
-	m_TextureCube->Bind(0);
+	//m_TextureCube->Bind(0);
+	envMap->Bind(0);
 	m_shader->Bind();
 	Camera* camera = Camera::GetInstance();
 	glm::mat4 viewMatrix = glm::mat4(glm::mat3(camera->GetViewMatrix()));
-	//glm::mat4 viewMatrix = camera->GetViewMatrix();
+
 
 	glm::mat4 projMatrix = camera->GetProjectionMatrix();
 	glm::mat4 viewProjMatrix = projMatrix * viewMatrix;

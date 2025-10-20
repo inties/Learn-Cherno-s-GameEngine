@@ -26,5 +26,6 @@ namespace Engine {
 		SkyBoxPassSpec Spec;
 		VertexArray* m_cubeVAO;
 		TextureCube* m_TextureCube;
+		Texture2D* envMap;
 	};
 }
