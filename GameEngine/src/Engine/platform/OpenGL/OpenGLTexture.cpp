@@ -236,7 +236,7 @@ namespace Engine {
 		
 	}
 
-	// 从单张图片加载（简化实现，可用于天空盒的简单测试）
+	// 从单张图片加载
 	OpenGLTextureCube::OpenGLTextureCube(const std::string& path, TextureFormat format)
 		: m_Path(path), m_Width(0), m_Height(0)
 	{
@@ -280,6 +280,24 @@ namespace Engine {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	}
+
+	OpenGLTextureCube::OpenGLTextureCube(TextureFormat format, uint32_t width, uint32_t height)
+	{
+		m_Width = width;
+		m_Height = height;
+		GLenum internalFormat = GLTextureFormat(format);
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_RendererID);
+		
+		// 为整个立方体贴图分配存储空间
+		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+		
+		// 使用DSA设置纹理参数
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	}
 
 	OpenGLTextureCube::~OpenGLTextureCube()

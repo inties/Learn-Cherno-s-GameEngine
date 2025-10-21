@@ -105,16 +105,16 @@ namespace Engine {
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
-		glDeleteFramebuffers(1, &m_RendererID);
+		glDeleteFramebuffers(1, &m_FBOID);
 		glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
 		glDeleteTextures(1, &m_DepthAttachment);
 	}
 
 	void OpenGLFramebuffer::Invalidate()
 	{
-		if (m_RendererID)
+		if (m_FBOID)
 		{
-			glDeleteFramebuffers(1, &m_RendererID);
+			glDeleteFramebuffers(1, &m_FBOID);
 			glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
 			glDeleteTextures(1, &m_DepthAttachment);
 
@@ -122,8 +122,8 @@ namespace Engine {
 			m_DepthAttachment = 0;
 		}
 
-		glCreateFramebuffers(1, &m_RendererID);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glCreateFramebuffers(1, &m_FBOID);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FBOID);
 
 		bool multisample = m_Specification.Samples > 1;
 		GLenum multi= multisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -131,7 +131,6 @@ namespace Engine {
 		if (m_ColorAttachmentSpecifications.size())
 		{
 			m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
-			//Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
 
 			for (size_t i = 0; i < m_ColorAttachments.size(); i++)
 			{
@@ -170,7 +169,7 @@ namespace Engine {
 
 	void OpenGLFramebuffer::Bind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FBOID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 	}
 
@@ -195,7 +194,7 @@ namespace Engine {
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 	{
 		//绑定FBO，保证能该读取帧缓冲数据
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FBOID);
 		ENGINE_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(),"Can't readPix from a frameAttachment out of range");
 
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
@@ -223,6 +222,116 @@ namespace Engine {
 				GLTextureFormat(spec.TextureFormat), GL_INT, &value);
 		}
 	
+	}
+
+	OpenGLFrameBufferCube::OpenGLFrameBufferCube(TextureCube* textureCube)
+	{
+		m_textureCube = textureCube;
+		glCreateFramebuffers(1, &m_FBOID);
+		ReCreateDepthStencilBuffer();
+	}
+
+	OpenGLFrameBufferCube::~OpenGLFrameBufferCube()
+	{
+		if (m_FBOID != 0)
+		{
+			glDeleteFramebuffers(1, &m_FBOID);
+		}
+		if (m_DepthAttachment != 0)
+		{
+			glDeleteTextures(1, &m_DepthAttachment);
+		}
+	}
+
+	void OpenGLFrameBufferCube::Bind()
+	{
+		ENGINE_CORE_ASSERT(m_FBOID != 0, "Framebuffer not initialized!");
+		ENGINE_CORE_ASSERT(m_textureCube != nullptr, "TextureCube is null!");
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FBOID);
+		glViewport(0, 0, m_textureCube->GetWidth(), m_textureCube->GetHeight());
+	}
+
+	void OpenGLFrameBufferCube::Unbind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLFrameBufferCube::ReSetCubeRenderTexture(TextureCube* textureCube)
+	{
+		ENGINE_CORE_ASSERT(textureCube != nullptr, "TextureCube cannot be null!");
+		m_textureCube = textureCube;
+		ReCreateDepthStencilBuffer();
+	}
+
+	void OpenGLFrameBufferCube::SwitchCubeFaceRenderTarget(uint8_t id)
+	{
+		ENGINE_CORE_ASSERT(id < 6, "Cube face ID must be between 0 and 5!");
+		ENGINE_CORE_ASSERT(m_textureCube != nullptr, "TextureCube is null!");
+		
+		// 使用DSA切换立方体贴图面
+		glNamedFramebufferTextureLayer(m_FBOID, GL_COLOR_ATTACHMENT0, m_textureCube->GetRendererID(), 0, id);
+		
+		// 使用DSA检查framebuffer状态
+		GLenum status = glCheckNamedFramebufferStatus(m_FBOID, GL_FRAMEBUFFER);
+		ENGINE_CORE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is not complete after switching cube face!");
+	}
+
+	void OpenGLFrameBufferCube::ReCreateDepthStencilBuffer()
+	{
+		ENGINE_CORE_ASSERT(m_textureCube != nullptr, "TextureCube is null!");
+		
+		// 删除旧的深度缓冲区
+		if (m_DepthAttachment != 0) {
+			glDeleteTextures(1, &m_DepthAttachment);
+			m_DepthAttachment = 0;
+		}
+		
+		uint32_t width = m_textureCube->GetWidth();
+		uint32_t height = m_textureCube->GetHeight();
+		
+		ENGINE_CORE_ASSERT(width > 0 && height > 0, "Invalid texture dimensions!");
+		
+		// 使用DSA创建深度缓冲区
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_DepthAttachment);
+		glTextureStorage2D(m_DepthAttachment, 1, GL_DEPTH24_STENCIL8, width, height);
+		
+		// 使用DSA设置纹理参数
+		glTextureParameteri(m_DepthAttachment, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_DepthAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(m_DepthAttachment, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_DepthAttachment, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		
+		// 使用DSA绑定到framebuffer
+		glNamedFramebufferTexture(m_FBOID, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment);
+		
+		// 使用DSA检查framebuffer状态
+		GLenum status = glCheckNamedFramebufferStatus(m_FBOID, GL_FRAMEBUFFER);
+		ENGINE_CORE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is not complete after depth buffer creation!");
+	}
+
+	void OpenGLFrameBufferCube::ClearRenderTargetDepthStencil()
+	{
+		ENGINE_CORE_ASSERT(m_FBOID != 0, "Framebuffer not initialized!");
+		
+
+		GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+		GLfloat clearDepth = 1.0f;
+		GLint clearStencil = 0;
+		
+		// 使用DSA清除当前面的颜色缓冲区
+		glClearNamedFramebufferfv(m_FBOID, GL_COLOR, 0, clearColor);
+		// 使用DSA清除当前面的深度缓冲区
+		glClearNamedFramebufferfv(m_FBOID, GL_DEPTH, 0, &clearDepth);
+		// 使用DSA清除当前面的模板缓冲区
+		glClearNamedFramebufferiv(m_FBOID, GL_STENCIL, 0, &clearStencil);
+	}
+
+	bool OpenGLFrameBufferCube::IsComplete() const
+	{
+		ENGINE_CORE_ASSERT(m_FBOID != 0, "Framebuffer not initialized!");
+		GLenum status = glCheckNamedFramebufferStatus(m_FBOID, GL_FRAMEBUFFER);
+		return status == GL_FRAMEBUFFER_COMPLETE;
 	}
 
 }

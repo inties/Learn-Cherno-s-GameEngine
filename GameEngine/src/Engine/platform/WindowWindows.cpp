@@ -160,13 +160,13 @@ namespace Engine {
 		if (disabled) {
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			// 重置firstMouse标志，避免跳动
-			Camera* camera = Camera::GetInstance();
+			MainCamera* camera = MainCamera::GetInstance();
 			if (camera) {
-				camera->firstMouse = true;
+				camera->isFirstMouse() = true;
 			}
 		} else {
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 	}
-	//???glfw???????????
+
 }

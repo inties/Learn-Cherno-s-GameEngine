@@ -37,7 +37,7 @@ namespace Engine
 		material->GetShader()->SetMat4("u_Model", transform);
 		
 		// ??Camera???????ViewProjection????
-		Camera* camera = Camera::GetInstance();
+		MainCamera* camera = MainCamera::GetInstance();
 		if (camera) {
 			glm::mat4 viewProjection = camera->GetProjectionMatrix() * camera->GetViewMatrix();
 			material->GetShader()->SetMat4("u_ViewProjection", viewProjection);

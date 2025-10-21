@@ -35,7 +35,7 @@ void Engine::SkyBoxPass::Draw()
 	//m_TextureCube->Bind(0);
 	envMap->Bind(0);
 	m_shader->Bind();
-	Camera* camera = Camera::GetInstance();
+	MainCamera* camera = MainCamera::GetInstance();
 	glm::mat4 viewMatrix = glm::mat4(glm::mat3(camera->GetViewMatrix()));
 
 

@@ -107,7 +107,7 @@ namespace Engine
 	void InstancedRenderer::RenderInstanced()
 	{
 		// 获取相机矩阵
-		Camera* camera = Camera::GetInstance();
+		MainCamera* camera = MainCamera::GetInstance();
 		if (!camera) {
 			ENGINE_CORE_ERROR("No camera available for instanced rendering");
 			return;

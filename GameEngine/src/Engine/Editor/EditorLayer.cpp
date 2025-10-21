@@ -318,7 +318,7 @@ namespace Engine {
                 if ((m_ViewportSize.x != avail.x || m_ViewportSize.y != avail.y) && avail.x > 0 && avail.y > 0) {
                     m_ViewportSize = { avail.x, avail.y };
                     m_RendererLayer->ResizeRenderTarget((unsigned int)avail.x, (unsigned int)avail.y);
-                    Camera::GetInstance()->SetAspectRatio(static_cast<float>(avail.x) / static_cast<float>(avail.y));
+                    MainCamera::GetInstance()->SetAspectRatio(static_cast<float>(avail.x) / static_cast<float>(avail.y));
                     ENGINE_CORE_INFO("ViewPortPanel resized to{},{}", m_RendererLayer->GetRenderWidth(), m_RendererLayer->GetRenderHeight());
                 }
 

@@ -23,6 +23,8 @@ public:
 		m_InstancedRenderer->Init();
 	};
 	void Init()override {};
+	void InitEnvMapPass();
+	void DrawEnvCube();
 	void Draw()override;
 	
 	// 设置是否使用实例化渲染

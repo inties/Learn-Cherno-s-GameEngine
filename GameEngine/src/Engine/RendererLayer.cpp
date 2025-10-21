@@ -408,7 +408,7 @@ namespace Engine
 			
 			// 相机信息
 			ImGui::Text("Camera Info:");
-			Camera* camera = Camera::GetInstance();
+			MainCamera* camera = MainCamera::GetInstance();
 			if (camera) {
 				ImGui::Text("Camera Position: (%.2f, %.2f, %.2f)", 
 					camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
@@ -455,7 +455,7 @@ namespace Engine
 	void RendererLayer::SetupViewMatrix()
 	{
 		// 强制设置相机到安全位置
-		Camera* camera = Camera::GetInstance();
+		MainCamera* camera = MainCamera::GetInstance();
 		if (camera) {
 			ENGINE_CORE_INFO("Force setting camera to safe position");
 			camera->SetPosition(glm::vec3(0.0f, 0.0f, 50.0f));
@@ -497,7 +497,7 @@ namespace Engine
 				glm::mat4 modelMatrix = TransComp.GetTransform();
 
 				// 获取视图矩阵
-				Camera* camera = Camera::GetInstance();
+				MainCamera* camera = MainCamera::GetInstance();
 				/*ENGINE_CORE_INFO("{}Zoom", camera->Zoom);*/
 				glm::mat4 viewMatrix = camera->GetViewMatrix();
 				glm::mat4 projMatrix = camera->GetProjectionMatrix();

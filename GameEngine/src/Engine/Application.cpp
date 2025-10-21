@@ -53,7 +53,7 @@ namespace Engine {
 		//m_LayerStack.PushLayer(new TestLayer());
 		
 		// 初始化Camera单例
-		Camera::Initialize(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
+		MainCamera::Initialize(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
 		
 
 
@@ -104,7 +104,7 @@ namespace Engine {
 	
 	void Application::ProcessCameraInput() {
 		auto input = Input::GetInstance();
-		Camera* camera = Camera::GetInstance();
+		MainCamera* camera = MainCamera::GetInstance();
 		if (!camera) return;
 		
 		// WASD键控制摄像机移动
@@ -146,7 +146,7 @@ namespace Engine {
 		// ENGINE_CORE_INFO("Mouse moved to {0},{1}", e.getMousePos().first, e.getMousePos().second);
 		auto [x, y] = e.getMousePos();
 
-		Camera* camera = Camera::GetInstance();
+		MainCamera* camera = MainCamera::GetInstance();
 		if (camera) {
 			camera->ProcessMouseMovement(x, y);
 		}
@@ -183,7 +183,7 @@ namespace Engine {
 	}
 
 	bool Application::OnMouseScroll(MouseScrollEvent& e) {
-		Camera* camera = Camera::GetInstance();
+		MainCamera* camera = MainCamera::GetInstance();
 		if (camera) {
 			camera->ProcessMouseScroll(e.getYOffset());
 		}

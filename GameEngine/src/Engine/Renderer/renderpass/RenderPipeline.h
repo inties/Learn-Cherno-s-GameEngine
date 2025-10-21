@@ -28,6 +28,7 @@ namespace Engine {
 			m_Postpass->Draw();
 		};
 		void Resize();
+		void DrawEnvMap();
 	private:
 		Scope<ForwardPass>m_Forwardpass;
 		Scope<PostEffectPass>m_Postpass;

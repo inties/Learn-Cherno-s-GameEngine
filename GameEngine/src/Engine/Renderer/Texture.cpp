@@ -70,4 +70,16 @@ namespace Engine {
 		return nullptr;
 	}
 
+	Scope<TextureCube> TextureCube::Create(TextureFormat format, uint32_t width, uint32_t height)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLTextureCube>(format,width,height);
+		}
+
+		ENGINE_CORE_ERROR("Unknown RendererAPI!");
+		return nullptr;
+	}
+
 }

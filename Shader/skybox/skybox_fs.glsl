@@ -5,11 +5,16 @@ layout(binding = 0) uniform sampler2D environmentMap;
 
 in vec3 localPosition;
 out vec4 FragColor;
-
+const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 Getuv(vec3 dir){
-    return vec2(atan(dir.x, dir.z)/(2*pi)+0.5, acos(dir.y)/pi);
+    vec2 uv=vec2(atan(dir.z, dir.x),acos(dir.y));
+    uv*=invAtan;
+    uv.y=1.0-uv.y;
+    uv.x=uv.x+0.5;  
+    return uv;
 }
 void main(){
-    vec2 uv=Getuv(localPosition).xy;
+
+    vec2 uv=Getuv(normalize(localPosition)).xy;
     FragColor = texture(environmentMap, uv);
 }

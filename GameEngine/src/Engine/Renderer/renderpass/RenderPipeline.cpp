@@ -41,4 +41,5 @@ namespace Engine
 		RenderTarget->Resize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		//OffScreenTarget->Resize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 	}
+
 }

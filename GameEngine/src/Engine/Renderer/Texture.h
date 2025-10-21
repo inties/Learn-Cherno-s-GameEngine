@@ -63,6 +63,7 @@ namespace Engine {
 		static Scope<TextureCube> Create(const std::vector<std::string>& faces);
 		// 从单张图片创建立方体贴图（所有面使用同一张图
 		static Scope<TextureCube> Create(const std::string& path);
+		static Scope<TextureCube> Create(TextureFormat, uint32_t width, uint32_t height);
 	};
 
 }

@@ -5,63 +5,40 @@
 namespace Engine {
 
     // 单例实例
-    std::unique_ptr<Camera> Camera::s_Instance = nullptr;
+    std::unique_ptr<MainCamera> MainCamera::s_Instance = nullptr;
 
     // 单例访问方法
-    Camera* Camera::GetInstance() {
+    MainCamera* MainCamera::GetInstance() {
         return s_Instance.get();
     }
 
     // 初始化单例
-    void Camera::Initialize(glm::vec3 position, glm::vec3 up, float yaw, float pitch) {
-        Camera* rawPtr = new Camera(position, up, yaw, pitch);
+    void MainCamera::Initialize(glm::vec3 position, glm::vec3 up, float yaw, float pitch) {
+        MainCamera* rawPtr = new MainCamera(position, up, yaw, pitch);
         // 将原始指针交给unique_ptr管理
-        s_Instance = std::unique_ptr<Camera>(rawPtr);
+        s_Instance = std::unique_ptr<MainCamera>(rawPtr);
     }
 
+
+  
     // 私有构造函数 - vectors
-    Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) 
-        : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+    MainCamera::MainCamera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :Camera(position, up), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
     {
-        Position = position;
-        WorldUp = up;
-        Yaw = yaw;
-        Pitch = pitch;
         MouseLastX = Input::GetInstance()->GetXpos() / 2;
         MouseLastY = Input::GetInstance()->GetYpos() / 2;
-        firstMouse = true;
-        updateCameraVectors();
-    }
-
-    // 私有构造函数 - scalar values
-    Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
-        : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-    {
-        Position = glm::vec3(posX, posY, posZ);
-        WorldUp = glm::vec3(upX, upY, upZ);
         Yaw = yaw;
         Pitch = pitch;
-		MouseLastX = Input::GetInstance()->GetXpos()/2;
-		MouseLastY = Input::GetInstance()->GetYpos()/2;
-        updateCameraVectors();
+        
+        firstMouse = true;
+        UpdateCameraVectors();
     }
+
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 Camera::GetViewMatrix()
-    {
-        return glm::lookAt(Position, Position + Front, Up);
-    }
 
-    glm::mat4 Camera::GetProjectionMatrix() const {
-
-        // 假设FOV, aspect, near, far
-
-        return glm::perspective(glm::radians(Zoom), aspect_,near_,far_); // 调整参数
-
-    }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+    void MainCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
@@ -75,7 +52,7 @@ namespace Engine {
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void Camera::ProcessMouseMovement(float xPos, float yPos)
+    void MainCamera::ProcessMouseMovement(float xPos, float yPos)
     {
         if (firstMouse)
         {
@@ -104,21 +81,21 @@ namespace Engine {
         
 
         // update Front, Right and Up Vectors using the updated Euler angles
-        updateCameraVectors();
+        UpdateCameraVectors();
     }
 
     // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-    void Camera::ProcessMouseScroll(float yoffset)
+    void MainCamera::ProcessMouseScroll(float yoffset)
     {
-        Zoom -= (float)yoffset;
-        if (Zoom < 1.0f)
-            Zoom = 1.0f;
-        if (Zoom > 45.0f)
-            Zoom = 45.0f;
+        fov_ -= (float)yoffset;
+        if (fov_ < 1.0f)
+            fov_ = 1.0f;
+        if (fov_ > 45.0f)
+            fov_ = 45.0f;
     }
 
     // calculates the front vector from the Camera's (updated) Euler Angles
-    void Camera::updateCameraVectors()
+    void MainCamera::UpdateCameraVectors()
     {
         // calculate the new Front vector
         glm::vec3 front;
@@ -130,5 +107,31 @@ namespace Engine {
         Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
         Up = glm::normalize(glm::cross(Right, Front));
     }
+
+    Camera::Camera(glm::vec3 position, glm::vec3 up,glm::vec3 front, float near_value, float far_value, float aspect, float fov)
+    {
+        Position = position;
+        WorldUp = up;
+        Front = front;
+        fov_ = fov;
+        near_ = near_value;
+        far_ = far_value;
+        aspect_ = aspect;
+        
+    }
+
+    glm::mat4 Camera::GetViewMatrix()
+    {
+        return glm::lookAt(Position, Position + Front, Up);
+    }
+
+    glm::mat4 Camera::GetProjectionMatrix() const {
+
+        // 假设FOV, aspect, near, far
+
+        return glm::perspective(glm::radians(fov_), aspect_, near_, far_); // 调整参数
+
+    }
+
 
 } // namespace Engine

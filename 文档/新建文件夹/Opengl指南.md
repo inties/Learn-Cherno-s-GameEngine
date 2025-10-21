@@ -123,7 +123,7 @@ struct vec3 {
 
 
 
-
+#### DSA方案
 
 ##### 纹理
 
@@ -141,6 +141,31 @@ glBindTextureUnit(0, diffuseTextureID);
 // Shader (GLSL)
 layout(binding = 0) uniform sampler2D u_Texture;
 ```
+
+纹理创建和分配内存
+
+```
+//创建纹理
+glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_RendererID);
+		
+// 为纹理分配存储空间，注意会根据m_RenderID实际指向的纹理类型（Texture2D/CubeMap）等推断如何分配
+glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+```
+
+
+
+###### 纹理参数设置
+
+```
+// 使用DSA设置纹理参数
+glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+```
+
+
 
 DSA方案相当于DX12中的根描述符
 
@@ -184,11 +209,15 @@ glGenerateTextureMipmap(m_RendererID);
 
 
 
-##### 帧缓冲的完整性
+##### 帧缓冲
+
+###### 帧缓冲完整性
 
 现代opengl允许只有颜色纹理或者深度纹理附件，各纹理附件应该有相同的采样数目和尺寸。
 
 在没有深度附件的情况下，深度测试默认通过
+
+
 
 
 
@@ -224,3 +253,4 @@ https://g.co/gemini/share/f58a49fa0124
 GL纹理格式
 
 https://chat.deepseek.com/share/q86orala4e3cfvgs3k
+

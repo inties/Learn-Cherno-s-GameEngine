@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/core.h"
 #include "Engine/camera.h"
@@ -8,12 +8,12 @@ namespace Engine {
 
 class CameraManager {
 public:
-    static void SetGlobalCamera(std::unique_ptr<Camera> camera);
-    static Camera* GetGlobalCamera();
+    static void SetGlobalCamera(std::unique_ptr<MainCamera> camera);
+    static MainCamera* GetGlobalCamera();
     static bool HasGlobalCamera();
 
 private:
-    static std::unique_ptr<Camera> s_GlobalCamera;
+    static std::unique_ptr<MainCamera> s_GlobalCamera;
 };
 
 }

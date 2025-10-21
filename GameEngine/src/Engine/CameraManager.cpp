@@ -3,13 +3,13 @@
 
 namespace Engine {
 
-std::unique_ptr<Camera> CameraManager::s_GlobalCamera = nullptr;
+std::unique_ptr<MainCamera> CameraManager::s_GlobalCamera = nullptr;
 
-void CameraManager::SetGlobalCamera(std::unique_ptr<Camera> camera) {
+void CameraManager::SetGlobalCamera(std::unique_ptr<MainCamera> camera) {
     s_GlobalCamera = std::move(camera);
 }
 
-Camera* CameraManager::GetGlobalCamera() {
+MainCamera* CameraManager::GetGlobalCamera() {
     return s_GlobalCamera.get();
 }
 
