@@ -127,6 +127,11 @@ namespace Engine
 		auto SphereDefaultMat = Material::Create(SphereShader);
 		SphereDefaultMat->SetTexture("u_DiffuseTexture", Texture_Manager.Get("iron"), 0);
 		SphereDefaultMat->SetTexture("u_MetalRoughness", Texture_Manager.Get("iron_metal_roughness"), 1);
+		SphereDefaultMat->SetTexture("u_envMap_irradiance", Texture_Manager.Get("env_irradiance"), 2);
+		SphereDefaultMat->SetTexture("u_envMap_radiance", Texture_Manager.Get("env_radiance"), 3);
+		SphereDefaultMat->SetTexture("u_brdf_lut", Texture_Manager.Get("brdf_lut"), 4);
+
+
 		SphereDefaultMat->SetFloat("roughness", 0.9);
 		SphereDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
 		SphereDefaultMat->SetFloat3("cameraPos_ws", glm::vec3(0.0f, 0.0f, 0.0f));
@@ -340,9 +345,12 @@ namespace Engine
 		Texture_Manager.Regist("iron", std::move(iron));
 		auto iron_metal_roughness = Texture2D::CreateTexScope("resources/textures/pbr_sphere/metal_roughness.png", TextureFormat::RGB8,true);
 		Texture_Manager.Regist("iron_metal_roughness", std::move(iron_metal_roughness));
-		auto hdr_env_house = Texture2D::CreateTexScope("resources/envmap/skybox.hdr", TextureFormat::RGB16, true,true);
-		Texture_Manager.Regist("hdr_env_house", std::move(hdr_env_house));
-
+		auto hdr_env_house = Texture2D::CreateTexScope("resources/envmap/skybox_irradiance.hdr", TextureFormat::RGB16, false,true);
+		Texture_Manager.Regist("env_irradiance", std::move(hdr_env_house));
+		auto hdr_env_house_radiance = Texture2D::CreateTexScope("resources/envmap/skybox_radiance.hdr", TextureFormat::RGB16, true, true);
+		Texture_Manager.Regist("env_radiance", std::move(hdr_env_house_radiance));
+		auto brdf_lut = Texture2D::CreateTexScope("resources/textures/brdf_lut.png", TextureFormat::RGB8, false, false);
+		Texture_Manager.Regist("brdf_lut", std::move(brdf_lut));
 
 
 	}

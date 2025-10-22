@@ -7,7 +7,7 @@ Engine::SkyBoxPass::SkyBoxPass(SkyBoxPassSpec& spec):Spec(spec)
 
 	m_shader = spec.ShaderManager->Get("skybox").get();
 
-	envMap = static_cast<Texture2D*>(spec.TexManager->Get("hdr_env_house").get());
+	envMap = static_cast<Texture2D*>(spec.TexManager->Get("env_radiance").get());
 	// 获取纹理并转换为 TextureCube*
 	auto texture = spec.TexManager->Get(spec.SkyBoxName);
 	if (!texture) {

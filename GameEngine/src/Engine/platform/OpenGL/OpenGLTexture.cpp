@@ -89,14 +89,9 @@ namespace Engine {
 
 		int width, height, channels;
 		
-
-		//翻转
-		
-
 		stbi_uc* data = nullptr;
 		float* hdrdata = nullptr;
 		stbi_set_flip_vertically_on_load(1);
-		
 		
 		if (HDRsource) {
 			hdrdata = stbi_loadf(path.c_str(), &width, &height, &channels, 0);
@@ -111,13 +106,11 @@ namespace Engine {
 			}
 		}
 		
-		
 		m_Width = width;
 		m_Height = height;
-		GLenum internalFormat =GLTextureFormat(format);
+		GLenum internalFormat = GLTextureFormat(format);
 		GLenum dataFormat = GLDataFormat(channels);
-	
-		m_DataFormat =dataFormat ;
+		m_DataFormat = dataFormat;
 
 		ENGINE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 
@@ -128,16 +121,17 @@ namespace Engine {
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, enable_mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		
+		// 上传基础纹理数据
 		if (HDRsource) {
 			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_FLOAT, hdrdata);
 		}
 		else {
 			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
-
 		}
+		
 		// 生成mipmap
 		if (enable_mipmap)
 		{
@@ -146,6 +140,7 @@ namespace Engine {
 
 		stbi_image_free(data);
 	}
+
 
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
