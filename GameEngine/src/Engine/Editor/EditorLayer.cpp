@@ -10,6 +10,8 @@
 #include <imgui_internal.h>
 #include "Engine/Scene/Component.h"
 #include "Engine/camera.h"
+#include "Engine/Scene/Light.h"
+#include <glm/gtc/type_ptr.hpp>
 namespace Engine {
 
     static const char* kPayloadAssetPath = "ASSET_PATH";
@@ -263,6 +265,40 @@ namespace Engine {
             } else {
                 ImGui::Text("No scene loaded.");
             }
+            
+            // 主光源控制部分
+            ImGui::Separator();
+            ImGui::Text("Main Light Settings");
+            ImGui::Separator();
+            
+            auto& mainLight = MainLight::GetInstance();
+            
+            // 获取当前值
+            glm::vec3 direction = mainLight.GetDirection();
+            glm::vec3 color = mainLight.GetColor();
+            float intensity = mainLight.GetIntensity();
+            
+            // 光源方向控制
+            ImGui::Text("Direction");
+            static glm::vec3 tempDirection = direction;
+            if (ImGui::SliderFloat3("##Direction", glm::value_ptr(tempDirection), -1.0f, 1.0f)) {
+                mainLight.SetDirection(tempDirection);
+            }
+
+            // 光源颜色控制
+            ImGui::Text("Color");
+            static glm::vec3 tempColor = color;
+            if (ImGui::ColorEdit3("##Color", glm::value_ptr(tempColor))) {
+                mainLight.SetColor(tempColor);
+            }
+
+            // 光源强度控制
+            ImGui::Text("Intensity");
+            static float tempIntensity = intensity;
+            if (ImGui::SliderFloat("##Intensity", &tempIntensity, 0.0f, 10.0f)) {
+                mainLight.SetIntensity(tempIntensity);
+            }
+            
         }
         ImGui::End();
     }

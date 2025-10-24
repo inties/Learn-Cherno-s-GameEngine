@@ -12,7 +12,9 @@ glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0)
 
 
 
-##### SSBO绑定
+#### SSBO
+
+##### 基本使用实例
 
 ```
 // 使用alignas(16)确保数据对齐，这对于SSBO很重要，特别是当结构体中有vec3时。
@@ -58,6 +60,10 @@ layout(std430, binding = 0) readonly buffer InstanceSSBO {
 
 InstanceData currentInstance = instances[gl_InstanceID];
 ```
+
+##### 内存映射
+
+持久化映射特点是一次映射，长期保留CPU指针，适合于SSBO、UBO和VBO
 
 
 

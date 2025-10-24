@@ -20,8 +20,8 @@ namespace Engine
 		return std::make_shared<OpenGLIndexBuffer>(indices, count);
 	}
 
-	Scope<ShaderStorageBuffer> ShaderStorageBuffer::Create(uint32_t size, uint32_t binding)
+	Scope<ShaderStorageBuffer> ShaderStorageBuffer::Create(uint32_t size)
 	{
-		return CreateScope<OpenGLShaderStorageBuffer>(size, binding);
+		return CreateScope<OpenGLShaderStorageBuffer>(size);
 	}
 } 

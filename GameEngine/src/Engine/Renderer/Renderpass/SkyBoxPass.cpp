@@ -22,9 +22,9 @@ Engine::SkyBoxPass::SkyBoxPass(SkyBoxPassSpec& spec):Spec(spec)
 	}
 }
 
-void Engine::SkyBoxPass::Init()
+void Engine::SkyBoxPass::Init(RenderPipeLineSetting& pipeline_setting)
 {
-	
+	m_pipeline_settings = pipeline_setting;
 }
 
 void Engine::SkyBoxPass::Draw()

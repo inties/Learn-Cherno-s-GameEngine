@@ -16,18 +16,13 @@ namespace Engine
 		// 初始化渲染器
 		Renderer::Init();
 
-		SetupTexture();
-		// 加载默认着色器
-		SetUPGeoMetry();
-		SetUpShadersMaterials();
-
+		
 		// 设置默认几何体
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
 		}
-		// 初始化相机和投影矩阵
-		UpdateProjectionMatrix();
-		SetupViewMatrix();
+
+		
 
 		// 创建离屏渲染目标（使用当前窗口尺寸作为初始尺寸）
 		unsigned int initW = Application::Get().GetWindow().GetWidth();
@@ -68,8 +63,9 @@ namespace Engine
 
 	void RendererLayer::OnAttach()
 	{
+		Setup_gpu_resources();
 		// 创建渲染管线
-		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,&Texture_Manager,&Shader_Manager,FBO.get(),m_Scene};
+		RenderPipeLineSetting renderPipeLineSetting = {&Mat_Manager,&VAO_Manager,&Texture_Manager,&Shader_Manager,FBO.get(),m_Scene,lights_gpu.get()};
 		m_RenderPipeLine = CreateScope<RenderPipeLine>(renderPipeLineSetting);
 		m_RenderPipeLine->Init();
 
@@ -355,6 +351,40 @@ namespace Engine
 
 	}
 
+	void RendererLayer::SetupLights()
+	{
+		
+		int pointsLightNum = 500;
+		int spotLightsNum = 30;
+		int directLightNum = 1;
+
+		for (int i = 0; i < pointsLightNum; i++) {
+			glm::vec3 position = 200.f * random_vector3() - glm::vec3(100.0f);
+			glm::vec3 strength = glm::vec3(1.0f)*random_vector3();
+			lights_cpu.push_back(PointLight(strength, position));
+		}
+		for (int i = 0; i < spotLightsNum; i++) {
+			glm::vec3 position = glm::vec3(random01() * 100.f - 50.0f, 20.0f, random01() * 50.0 - 25.0f);
+			glm::vec3 strength = random_vector3();
+			lights_cpu.push_back(SpotLight(strength, position));
+		}
+		lights_cpu.push_back(DirectionalLight(glm::vec3(5.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+
+		
+		
+		uint32_t dataSize = lights_cpu.size() * sizeof(Light);
+		lights_gpu = std::move(ShaderStorageBuffer::Create(dataSize));
+		lights_gpu->SetData(lights_cpu.data(), dataSize);
+	}
+
+	void RendererLayer::Setup_gpu_resources()
+	{
+		SetUPGeoMetry();
+		SetupTexture();
+		SetUpShadersMaterials();
+		SetupLights();
+	}
+
 	void RendererLayer::SetUPGeoMetry()
 	{
 		SetupCube();
@@ -449,38 +479,16 @@ namespace Engine
 		
 		// 更新纵横比（窗口尺寸变化时，仅更新投影矩阵；渲染目标由 Editor 控制）
 		//m_AspectRatio = static_cast<float>(e.GetWindowWidth()) / static_cast<float>(e.GetWindowHeight());
-		UpdateProjectionMatrix();
 		
 		// 不拦截事件，让其他层也能处理
 		return false;
 	}
 
-	void RendererLayer::UpdateProjectionMatrix()
-	{
-		//m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearPlane, m_FarPlane);
-	}
 
-	void RendererLayer::SetupViewMatrix()
-	{
-		// 强制设置相机到安全位置
-		MainCamera* camera = MainCamera::GetInstance();
-		if (camera) {
-			ENGINE_CORE_INFO("Force setting camera to safe position");
-			camera->SetPosition(glm::vec3(0.0f, 0.0f, 50.0f));
-		}
-		
-		// 设置一个简单的视图矩阵，相机在 (0, 0, 50) 位置，看向原点
-		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 50.0f);
-		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
-		
-		//m_ViewMatrix = glm::lookAt(cameraPos, cameraTarget, upVector);
-	}
 
-	void RendererLayer::RenderModelWithDebugShader(const glm::mat4& modelMatrix)
-	{
-		// (kept commented out debug rendering)
-	}
+	
+
+
 
 	void RendererLayer::DrawRenderItems()
 	{
@@ -537,5 +545,11 @@ namespace Engine
 		if (model) {
 			model->SetObjectID(objectID);
 		}
+	}
+	void RendererLayer::UpdateLights()
+	{
+		/*auto lights=m_Scene->GetLights();
+		uint32_t dataSize = lights.size() * sizeof(Light);
+		lights_gpu->SetData(lights.data(), dataSize);*/
 	}
 }

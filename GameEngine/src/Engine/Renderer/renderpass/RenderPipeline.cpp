@@ -35,6 +35,8 @@ namespace Engine
 		m_skyBoxPass = CreateScope<SkyBoxPass>(skybox_spec);
 		m_skyBoxPass->SetFBO(RenderTarget);
 
+		m_pipeline_setting = renderPipeLineSetting;
+
 	}
 
 	void RenderPipeLine::Resize() {

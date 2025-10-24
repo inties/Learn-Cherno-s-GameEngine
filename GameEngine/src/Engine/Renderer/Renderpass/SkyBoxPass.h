@@ -19,7 +19,7 @@ namespace Engine {
 
 		};
 		SkyBoxPass(SkyBoxPassSpec& spec);
-		void Init()override;
+		void Init(RenderPipeLineSetting& pipeline_setting)override;
 		void Draw()override;
 	private:
 

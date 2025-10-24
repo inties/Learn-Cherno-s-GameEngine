@@ -2,7 +2,8 @@
 #include "pch.h"
 #include "Engine/Model/Model.h"
 #include "PrefabTypes.h"
-
+#include "Light.h"
+#include "Engine/Utils/random.h"
 
 namespace Engine {
 
@@ -47,6 +48,16 @@ namespace Engine {
         Ref<GameObject>currObj = nullptr;
 		// ECS系统访问
 
+
+
+        
+        
+    private:
+
+     
+
+
+
     private:
         // Entity selection state - using entt::entity handle to avoid circular dependency
         entt::entity m_SelectedEntityHandle = entt::null;
@@ -55,5 +66,8 @@ namespace Engine {
         int m_SelectedObjectIndex = -1;
         entt::registry m_Registry;
         friend class Entity;
+
+        
+  
     };
 }

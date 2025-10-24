@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PostEffectPass.h"
 #include "Engine/Renderer/RenderCommand.h"
-void Engine::PostEffectPass::Init()
+void Engine::PostEffectPass::Init(RenderPipeLineSetting& pipeline_setting)
 {
 	Mat = Spec.MatManager->Get(Spec.matName);
 	if (!Mat) {
@@ -14,6 +14,7 @@ void Engine::PostEffectPass::Init()
 	InputTexture = FBO->GetRenderTexture(0);
 	FramebufferSpecification interMediateFBOspec = { InputTexture->GetHeight(),InputTexture->GetHeight(),{TextureFormat::RGBA8},1 };
 	InterMediateFBO = Framebuffer::Create(interMediateFBOspec);
+	m_pipeline_settings = pipeline_setting;
 }
 
 void Engine::PostEffectPass::Draw()

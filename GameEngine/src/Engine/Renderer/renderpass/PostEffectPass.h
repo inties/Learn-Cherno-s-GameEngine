@@ -21,7 +21,7 @@ namespace Engine {
 			m_MatManager = spec.MatManager;
 			m_VAOManager = spec.VAOManager;
 		};
-		void Init()override final;
+		void Init(RenderPipeLineSetting& pipeline_setting)override final;
 		void Draw()override final;
 		inline void SetMat(Ref<Material>mat) {
 			Mat = mat;

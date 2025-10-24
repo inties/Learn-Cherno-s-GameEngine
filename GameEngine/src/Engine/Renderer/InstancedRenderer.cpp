@@ -91,7 +91,7 @@ namespace Engine
 			
 			// 确保SSBO容量足够
 			if (!batchData.ssbo) {
-				batchData.ssbo = ShaderStorageBuffer::Create(ssboSize, INSTANCE_SSBO_BINDING);
+				batchData.ssbo = ShaderStorageBuffer::Create(ssboSize);
 				// 上传实例数据到SSBO			
 			}
 
@@ -131,7 +131,7 @@ namespace Engine
 			shader->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
 			shader->SetFloat3("cameraPos_ws", camera->GetPosition());
 			// 绑定SSBO
-			batchData.ssbo->Bind();
+			batchData.ssbo->Bind(2);
 			
 			// 绑定VAO
 			key.vao->Bind();

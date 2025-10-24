@@ -142,6 +142,7 @@
     <ClInclude Include="src\Engine\Renderer\Renderpass\PostEffectPass.h" />
     <ClInclude Include="src\Engine\Renderer\Renderpass\RenderPass.h" />
     <ClInclude Include="src\Engine\Renderer\Renderpass\RenderPipeline.h" />
+    <ClInclude Include="src\Engine\Renderer\Renderpass\RenderPipelineSettings.h" />
     <ClInclude Include="src\Engine\Renderer\Renderpass\SkyBoxPass.h" />
     <ClInclude Include="src\Engine\Renderer\Shader.h" />
     <ClInclude Include="src\Engine\Renderer\Texture.h" />
@@ -157,12 +158,14 @@
     <ClInclude Include="src\Engine\Resources\TextureLibrary.h" />
     <ClInclude Include="src\Engine\Scene\Component.h" />
     <ClInclude Include="src\Engine\Scene\Entity.h" />
+    <ClInclude Include="src\Engine\Scene\Light.h" />
     <ClInclude Include="src\Engine\Scene\PrefabTypes.h" />
     <ClInclude Include="src\Engine\Scene\Prefabs.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Engine\TestLayer.h" />
     <ClInclude Include="src\Engine\Utils.h" />
+    <ClInclude Include="src\Engine\Utils\random.h" />
     <ClInclude Include="src\Engine\Utils\Timer.h" />
     <ClInclude Include="src\Engine\Windows.h" />
     <ClInclude Include="src\Engine\camera.h" />

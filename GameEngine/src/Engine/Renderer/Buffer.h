@@ -154,21 +154,19 @@ namespace Engine {
 	public:
 		virtual ~ShaderStorageBuffer() = default;
 
-		virtual void Bind() const = 0;
+		virtual void Bind(uint8_t slot) const = 0;
 		virtual void Unbind() const = 0;
-		  
+		 
 		// 设置数据到SSBO
 		virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0) = 0;
 		
 		// 获取SSBO大小
 		virtual uint32_t GetSize() const = 0;
 		
-		// 获取绑定点
-		virtual uint32_t GetBinding() const = 0;
 		
 		// 确保容量足够
 		virtual void EnsureCapacity(uint32_t requiredSize) = 0;
 
-		static Scope<ShaderStorageBuffer> Create(uint32_t size, uint32_t binding);
+		static Scope<ShaderStorageBuffer> Create(uint32_t size);
 	};
 } 

@@ -78,13 +78,13 @@ namespace Engine
 	// ShaderStorageBuffer //////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
-	OpenGLShaderStorageBuffer::OpenGLShaderStorageBuffer(uint32_t size, uint32_t binding)
-		: m_Size(size), m_Binding(binding)
+	OpenGLShaderStorageBuffer::OpenGLShaderStorageBuffer(uint32_t size)
+		: m_Size(size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, m_RendererID);
+		
 	}
 
 	OpenGLShaderStorageBuffer::~OpenGLShaderStorageBuffer()
@@ -92,10 +92,10 @@ namespace Engine
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
-	void OpenGLShaderStorageBuffer::Bind() const
+	void OpenGLShaderStorageBuffer::Bind(uint8_t slot) const
 	{
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_Binding, m_RendererID);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, slot, m_RendererID);
 	}
 
 	void OpenGLShaderStorageBuffer::Unbind() const
@@ -118,7 +118,6 @@ namespace Engine
 			glCreateBuffers(1, &m_RendererID);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, m_Size, nullptr, GL_DYNAMIC_DRAW);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_Binding, m_RendererID);
 		}
 	}
 } 

@@ -45,22 +45,21 @@ namespace Engine
 	class OpenGLShaderStorageBuffer : public ShaderStorageBuffer
 	{
 	public:
-		OpenGLShaderStorageBuffer(uint32_t size, uint32_t binding);
+		OpenGLShaderStorageBuffer(uint32_t size);
 		virtual ~OpenGLShaderStorageBuffer();
 
-		virtual void Bind() const override;
+		virtual void Bind(uint8_t slot) const override;
 		virtual void Unbind() const override;
 		
 		virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
 		
 		virtual uint32_t GetSize() const override { return m_Size; }
-		virtual uint32_t GetBinding() const override { return m_Binding; }
+
 		
 		virtual void EnsureCapacity(uint32_t requiredSize) override;
 
 	private:
 		uint32_t m_RendererID;
 		uint32_t m_Size;
-		uint32_t m_Binding;
 	};
 } 

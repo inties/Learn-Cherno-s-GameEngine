@@ -4,22 +4,15 @@
 #include "ForwardPass.h"
 #include "SkyBoxPass.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/Renderer/Renderpass/RenderPipelineSettings.h"
 namespace Engine {
-	struct RenderPipeLineSetting {
-		ResourceRegistry<Material>* MatManager;
-		ResourceRegistry<VertexArray>* VAOManager;
-		ResourceRegistry<Texture>* TexManager;
-		ResourceRegistry<Shader>* ShaderManager;
-		Framebuffer* ScreenFBO;
-		Scene* Scene;
-	};
 	class RenderPipeLine {
 	public:
 		RenderPipeLine(RenderPipeLineSetting& renderPipeLineSetting);
 		void Init() {
-			m_Forwardpass->Init();
-			m_Postpass->Init();
-			m_skyBoxPass->Init();
+			m_Forwardpass->Init(m_pipeline_setting);
+			m_Postpass->Init(m_pipeline_setting);
+			m_skyBoxPass->Init(m_pipeline_setting);
 		};
 
 		void Draw() {
@@ -34,6 +27,7 @@ namespace Engine {
 		Scope<PostEffectPass>m_Postpass;
 		Scope<SkyBoxPass>m_skyBoxPass;
 		Framebuffer* RenderTarget;
+		RenderPipeLineSetting m_pipeline_setting;
 		//Ref<Framebuffer>OffScreenTarget;
 
 	};

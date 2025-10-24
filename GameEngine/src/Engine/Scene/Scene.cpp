@@ -20,6 +20,7 @@ namespace Engine {
         }
 
 
+
         // auto& nsc=cube.AddComponent<NativeScriptableComponent>();
         // nsc.Bind<MoveScript>(cube);  // 传递Entity指针而不是NativeScriptableComponent指针
         ENGINE_CORE_INFO("Scene created with default CubeEntity");
@@ -36,6 +37,8 @@ namespace Engine {
         
         return supportedFormats.find(extension) != supportedFormats.end();
     }
+
+ 
 
     Entity Scene::CreatePrefab(PrefabTypes prefabType)
     {

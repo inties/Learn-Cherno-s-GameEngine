@@ -58,29 +58,32 @@ namespace Engine
 		void SetScene(Scene* scene) { m_Scene = scene; }
 
 	private:
+		void Setup_gpu_resources();
 		// void SetupModel(); // 已移除：不再使用硬编码模型
 		void SetUPGeoMetry();
 		void SetupCube();
 		void SetupSphere();
 		void SetupQuad();
 		void SetupTexture();
+		void SetupLights();
 		std::string GetShaderPath(const std::string& filename);
-		void UpdateProjectionMatrix();
-		void SetupViewMatrix();
+		
+
 		void SetUpShadersMaterials();
-		void RenderModelWithDebugShader(const glm::mat4& modelMatrix);
 		void DrawRenderItems();
 		// 为模型设置物体ID
 		void SetObjectIDForModel(const Ref<Model>& model, int objectID);
+		void UpdateLights();
 
 	private:
 		std::unordered_map<Material*, std::unordered_map<VertexArray*, std::vector<InstanceData>>>renderer_resource;
+		Scope<ShaderStorageBuffer>lights_gpu;
+		std::vector<Light>lights_cpu;
 		Scope<RenderPipeLine>m_RenderPipeLine;
 		Ref<Framebuffer> FBO = nullptr;
 		RendererSettings m_Settings;
 		
-		// 渲染资源
-		// Ref<Model> m_Model;
+		
 		Scene* m_Scene;
 
 		
