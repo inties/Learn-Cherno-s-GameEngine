@@ -12,6 +12,8 @@ namespace Engine
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 		void SetWildFrame (bool enable)override;
+		void Dispatch(uint32_t x, uint32_t y, uint32_t z)override;
+		void InsertBarrier(const BarrierDomain& barrier)const override;
 		void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
 		void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount = 0) override;
 		void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 

@@ -33,6 +33,53 @@ namespace Engine
 		m_Name = filepath.substr(lastSlash, count);
 	}
 
+	OpenGLShader::OpenGLShader(const std::string& filepath, const ShaderDesc& desc)
+	{
+		if (desc.type == ShaderType::compute) {
+			std::string source = ReadFile(filepath);
+			// 1. 编译计算着色器
+			GLuint cs = CompileShader(GL_COMPUTE_SHADER, source.c_str());
+			if (cs == 0)
+			{
+				// 编译失败
+				return;
+			}
+
+			// 2. 创建program并链接
+			GLuint program = glCreateProgram();
+			glAttachShader(program, cs);
+			glLinkProgram(program);
+
+			// 我们不再需要cs本体了，可以先删
+			glDetachShader(program, cs);
+			glDeleteShader(cs);
+
+			// 3. 检查链接状态
+			GLint linked = 0;
+			glGetProgramiv(program, GL_LINK_STATUS, &linked);
+			if (!linked)
+			{
+				GLint logLen = 0;
+				glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLen);
+
+				std::string log;
+				log.resize(logLen > 1 ? logLen : 1);
+
+				glGetProgramInfoLog(program, logLen, nullptr, log.data());
+
+				std::cerr << "[GL] Compute program link failed:\n"
+					<< log << std::endl;
+
+				glDeleteProgram(program);
+				return;
+			}
+			m_program = program;
+		}
+		else {
+			ENGINE_CORE_ERROR("unsupported shader type(OpenGLShader)");
+		}
+	}
+
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexFilePath, const std::string& fragmentFilePath)
 		: m_Name(name)
 	{
@@ -55,7 +102,7 @@ namespace Engine
 
 	OpenGLShader::~OpenGLShader()
 	{
-		glDeleteProgram(m_RendererID);
+		glDeleteProgram(m_program);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
@@ -165,7 +212,7 @@ namespace Engine
 			glShaderIDs[glShaderIDIndex++] = shader;
 		}
 
-		m_RendererID = program;
+		m_program = program;
 
 		glLinkProgram(program);
 
@@ -196,9 +243,45 @@ namespace Engine
 		}
 	}
 
+	GLint OpenGLShader::CompileShader(GLenum type, const char* src)
+	{
+			
+		GLuint shader = glCreateShader(type);
+		glShaderSource(shader, 1, &src, nullptr);
+		glCompileShader(shader);
+
+		// 检查编译状态
+		GLint success = 0;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			GLint logLen = 0;
+			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLen);
+
+			std::string log;
+			log.resize(logLen > 1 ? logLen : 1);
+
+			glGetShaderInfoLog(shader, logLen, nullptr, log.data());
+
+			std::cerr << "[GL] Shader compilation failed ("
+				<< (type == GL_COMPUTE_SHADER ? "COMPUTE" :
+					type == GL_VERTEX_SHADER ? "VERTEX" :
+					type == GL_FRAGMENT_SHADER ? "FRAGMENT" :
+					"OTHER")
+				<< "):\n"
+				<< log << std::endl;
+
+			glDeleteShader(shader);
+			return 0;
+		}
+
+		return shader;
+		
+	}
+
 	void OpenGLShader::Bind() const
 	{
-		glUseProgram(m_RendererID);
+		glUseProgram(m_program);
 	}
 
 	void OpenGLShader::Unbind() const
@@ -243,49 +326,49 @@ namespace Engine
 
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniform1i(location, value);
 	}
 
 	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniform1iv(location, count, values);
 	}
 
 	void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniform1f(location, value);
 	}
 
 	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniform2f(location, value.x, value.y);
 	}
 
 	void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
 	void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniform4f(location, value.x, value.y, value.z, value.w);
 	}
 
 	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(m_program, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 } 

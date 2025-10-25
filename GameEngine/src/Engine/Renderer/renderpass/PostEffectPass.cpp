@@ -21,24 +21,50 @@ void Engine::PostEffectPass::Init(RenderPipeLineSetting& pipeline_setting)
 
 void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)
 {
-	////离屏渲染
+	//离屏渲染
 	InterMediateFBO->Bind();
 	InterMediateFBO->ClearColorAttachments(0);
+	
 	auto quadVAO = m_VAOManager->Get("quad");
 	InputTexture->Bind(0);
-	PostEffectShader->Bind();
+	DefaultBlitShader->Bind();
 	quadVAO->Bind();
 	RenderCommand::DrawIndexed(quadVAO);
+	RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
 
+	auto invert_color_shader = m_pipeline_settings.ShaderManager->Get("invert_color").get();
+	invert_color_shader->Bind();
+	auto interTexture = InterMediateFBO->GetRenderTexture(0);
+	interTexture->Bind(0);
+	// 2. 显式告诉 sampler uniform "u_Input 用的是单元0"
+	invert_color_shader->SetInt("u_Input", 0);
+	//GLint loc = glGetUniformLocation(invert_color_shader->, "u_Input");
+	//glUniform1i(loc, 0);
 
+	auto outputTexture=FBO->GetRenderTexture(0);
+	ImageBindDesc output_image_desc;
+	output_image_desc.binding = 1;
+	output_image_desc.access = TextureAccess::WriteOnly;
+	outputTexture->BindAsImage(output_image_desc);
 
-	////渲染到FBO
+	uint32_t width = InputTexture->GetWidth();
+	uint32_t height = InputTexture->GetHeight();
+	//std::cout << width << " " << height << std::endl;
+	//std::cout << outputTexture->GetWidth()<< "   " << outputTexture->GetHeight() << std::endl;
+	
+	RenderCommand::Dispatch(std::ceil(1077 / 8), std::ceil(1018 / 8), 1);
+
+	RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToRenderTarget);
+	
 	FBO->Bind();
-	RenderCommand::Clear();
-	DefaultBlitShader->Bind();
-	auto InterTexture = InterMediateFBO->GetRenderTexture(0);
-	InterTexture->Bind(0);
-	RenderCommand::DrawIndexed(quadVAO);
+	//渲染到FBO
+	//FBO->Bind();
+	//RenderCommand::Clear();
+	//DefaultBlitShader->Bind();
+	//auto InterTexture = InterMediateFBO->GetRenderTexture(0);
+	//InterTexture->Bind(0);
+	//RenderCommand::DrawIndexed(quadVAO);
+
 
 
 

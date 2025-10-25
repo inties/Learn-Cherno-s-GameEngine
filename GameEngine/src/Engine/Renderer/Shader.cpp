@@ -23,4 +23,8 @@ namespace Engine
 	{
 		return CreateScope<OpenGLShader>("shader", vertexFilePath, fragmentFilePath);
 	}
+	Scope<Shader> Shader::CreateUniqueShader(const std::string& filepath,const ShaderDesc&desc)
+	{
+		return CreateScope<OpenGLShader>(filepath,desc);
+	}
 } 

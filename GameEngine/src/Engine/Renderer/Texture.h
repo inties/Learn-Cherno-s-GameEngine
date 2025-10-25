@@ -31,6 +31,23 @@ namespace Engine {
 		// Defaults
 		Depth = DEPTH24STENCIL8
 	};
+	enum class TextureAccess
+	{
+		ReadOnly,
+		WriteOnly,
+		ReadWrite
+	};
+	struct ImageBindDesc
+	{
+		uint32_t binding = 0;          // 对应 GLSL layout(binding = X)
+		uint32_t mipLevel = 0;         // 要暴露哪一层mip
+		uint32_t layer = 0;            // 对2D数组/3D分层纹理: 哪一层
+		bool layered = false;          // true时绑定整个layered texture (array/3D)
+		TextureAccess access = TextureAccess::ReadOnly;
+
+		// 这个必须和GLSL中的layout(format)一致
+		//GLenum internalFormatGL = GL_RGBA8; // e.g. GL_RGBA16F, GL_R32UI, ...
+	};
 	class Texture
 	{
 	public:
@@ -43,7 +60,7 @@ namespace Engine {
 		virtual void SetData(void* data, uint32_t size) = 0;
 
 		virtual void Bind(uint32_t slot = 0) const = 0;
-
+		virtual void BindAsImage(const ImageBindDesc& desc)const=0;
 		virtual bool operator==(const Texture& other) const = 0;
 	
 	};

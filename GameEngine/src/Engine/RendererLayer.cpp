@@ -30,7 +30,7 @@ namespace Engine
 		ENGINE_CORE_INFO("窗口初始 x,y,{},{}", initW, initH);
 		//CreateRenderTarget(initW, initH);
 		typedef TextureFormat format;
-		FramebufferSpecification spec = { initW,initH,{format::RGB16,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
+		FramebufferSpecification spec = { initW,initH,{format::RGBA16,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
 		FBO = Framebuffer::Create(spec);
 		ENGINE_CORE_INFO("RendererLayer attached");
 	}
@@ -137,6 +137,10 @@ namespace Engine
 		auto depth_shader= Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
 		Shader_Manager.Regist("depth", std::move(depth_shader));
 
+		shaderPath = GetShaderPath("compute/invert_color.glsl");
+		ShaderDesc desc { ShaderType::compute };
+		auto invert_color = Shader::CreateUniqueShader(shaderPath,desc);
+		Shader_Manager.Regist("invert_color", std::move(invert_color));
 		
 	}
 

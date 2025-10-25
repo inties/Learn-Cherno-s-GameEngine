@@ -94,7 +94,7 @@ namespace Engine
 
 	void OpenGLShaderStorageBuffer::Bind(uint8_t slot) const
 	{
-		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_program);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, slot, m_RendererID);
 	}
 

@@ -31,7 +31,14 @@ namespace Engine
 		{
 			s_RendererAPI->Clear();
 		}
-
+		static void Dispatch(uint32_t x, uint32_t y, uint32_t z) {
+			s_RendererAPI->Dispatch(x,y,z);
+		}
+		
+		static void InsertBarrier(const BarrierDomain& barrier){
+			s_RendererAPI->InsertBarrier(barrier);
+		}
+		
 		static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0)
 		{
 			s_RendererAPI->DrawIndexed(vertexArray, indexCount);

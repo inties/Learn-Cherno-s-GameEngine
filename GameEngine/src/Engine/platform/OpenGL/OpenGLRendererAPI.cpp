@@ -57,6 +57,47 @@ namespace Engine
 		}
 	}
 
+	void OpenGLRendererAPI::Dispatch(uint32_t x, uint32_t y, uint32_t z)
+	{
+		glDispatchCompute(x,y,z);
+	}
+
+	void OpenGLRendererAPI::InsertBarrier(const BarrierDomain& barrier) const
+	{
+		
+		switch (barrier)
+		{
+		case BarrierDomain::ComputeWriteToComputeRead:
+			glMemoryBarrier(
+				GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+				GL_SHADER_STORAGE_BARRIER_BIT
+			);
+			break;
+
+		case BarrierDomain::ComputeWriteToGraphicsRead:
+			glMemoryBarrier(
+				GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+				GL_SHADER_STORAGE_BARRIER_BIT |
+				GL_TEXTURE_FETCH_BARRIER_BIT
+			);
+			break;
+
+		case BarrierDomain::RenderTargetWriteToSample:
+			glMemoryBarrier(
+				GL_FRAMEBUFFER_BARRIER_BIT |
+				GL_TEXTURE_FETCH_BARRIER_BIT
+			);
+			break;
+		case BarrierDomain::ComputeWriteToRenderTarget:
+			glMemoryBarrier(
+				GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+				GL_FRAMEBUFFER_BARRIER_BIT
+			);
+		}
+
+		
+	}
+
 	void OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();

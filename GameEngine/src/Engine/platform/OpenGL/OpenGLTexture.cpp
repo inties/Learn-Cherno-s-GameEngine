@@ -177,6 +177,26 @@ namespace Engine {
 
 		glBindTextureUnit(slot, m_RendererID);
 	}
+	void OpenGLTexture2D::BindAsImage(const ImageBindDesc& desc)const 
+	{
+		GLenum accessGL = GL_READ_ONLY;
+		switch (desc.access)
+		{
+		case TextureAccess::ReadOnly:  accessGL = GL_READ_ONLY;  break;
+		case TextureAccess::WriteOnly: accessGL = GL_WRITE_ONLY; break;
+		case TextureAccess::ReadWrite: accessGL = GL_READ_WRITE; break;
+		}
+
+		glBindImageTexture(
+			desc.binding,
+			m_RendererID,
+			desc.mipLevel,
+			desc.layered ? GL_TRUE : GL_FALSE,
+			desc.layer,
+			accessGL,
+			m_InternalFormat
+		);
+	}
 	// 从6张图片加载立方体贴图
 	OpenGLTextureCube::OpenGLTextureCube(const std::vector<std::string>& faces,TextureFormat format)
 		: m_Width(0), m_Height(0)

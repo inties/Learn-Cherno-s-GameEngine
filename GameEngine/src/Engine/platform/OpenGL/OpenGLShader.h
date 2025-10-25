@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/Renderer/Shader.h"
 #include <glm/glm.hpp>
@@ -9,6 +9,7 @@ namespace Engine
 	{
 	public:
 		OpenGLShader(const std::string& filepath);
+		OpenGLShader(const std::string& filepath, const ShaderDesc& desc);
 		OpenGLShader(const std::string& name, const std::string& vertexFilePath, const std::string& fragmentFilePath);
 		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, bool isSource);
 		virtual ~OpenGLShader();
@@ -39,9 +40,9 @@ namespace Engine
 	private:
 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
-
+		GLint CompileShader(GLenum Type, const char* src);
 	private:
-		uint32_t m_RendererID;
+		uint32_t m_program;
 		std::string m_Name;
 	};
 } 

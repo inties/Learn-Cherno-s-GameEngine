@@ -7,6 +7,7 @@
 
 namespace Engine {
 
+
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
@@ -15,15 +16,15 @@ namespace Engine {
 		OpenGLTexture2D(const std::string& path, TextureFormat format = TextureFormat::RGB8,bool enable_mipmap =false,bool HDRsource=false);
 		virtual ~OpenGLTexture2D();
 
-		virtual uint32_t GetWidth() const override { return m_Width;  }
-		virtual uint32_t GetHeight() const override { return m_Height; }
-		virtual uint32_t GetRendererID() const override { return m_RendererID; }
+		uint32_t GetWidth() const override { return m_Width;  }
+		uint32_t GetHeight() const override { return m_Height; }
+		uint32_t GetRendererID() const override { return m_RendererID; }
 		
-		virtual void SetData(void* data, uint32_t size) override;
+		void SetData(void* data, uint32_t size) override;
 
-		virtual void Bind(uint32_t slot = 0) const override;
-
-		virtual bool operator==(const Texture& other) const override
+		void Bind(uint32_t slot = 0) const override;
+		void BindAsImage(const ImageBindDesc& desc)const override;
+		bool operator==(const Texture& other) const override
 		{
 			return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID;
 		}
@@ -33,6 +34,7 @@ namespace Engine {
 		uint32_t m_RendererID;
 		GLenum m_InternalFormat, m_DataFormat;
 	};
+	
 	class OpenGLTextureCube : public TextureCube
 	{
 	public:
@@ -50,7 +52,7 @@ namespace Engine {
 		virtual void SetData(void* data, uint32_t size) override;
 
 		virtual void Bind(uint32_t slot = 0) const override;
-
+		void BindAsImage(const ImageBindDesc& desc)const {};
 		virtual bool operator==(const Texture& other) const override
 		{
 			return m_RendererID == ((OpenGLTextureCube&)other).m_RendererID;
