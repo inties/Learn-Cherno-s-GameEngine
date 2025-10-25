@@ -1,6 +1,8 @@
 #version 450 core
 #define PI 3.14159265359
-#define PointsLightCount 500
+#define PointLightCount 1000
+#define SpotLightsCount 100
+#define MIN_SPOT_ANGLE 0.5
 // 输入
 in vec3 Position_ws;
 in vec3 Normal_ws;
@@ -92,7 +94,25 @@ vec3 CalculateLightContribution(Light light, SurfaceData surface,int type) {
         lightDir_normalized = -normalize(light.direction);
         attenuation = 1.0;
     }else if(type==2){
-        // 聚光灯
+          // 点光源
+        
+        vec3 lightVec = light.position - surface.position;
+        float distance = length(lightVec);
+        lightDir_normalized = normalize(lightVec);
+        float cos_theta=max(dot(light.direction, -lightDir_normalized),0.0);
+        if(cos_theta<MIN_SPOT_ANGLE){
+            return vec3(0.0);
+        }
+        // 计算衰减
+        if (distance > light.falloff_end) {
+            return vec3(0.0); // 超出范围，无贡献
+        }
+        
+        if (distance > light.falloff_start) {
+            float attenuationFactor = (light.falloff_end - distance) / (light.falloff_end - light.falloff_start);
+            attenuation = attenuationFactor * attenuationFactor;
+            attenuation = attenuation * pow(cos_theta,light.spot_power);
+        }
     }
     
     vec3 H = normalize(lightDir_normalized + surface.viewDir);
@@ -156,11 +176,19 @@ void main()
     vec3 totalLighting = vec3(0.0);
     
     // 遍历前500个点光源
-    for (int i = 0; i < PointsLightCount; i++) {
+    for (int i = 0; i < PointLightCount; i++) {
         Light light = lights[i];
         
         // 计算当前光源的贡献
         vec3 lightContribution = CalculateLightContribution(light, surface,0);
+        
+        totalLighting += lightContribution;
+    }
+     for (int i = 0; i < SpotLightsCount; i++) {
+        Light light = lights[PointLightCount+i];
+        
+        // 计算当前光源的贡献
+        vec3 lightContribution = CalculateLightContribution(light, surface,2);
         
         totalLighting += lightContribution;
     }

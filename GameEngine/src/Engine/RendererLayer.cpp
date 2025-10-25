@@ -75,7 +75,6 @@ namespace Engine
 	void RendererLayer::OnDetach()
 	{
 		ENGINE_CORE_INFO("RendererLayer detached");
-		//DestroyRenderTarget();
 	}
 
 	void RendererLayer::SetUpShadersMaterials()
@@ -317,6 +316,45 @@ namespace Engine
 		VAO_Manager.Regist("quad", std::move(quadVAO));
 	}
 
+	void RendererLayer::SetupPlane()
+	{
+		// 1x1平面顶点数据：位置(x,y,z) + 法线(nx,ny,nz) + uv(u,v)
+		// 4个顶点，每个顶点8个float值
+		float planeVertices[] = {
+			// 位置(x,y,z)    法线(nx,ny,nz)    UV坐标(u,v)
+			-0.5f, 0.0f, -0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,  // 左下
+			 0.5f, 0.0f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,  // 右下
+			 0.5f, 0.0f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,  // 右上
+			-0.5f, 0.0f,  0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f   // 左上
+		};
+
+		// 索引数据 - 两个三角形组成一个四边形
+		unsigned int planeIndices[] = {
+			0, 1, 2,  // 第一个三角形
+			2, 3, 0   // 第二个三角形
+		};
+
+		// 创建VAO
+		auto planeVAO = VertexArray::Create();
+
+		// 创建VBO
+		auto planeVBO = VertexBuffer::Create(planeVertices, sizeof(planeVertices));
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float3, "a_Normal" },
+			{ ShaderDataType::Float2, "a_TexCoord" }
+		};
+		planeVBO->SetLayout(layout);
+		planeVAO->SetVertexBuffer(planeVBO);
+
+		// 创建IBO
+		auto planeIBO = IndexBuffer::Create(planeIndices, sizeof(planeIndices) / sizeof(unsigned int));
+		planeVAO->SetIndexBuffer(planeIBO);
+
+		// 注册到VAO管理器
+		VAO_Manager.Regist("plane", std::move(planeVAO));
+	}
+
 	void RendererLayer::SetupTexture()
 	{
 		std::string base_path = "resources/skybox/sea";
@@ -354,8 +392,8 @@ namespace Engine
 	void RendererLayer::SetupLights()
 	{
 		
-		int pointsLightNum = 500;
-		int spotLightsNum = 30;
+		int pointsLightNum = 1000;
+		int spotLightsNum = 100;
 		int directLightNum = 1;
 
 		for (int i = 0; i < pointsLightNum; i++) {
@@ -364,11 +402,11 @@ namespace Engine
 			lights_cpu.push_back(PointLight(strength, position));
 		}
 		for (int i = 0; i < spotLightsNum; i++) {
-			glm::vec3 position = glm::vec3(random01() * 100.f - 50.0f, 20.0f, random01() * 50.0 - 25.0f);
-			glm::vec3 strength = random_vector3();
+			glm::vec3 position = glm::vec3(random01() * 100.f - 50.0f, 10.0f, random01() * 50.0 - 25.0f);
+			glm::vec3 strength = glm::vec3(5.0f)*random_vector3();
 			lights_cpu.push_back(SpotLight(strength, position));
 		}
-		lights_cpu.push_back(DirectionalLight(glm::vec3(5.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+		//lights_cpu.push_back(DirectionalLight(glm::vec3(5.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
 
 		
 		
@@ -390,6 +428,7 @@ namespace Engine
 		SetupCube();
 		SetupQuad();
 		SetupSphere();
+		SetupPlane();
 	}
 
 	void RendererLayer::OnUpdate()

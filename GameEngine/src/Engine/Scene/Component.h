@@ -10,16 +10,16 @@ namespace Engine {
 	void DestroyScriptInstance(ScriptableEntity*& instance);
 	struct TransformComponent
 	{
-		
+
 	public:
-		TransformComponent()=default;
+		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation)
 			: Translation(translation) {
 			dirty = true;
 			UpdateTransform();
 		}
-		
+
 		inline bool isDirty() const { return dirty; }
 		inline const glm::mat4& GetTransform() const
 		{
@@ -30,21 +30,26 @@ namespace Engine {
 			dirty = true;
 			UpdateTransform();
 		}
+		void Scale(glm::vec3& s) {
+			m_scale *= s;
+			dirty = true;
+			UpdateTransform();
+		}
 	private:
 		void UpdateTransform() {
 			if (!dirty)return;
 			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
-			transform=glm::translate(glm::mat4(1.0f), Translation)
+			transform = glm::translate(glm::mat4(1.0f), Translation)
 				* rotation
-				* glm::scale(glm::mat4(1.0f), Scale);
+				* glm::scale(glm::mat4(1.0f), m_scale);
 			dirty = false;
 		}
 
-		glm::vec3 Translation = { 0.0f,0.0f, 1.0f };
+		glm::vec3 Translation = { 0.0f,0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+		glm::vec3 m_scale = { 1.0f, 1.0f, 1.0f };
 		glm::mat4 transform = glm::mat4(1.0f);
-		
+
 		bool dirty = false;
 	};
 
@@ -58,7 +63,7 @@ namespace Engine {
 		ScriptableEntity* Instance;
 		std::function<ScriptableEntity* ()> Initilize;
 		std::function<void(ScriptableEntity*&)>DestroyScript;
-		template<typename T,typename...Args>
+		template<typename T, typename...Args>
 		void Bind(Args&&...args) {
 			Initilize = [=]() {
 				return static_cast<ScriptableEntity*>(new T(args...));
@@ -68,16 +73,16 @@ namespace Engine {
 	};
 
 	struct RenderComponent {
-		Ref<VertexArray>VAO=nullptr;
-		Ref<Material>Mat=nullptr;
-		std::string GeoMetryName="";
-		std::string MatName="";
+		Ref<VertexArray>VAO = nullptr;
+		Ref<Material>Mat = nullptr;
+		std::string GeoMetryName = "";
+		std::string MatName = "";
 		std::function<void()>Destroy;
 		bool geometryCreated = false;
 		bool materialCreated = false;
 		bool geometryFailed = false;
 		bool materialFailed = false;
-		RenderComponent(const std::string GeoName="mesh", const std::string MName = "defaultShader") :GeoMetryName(GeoName), MatName(MName) {};
+		RenderComponent(const std::string GeoName = "mesh", const std::string MName = "defaultShader") :GeoMetryName(GeoName), MatName(MName) {};
 
 		// Resource cleanup callbacks
 		std::function<void()> geometryCleanup;
@@ -97,7 +102,8 @@ namespace Engine {
 				if (VAO) {
 					geometryCreated = true;
 					geometryFailed = false;
-				} else {
+				}
+				else {
 					geometryFailed = true;
 				}
 			}
@@ -106,7 +112,8 @@ namespace Engine {
 				if (Mat) {
 					materialCreated = true;
 					materialFailed = false;
-				} else {
+				}
+				else {
 					materialFailed = true;
 				}
 			}

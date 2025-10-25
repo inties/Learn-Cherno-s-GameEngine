@@ -4,6 +4,7 @@ namespace Engine {
 	enum class PrefabTypes {
 		Cube,
 		Sphere,
+		Plane,
 		None
 	};
 }

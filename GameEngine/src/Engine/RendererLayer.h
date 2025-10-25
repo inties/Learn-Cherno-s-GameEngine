@@ -64,6 +64,7 @@ namespace Engine
 		void SetupCube();
 		void SetupSphere();
 		void SetupQuad();
+		void SetupPlane();
 		void SetupTexture();
 		void SetupLights();
 		std::string GetShaderPath(const std::string& filename);

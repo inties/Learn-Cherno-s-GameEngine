@@ -6,6 +6,26 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Renderer/Renderpass/RenderPipelineSettings.h"
 namespace Engine {
+	struct BatchKey {
+		VertexArray* vao;
+		Material* material;
+
+		bool operator==(const BatchKey& other) const {
+			return vao == other.vao && material == other.material;
+		}
+	};
+	// 批次键哈希函数
+	struct BatchKeyHash {
+		std::size_t operator()(const BatchKey& key) const {
+			return std::hash<void*>{}(key.vao) ^ (std::hash<void*>{}(key.material) << 1);
+		}
+	};
+	// 批次数据
+	struct BatchData {
+		std::vector<InstanceData> instances;
+		Scope<ShaderStorageBuffer> ssbo;
+		uint32_t maxInstances;
+	};
 	class RenderPipeLine {
 	public:
 		RenderPipeLine(RenderPipeLineSetting& renderPipeLineSetting);
@@ -16,20 +36,26 @@ namespace Engine {
 		};
 
 		void Draw() {
-			m_Forwardpass->Draw();
-			m_skyBoxPass->Draw();
-			m_Postpass->Draw();
+			CollectRenderData();
+			m_Forwardpass->Draw(&m_Batches);
+			m_skyBoxPass->Draw(&m_Batches);
+			m_Postpass->Draw(&m_Batches);
 		};
 		void Resize();
 		void DrawEnvMap();
+	private:
+		void CollectRenderData();
 	private:
 		Scope<ForwardPass>m_Forwardpass;
 		Scope<PostEffectPass>m_Postpass;
 		Scope<SkyBoxPass>m_skyBoxPass;
 		Framebuffer* RenderTarget;
 		RenderPipeLineSetting m_pipeline_setting;
-		//Ref<Framebuffer>OffScreenTarget;
 
+		// 批次映射
+		std::unordered_map<BatchKey, BatchData, BatchKeyHash> m_Batches;
+		// 最大实例数（必须与着色器中的数组大小匹配）
+		static constexpr uint32_t MAX_INSTANCES_PER_BATCH = 10240;
 	};
 
 }

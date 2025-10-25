@@ -7,6 +7,7 @@
 #include "Component.h"
 #include "Prefabs.h"
 #include "ScriptableEntity.h"
+#include "Engine/Utils/random.h"
 
 namespace Engine {
 
@@ -14,10 +15,18 @@ namespace Engine {
         // 默认创建一个CubeEntity
         for (int i = 0; i < 1000; i++) {
             Entity cube=CreatePrefab(PrefabTypes::Cube);
+            glm::vec3 position = 100.0f*random_vector3()-50.0f;
+            cube.GetComponent<TransformComponent>().Translate(position);
         }
         for (int i = 0; i < 1000; i++) {
             auto sphere= CreatePrefab(PrefabTypes::Sphere);
+            glm::vec3 position = 100.0f * random_vector3() - 50.0f;
+            sphere.GetComponent<TransformComponent>().Translate(position);
         }
+        auto plane= CreatePrefab(PrefabTypes::Plane);
+        plane.GetComponent<TransformComponent>().Scale(glm::vec3(1000.0f,1.0f,1000.0f));
+        plane.GetComponent<TransformComponent>().Translate(glm::vec3(0, -20.0f, 0));
+
 
 
 
@@ -48,6 +57,8 @@ namespace Engine {
                 return CubeEntity(handle, this);
             case PrefabTypes::Sphere:
                 return SphereEntity(handle, this);
+            case PrefabTypes::Plane:
+                return PlaneEntity(handle, this);
             case PrefabTypes::None:
             default:
                 return Entity(handle, this);

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SkyBoxPass.h"
 #include "Engine/Renderer/RenderCommand.h"
+#include "Engine/Renderer/Renderpass/RenderPipeline.h"
 Engine::SkyBoxPass::SkyBoxPass(SkyBoxPassSpec& spec):Spec(spec)
 {
 	m_cubeVAO = spec.VAOManager->Get("cube").get();
@@ -25,9 +26,10 @@ Engine::SkyBoxPass::SkyBoxPass(SkyBoxPassSpec& spec):Spec(spec)
 void Engine::SkyBoxPass::Init(RenderPipeLineSetting& pipeline_setting)
 {
 	m_pipeline_settings = pipeline_setting;
+
 }
 
-void Engine::SkyBoxPass::Draw()
+void Engine::SkyBoxPass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)
 {
 
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

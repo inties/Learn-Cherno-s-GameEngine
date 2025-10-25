@@ -20,7 +20,7 @@ namespace Engine {
 		};
 		SkyBoxPass(SkyBoxPassSpec& spec);
 		void Init(RenderPipeLineSetting& pipeline_setting)override;
-		void Draw()override;
+		void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)override;
 	private:
 
 		SkyBoxPassSpec Spec;

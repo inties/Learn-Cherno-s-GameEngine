@@ -22,7 +22,7 @@ namespace Engine {
 			m_VAOManager = spec.VAOManager;
 		};
 		void Init(RenderPipeLineSetting& pipeline_setting)override final;
-		void Draw()override final;
+		void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)override final;
 		inline void SetMat(Ref<Material>mat) {
 			Mat = mat;
 		}

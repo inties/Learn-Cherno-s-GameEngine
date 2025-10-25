@@ -146,9 +146,14 @@ namespace Engine {
 		// ENGINE_CORE_INFO("Mouse moved to {0},{1}", e.getMousePos().first, e.getMousePos().second);
 		auto [x, y] = e.getMousePos();
 
-		MainCamera* camera = MainCamera::GetInstance();
-		if (camera) {
-			camera->ProcessMouseMovement(x, y);
+		// 检查是否按下右键
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+			// 只有在viewport中且按下右键时才处理摄像机移动		
+				MainCamera* camera = MainCamera::GetInstance();
+				if (camera) {
+					camera->ProcessMouseMovement(x, y);
+				}
+			
 		}
 		return true;
 	}

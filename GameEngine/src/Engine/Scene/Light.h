@@ -65,7 +65,7 @@ namespace Engine {
 
 		// 带参数的构造函数
 		SpotLight(const glm::vec3& strength, const glm::vec3& pos, const glm::vec3& dir=glm::vec3(0.0f, -1.0f, 0.0f),
-				  float falloffStart = 1.0f, float falloffEnd = 10.0f, float spotPower = 3.0f)
+				  float falloffStart = 1.0f, float falloffEnd = 50.0f, float spotPower = 3.0f)
 			: Light(strength, pos, dir, falloffStart, falloffEnd, spotPower) {
 
 		}

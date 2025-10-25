@@ -15,4 +15,10 @@ namespace Engine {
 			AddComponent<RenderComponent>("sphere", "sphere");
 		}
 	};
+	class PlaneEntity :public Entity {
+	public:
+		PlaneEntity(entt::entity handle, Scene* scene) :Entity(handle, scene) {
+			AddComponent<RenderComponent>("plane", "sphere");
+		}
+	};
 }

@@ -46,6 +46,9 @@ namespace Engine {
 
 		glViewport(0, 0, m_Props.Width, m_Props.Height);
 
+		// 禁用垂直同步以获得更高的帧率
+		glfwSwapInterval(0);
+
 		if (m_Window) {
 			std::cout << "Window Created!" << std::endl;
 
