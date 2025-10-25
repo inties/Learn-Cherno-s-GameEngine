@@ -18,9 +18,10 @@ namespace Engine
 		RenderTarget = renderPipeLineSetting.ScreenFBO;
 
 		////创建离屏渲染目标
-		//FramebufferSpecification offscreenSpec = { initW,initH,{format::RGBA8,format::DEPTH24STENCIL8},1 };
-		//OffScreenTarget = Framebuffer::Create(offscreenSpec);
 
+        m_preZpass = CreateScope<Pre_Z_Pass>();
+        m_preZpass->SetFBO(RenderTarget);
+        m_preZpass->SetShader(renderPipeLineSetting.ShaderManager->Get("depth").get());
 		//创建pass并附加渲染目标
 		ForwardPass::ForwardPassSpec forwardPassSpec = {renderPipeLineSetting.MatManager,renderPipeLineSetting.VAOManager,renderPipeLineSetting.Scene };
 		m_Forwardpass = CreateScope<ForwardPass>(forwardPassSpec);

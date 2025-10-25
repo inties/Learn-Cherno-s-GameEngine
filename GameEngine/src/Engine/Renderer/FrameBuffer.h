@@ -47,7 +47,7 @@ namespace Engine {
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 		virtual void ClearColorAttachments(int value)=0;
-
+		virtual void ColorMask(bool = true)=0;
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
 
 		//获取颜色纹理附件对应的Texture

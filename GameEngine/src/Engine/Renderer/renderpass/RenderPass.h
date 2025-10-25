@@ -5,6 +5,7 @@
 #include "Engine/camera.h"
 #include "RenderPipelineSettings.h"
 
+
 namespace Engine{
 	struct BatchKey;
 	struct BatchData;
@@ -26,28 +27,10 @@ namespace Engine{
 		RenderPipeLineSetting m_pipeline_settings;
 	};
 	class Pre_Z_Pass :public RenderPass {
+	public:
 		void Init(RenderPipeLineSetting& pipeline_setting) {};
-		void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>*batch_data)override {
-			//绑定深度缓冲
-			//绑定VAO
-			//绘制调用
-		};
-		inline void SetFBO(Framebuffer* fbo) {
-			FBO = fbo;
-		}
-		inline void SetShader(Shader* shader) {
-			m_shader = shader;
-		}
-		inline void SetVAO(VertexArray* vao) {
-			m_VAO = vao;
-		}
+		void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)override;
 	protected:
-		Framebuffer* FBO;//FBO不由render pass管理生命周期，renderpipeline初始化时创建并分配给renderpass，允许运行时修改FBO
-		Shader* m_shader;
-		VertexArray* m_VAO;
-		ShaderStorageBuffer* m_SSBO;
-		uint32_t m_instanceCount;
-		RenderPipeLineSetting m_pipeline_settings;
 	};
 
 

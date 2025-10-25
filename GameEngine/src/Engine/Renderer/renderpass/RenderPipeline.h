@@ -33,13 +33,18 @@ namespace Engine {
 			m_Forwardpass->Init(m_pipeline_setting);
 			m_Postpass->Init(m_pipeline_setting);
 			m_skyBoxPass->Init(m_pipeline_setting);
+			m_preZpass->Init(m_pipeline_setting);
 		};
 
 		void Draw() {
+			
 			CollectRenderData();
+			m_preZpass->Draw(&m_Batches);
+			glDepthFunc(GL_LEQUAL);
 			m_Forwardpass->Draw(&m_Batches);
 			m_skyBoxPass->Draw(&m_Batches);
 			m_Postpass->Draw(&m_Batches);
+			
 		};
 		void Resize();
 		void DrawEnvMap();
@@ -49,6 +54,7 @@ namespace Engine {
 		Scope<ForwardPass>m_Forwardpass;
 		Scope<PostEffectPass>m_Postpass;
 		Scope<SkyBoxPass>m_skyBoxPass;
+		Scope<Pre_Z_Pass>m_preZpass;
 		Framebuffer* RenderTarget;
 		RenderPipeLineSetting m_pipeline_setting;
 

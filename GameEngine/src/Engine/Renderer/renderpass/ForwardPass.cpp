@@ -103,47 +103,7 @@ namespace Engine {
         
     }
 
-    void ForwardPass::RenderInstance(std::unordered_map<BatchKey, BatchData, BatchKeyHash>*batch_data)
-    {
-        //// 获取相机矩阵
-        MainCamera* camera = MainCamera::GetInstance();
-        if (!camera) {
-            ENGINE_CORE_ERROR("No camera available for instanced rendering");
-            return;
-        }
 
-        glm::mat4 viewMatrix = camera->GetViewMatrix();
-        glm::mat4 projMatrix = camera->GetProjectionMatrix();
-        glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-
-        //// 渲染每个批次
-        for (auto& [key, batchData] : *batch_data) {
-            if (batchData.instances.empty()) continue;
-
-        //    // 绑定材质和着色器
-            key.material->Bind();
-            auto shader = key.material->GetShader();
-            shader->Bind();
-
-            // 设置视图投影矩阵
-            shader->SetMat4("u_ViewProjection", viewProjMatrix);
-            
-            // 使用MainLight单例设置光源
-            auto& mainLight = MainLight::GetInstance();
-            shader->SetFloat3("direct_light_dir", mainLight.GetDirection());
-            shader->SetFloat3("direct_light_strength", mainLight.GetStrength());
-            shader->SetFloat3("cameraPos_ws", camera->GetPosition());
-            // 绑定SSBO
-            m_pipeline_settings.lights_gpu->Bind(1);
-            batchData.ssbo->Bind(2);
-            // 绑定VAO
-            key.vao->Bind();
-
-        //    // 执行实例化绘制
-            uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
-            RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
-        }
-    }
 
     void ForwardPass::DrawEntitiesIndividually() {
         // 获取场景的registry
@@ -183,10 +143,45 @@ namespace Engine {
         }
     }
 
-    void ForwardPass::DrawEntitiesInstanced(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data) {
-        // 收集实例数据
-   
-        RenderInstance(batch_data);
+    void ForwardPass::DrawEntitiesInstanced(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data) { 
+        // 获取相机矩阵
+        MainCamera* camera = MainCamera::GetInstance();
+        if (!camera) {
+            ENGINE_CORE_ERROR("No camera available for instanced rendering");
+            return;
+        }
+
+        glm::mat4 viewMatrix = camera->GetViewMatrix();
+        glm::mat4 projMatrix = camera->GetProjectionMatrix();
+        glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
+
+        //// 渲染每个批次
+        for (auto& [key, batchData] : *batch_data) {
+            if (batchData.instances.empty()) continue;
+
+            //    // 绑定材质和着色器
+            key.material->Bind();
+            auto shader = key.material->GetShader();
+            shader->Bind();
+
+            // 设置视图投影矩阵
+            shader->SetMat4("u_ViewProjection", viewProjMatrix);
+
+            // 使用MainLight单例设置光源
+            auto& mainLight = MainLight::GetInstance();
+            shader->SetFloat3("direct_light_dir", mainLight.GetDirection());
+            shader->SetFloat3("direct_light_strength", mainLight.GetStrength());
+            shader->SetFloat3("cameraPos_ws", camera->GetPosition());
+            // 绑定SSBO
+            m_pipeline_settings.lights_gpu->Bind(1);
+            batchData.ssbo->Bind(2);
+            // 绑定VAO
+            key.vao->Bind();
+
+            //    // 执行实例化绘制
+            uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
+            RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
+        }
 
     }
 

@@ -407,5 +407,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Renderpass\RenderPass.cpp" />
   </ItemGroup>
 </Project>

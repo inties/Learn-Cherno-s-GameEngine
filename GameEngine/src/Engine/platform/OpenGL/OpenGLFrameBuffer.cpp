@@ -224,6 +224,16 @@ namespace Engine {
 	
 	}
 
+	void OpenGLFramebuffer::ColorMask(bool writeColor)
+	{
+		if (writeColor) {
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		}
+		else {
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+		}
+	}
+
 	OpenGLFrameBufferCube::OpenGLFrameBufferCube(TextureCube* textureCube)
 	{
 		m_textureCube = textureCube;

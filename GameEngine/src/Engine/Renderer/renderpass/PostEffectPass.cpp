@@ -21,7 +21,7 @@ void Engine::PostEffectPass::Init(RenderPipeLineSetting& pipeline_setting)
 
 void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)
 {
-	//离屏渲染
+	////离屏渲染
 	InterMediateFBO->Bind();
 	InterMediateFBO->ClearColorAttachments(0);
 	auto quadVAO = m_VAOManager->Get("quad");
@@ -32,7 +32,7 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 
 
 
-	//渲染到FBO
+	////渲染到FBO
 	FBO->Bind();
 	RenderCommand::Clear();
 	DefaultBlitShader->Bind();

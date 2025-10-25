@@ -131,6 +131,12 @@ namespace Engine
 		SphereDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
 		SphereDefaultMat->SetFloat3("cameraPos_ws", glm::vec3(0.0f, 0.0f, 0.0f));
 		Mat_Manager.Regist("sphere", std::move(SphereDefaultMat));
+
+		shaderPath_vs = GetShaderPath("depth_vs.glsl");
+		shaderPath_fs = GetShaderPath("depth_fs.glsl");
+		auto depth_shader= Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
+		Shader_Manager.Regist("depth", std::move(depth_shader));
+
 		
 	}
 

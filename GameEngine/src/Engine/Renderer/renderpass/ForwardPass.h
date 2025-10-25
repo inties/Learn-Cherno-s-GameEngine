@@ -31,7 +31,7 @@ public:
 
 	private:
 		void CollectRenderData();
-		void RenderInstance(std::unordered_map<BatchKey, BatchData, BatchKeyHash>*);
+	
 		// 传统逐实体渲染方法
 		void DrawEntitiesIndividually();
 		

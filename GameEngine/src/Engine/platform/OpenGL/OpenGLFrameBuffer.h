@@ -22,7 +22,7 @@ namespace Engine {
 		void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
 		void ClearColorAttachments(int value)override;
-
+		void ColorMask(bool = true) override;
 		//获取指定序号的纹理附件
 		uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { ENGINE_CORE_ASSERT(index < m_ColorAttachments.size(),"Can't get ColorAttachment Out of Range"); return m_ColorAttachments[index]; }
 		Ref<Texture>GetRenderTexture(uint32_t index = 0)const override {
