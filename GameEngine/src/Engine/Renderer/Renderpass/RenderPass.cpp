@@ -27,4 +27,25 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 				RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
 			}
 			FBO->ColorMask(true);
+
+			tiled_z->Clear();
+			RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
+			auto depthtexture=FBO->GetDepth();
+			auto tile_depth_shader = m_pipeline_settings.ShaderManager->Get("tile_depth").get();
+			tile_depth_shader->Bind();
+			depthtexture->Bind(0);
+			ImageBindDesc desc;
+			desc.binding = 1;
+			desc.access = TextureAccess::WriteOnly;
+			tiled_z->BindAsImage(desc);
+	
+			tile_depth_shader->SetMat4("projection", projMatrix);
+			RenderCommand::Dispatch(std::ceil(tiled_z->GetWidth() / 16.0f), std::ceil(tiled_z->GetHeight() / 16.0f), 1);
+			
+			
+}
+
+void Engine::Pre_Z_Pass::Resize(uint32_t width,uint32_t height)
+{
+	tiled_z = Texture2D::Create(width, height, TextureFormat::RED32F, 1);
 }

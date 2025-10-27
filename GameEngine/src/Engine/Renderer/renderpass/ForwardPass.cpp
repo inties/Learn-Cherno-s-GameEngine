@@ -127,6 +127,11 @@ namespace Engine {
                 MainCamera* camera = MainCamera::GetInstance();
                 glm::mat4 viewMatrix = camera->GetViewMatrix();
                 glm::mat4 projMatrix = camera->GetProjectionMatrix();
+
+         
+                
+
+
                 glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
                 
                 renderComp.Mat->Bind();
@@ -153,8 +158,9 @@ namespace Engine {
 
         glm::mat4 viewMatrix = camera->GetViewMatrix();
         glm::mat4 projMatrix = camera->GetProjectionMatrix();
+        
         glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-
+               // 打印投影矩阵
         //// 渲染每个批次
         for (auto& [key, batchData] : *batch_data) {
             if (batchData.instances.empty()) continue;

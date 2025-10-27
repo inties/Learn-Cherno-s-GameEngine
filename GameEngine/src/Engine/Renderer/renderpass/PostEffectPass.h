@@ -28,6 +28,8 @@ namespace Engine {
 			Mat = mat;
 		}
 	private:
+		void Bloom();
+		
 		Ref<Texture>InputTexture;
 		Ref<Texture>pingpong_A;
 		Ref<Texture>pingpong_B;

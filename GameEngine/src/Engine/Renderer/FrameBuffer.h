@@ -53,6 +53,9 @@ namespace Engine {
 		//获取颜色纹理附件对应的Texture
 		virtual Ref<Texture>GetRenderTexture(uint32_t index = 0)const = 0;
 
+		
+		virtual Ref<Texture>GetDepth()const = 0;
+
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 
 		static Engine::Ref<Framebuffer> Create(const FramebufferSpecification& spec);

@@ -38,6 +38,11 @@ namespace Engine {
         inline void SetNear(float near_value) { near_ = near_value; }
         inline void SetFar(float far_value) { far_ = far_value; }
         inline void SetAspect(float aspect) { aspect_ = aspect; }
+        // camera options
+        float fov_;
+        float near_;
+        float far_;
+        float aspect_;
     protected:
         // camera Attributes
         glm::vec3 Position;
@@ -46,11 +51,7 @@ namespace Engine {
         glm::vec3 Right;
         glm::vec3 WorldUp;
  
-        // camera options
-        float fov_;
-        float near_;
-        float far_;
-        float aspect_;
+        
     };
     // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
     class MainCamera:public Camera

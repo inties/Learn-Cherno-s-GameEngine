@@ -46,59 +46,24 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 
 	RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
 
-
-	auto textureA = InterMediateFBO->GetRenderTexture(1);
-	auto textureB = pingpong_B;
-	
-	auto blur_shader = m_pipeline_settings.ShaderManager->Get("blur").get();
-	blur_shader->Bind();
-	ImageBindDesc texture_image_desc;
-	texture_image_desc.binding = 0;
-	texture_image_desc.access = TextureAccess::WriteOnly;
-
-	for (int i = 0; i < 5; i++) {
-		blur_shader->SetInt("vertical", 0);
-		textureB->BindAsImage(texture_image_desc);
-		textureA->Bind(0);
-		RenderCommand::Dispatch(std::ceil(textureA->GetWidth() / 16) + 1, std::ceil(textureA->GetHeight() / 16) + 1, 1);
-		RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToComputeRead);
-		blur_shader->SetInt("vertical", 1);
-		textureA->BindAsImage(texture_image_desc);
-		textureB->Bind(0);
-		RenderCommand::Dispatch(std::ceil(textureA->GetWidth() / 16) + 1, std::ceil(textureA->GetHeight() / 16) + 1, 1);
-		RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToComputeRead);
-	}
-	//RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToGraphicsRead);
+	//模糊InterMediateFBO的bloom纹理
+	Bloom();
 
 
-	auto invert_color_shader = m_pipeline_settings.ShaderManager->Get("invert_color").get();
+	//色调映射和gamma映射校正
+	auto invert_color_shader = m_pipeline_settings.ShaderManager->Get("tonemapping_gamma").get();
 	invert_color_shader->Bind();
 	auto interTexture = InterMediateFBO->GetRenderTexture(0);
 	auto bloomTexture = InterMediateFBO->GetRenderTexture(1);
 	interTexture->Bind(0);
 	bloomTexture->Bind(1);
-	// 2. 显式告诉 sampler uniform "u_Input 用的是单元0"
-	//invert_color_shader->SetInt("u_Input", 0);
-	//GLint loc = glGetUniformLocation(invert_color_shader->, "u_Input");
-	//glUniform1i(loc, 0);
-
-	auto outputTexture=FBO->GetRenderTexture(0);
+	auto outputTexture = FBO->GetRenderTexture(0);
 	ImageBindDesc output_image_desc;
 	output_image_desc.binding = 1;
 	output_image_desc.access = TextureAccess::WriteOnly;
 	outputTexture->BindAsImage(output_image_desc);
 
-	//uint32_t width = InputTexture->GetWidth();
-	//uint32_t height = InputTexture->GetHeight();
-	//std::cout << width << " " << height << std::endl;
-	//std::cout << outputTexture->GetWidth()<< "   " << outputTexture->GetHeight() << std::endl;
-
-
-
-
-
-
-	RenderCommand::Dispatch(std::ceil(outputTexture->GetWidth()/ 8)+1, std::ceil(outputTexture->GetHeight()/ 8)+1, 1);
+	RenderCommand::Dispatch(std::ceil(outputTexture->GetWidth() / 8.0f), std::ceil(outputTexture->GetHeight() / 8.0f), 1);
 
 	RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToRenderTarget);
 	
@@ -121,6 +86,31 @@ void Engine::PostEffectPass::Resize(uint32_t width, uint32_t height)
 	InterMediateFBO->Resize(width, height);
 	pingpong_A = Texture2D::Create(width,height, TextureFormat::RGBA16, 1);
 	pingpong_B = Texture2D::Create(width,height, TextureFormat::RGBA16, 1);
+}
+
+void Engine::PostEffectPass::Bloom()
+{
+	auto textureA = InterMediateFBO->GetRenderTexture(1);
+	auto textureB = pingpong_B;
+
+	auto blur_shader = m_pipeline_settings.ShaderManager->Get("blur").get();
+	blur_shader->Bind();
+	ImageBindDesc texture_image_desc;
+	texture_image_desc.binding = 0;
+	texture_image_desc.access = TextureAccess::WriteOnly;
+
+	for (int i = 0; i < 5; i++) {
+		blur_shader->SetInt("vertical", 0);
+		textureB->BindAsImage(texture_image_desc);
+		textureA->Bind(0);
+		RenderCommand::Dispatch(std::ceil(textureA->GetWidth() / 16.0f), std::ceil(textureA->GetHeight() / 16.0f), 1);
+		RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToComputeRead);
+		blur_shader->SetInt("vertical", 1);
+		textureA->BindAsImage(texture_image_desc);
+		textureB->Bind(0);
+		RenderCommand::Dispatch(std::ceil(textureA->GetWidth() / 16.0f), std::ceil(textureA->GetHeight() / 16.0f), 1);
+		RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToComputeRead);
+	}
 }
 
 

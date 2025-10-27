@@ -143,12 +143,18 @@ namespace Engine
 		shaderPath = GetShaderPath("compute/invert_color.glsl");
 		ShaderDesc desc { ShaderType::compute };
 		auto invert_color = Shader::CreateUniqueShader(shaderPath,desc);
-		Shader_Manager.Regist("invert_color", std::move(invert_color));
+		Shader_Manager.Regist("tonemapping_gamma", std::move(invert_color));
 
 		shaderPath = GetShaderPath("compute/blur.glsl");
 		ShaderDesc desc1{ ShaderType::compute };
 		auto blur = Shader::CreateUniqueShader(shaderPath, desc1);
 		Shader_Manager.Regist("blur", std::move(blur));
+
+		shaderPath = GetShaderPath("compute/tiled_z.glsl");
+		ShaderDesc desc2{ ShaderType::compute };
+		auto depth_tile = Shader::CreateUniqueShader(shaderPath, desc2);
+		Shader_Manager.Regist("tile_depth", std::move(depth_tile));
+
 		
 	}
 
