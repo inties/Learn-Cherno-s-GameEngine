@@ -7,6 +7,11 @@
 #include <cmath>
 
 namespace Engine {
+	struct ClearParams {
+		GLenum format;   // glClearTexImage 的 'format' 参数
+		GLenum type;     // glClearTexImage 的 'type' 参数
+		const void* data; // 指向实际清除值
+	};
 	GLenum GLTextureFormat(TextureFormat format) {
 		GLenum glformat = GL_RGB8;
 		switch (format) {
@@ -66,6 +71,7 @@ namespace Engine {
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,TextureFormat format,int samples,bool enable_mipmap)
 		: m_Width(width), m_Height(height)
 	{
+		m_format = format;
 		m_InternalFormat=GLTextureFormat(format);
 		bool multisample = samples > 1;
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
@@ -108,6 +114,7 @@ namespace Engine {
 		
 		m_Width = width;
 		m_Height = height;
+		m_format = format;
 		GLenum internalFormat = GLTextureFormat(format);
 		GLenum dataFormat = GLDataFormat(channels);
 		m_DataFormat = dataFormat;
@@ -169,6 +176,92 @@ namespace Engine {
 		
 		ENGINE_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+	}
+
+	void OpenGLTexture2D::Clear()
+	{
+		ClearParams params{};
+		bool supported = true;
+
+		switch (m_format)  
+		{
+		case TextureFormat::RGBA8:
+		{
+			static const GLubyte clearColor[4] = { 0,0,0,0 };
+			params = { GL_RGBA, GL_UNSIGNED_BYTE, clearColor };
+		} break;
+
+		case TextureFormat::RGB8:
+		{
+			static const GLubyte clearColor[3] = { 0,0,0 };
+			params = { GL_RGB, GL_UNSIGNED_BYTE, clearColor };
+		} break;
+
+		case TextureFormat::SRGBA: // GL_SRGB8_ALPHA8
+		{
+			static const GLubyte clearColor[4] = { 0,0,0,0 };
+			params = { GL_RGBA, GL_UNSIGNED_BYTE, clearColor };
+		} break;
+
+		case TextureFormat::RED: // GL_R8
+		{
+			static const GLubyte clearColor[1] = { 0 };
+			params = { GL_RED, GL_UNSIGNED_BYTE, clearColor };
+		} break;
+
+		case TextureFormat::RGBA16: // GL_RGBA16F
+		case TextureFormat::RGBA32: // GL_RGBA32F
+		{
+			static const GLfloat clearColor[4] = { 0.f,0.f,0.f,0.f };
+			params = { GL_RGBA, GL_FLOAT, clearColor };
+		} break;
+
+		case TextureFormat::RGB16: // GL_RGB16F
+		case TextureFormat::RGB32: // GL_RGB32F
+		{
+			static const GLfloat clearColor[3] = { 0.f,0.f,0.f };
+			params = { GL_RGB, GL_FLOAT, clearColor };
+		} break;
+
+		case TextureFormat::RED32F: // GL_R32F
+		{
+			static const GLfloat clearColor[1] = { 0.f };
+			params = { GL_RED, GL_FLOAT, clearColor };
+		} break;
+
+		case TextureFormat::RED_INTEGER: // GL_R32I
+		{
+			static const GLint clearColor[1] = { 0 };
+			params = { GL_RED_INTEGER, GL_INT, clearColor };
+		} break;
+
+		case TextureFormat::DEPTH24STENCIL8: // GL_DEPTH24_STENCIL8
+		{
+			// depth = 1.0f (all 1s in the 24 depth bits), stencil = 0
+			static const GLuint clearValue[1] = { 0xFFFFFF00u };
+			params = { GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, clearValue };
+		} break;
+
+		default:
+			supported = false;
+			break;
+		}
+
+		if (!supported)
+		{
+			// 这里你可以断言或打日志
+			
+			return;
+		}
+
+		glClearTexImage(
+			m_RendererID,
+			0,                // mip level
+			params.format,    // e.g. GL_RGBA / GL_RED_INTEGER / GL_DEPTH_STENCIL ...
+			params.type,      // e.g. GL_FLOAT / GL_UNSIGNED_BYTE / GL_INT ...
+			params.data       // 指向上面静态数组
+		);
+		glClearTexImage(m_RendererID, 0, params.format,params.type,params.data);
 	}
 
 	void OpenGLTexture2D::Bind(uint32_t slot) const

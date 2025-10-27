@@ -10,12 +10,16 @@ void Engine::PostEffectPass::Init(RenderPipeLineSetting& pipeline_setting)
 	}
 	PostEffectShader = Mat->GetShader();
 
-	DefaultBlitShader = Spec.MatManager->Get("defaultblit")->GetShader();
+
 
 	InputTexture = FBO->GetRenderTexture(0);
-	FramebufferSpecification interMediateFBOspec = { InputTexture->GetHeight(),InputTexture->GetHeight(),{TextureFormat::RGBA8},1 };
+	FramebufferSpecification interMediateFBOspec = { InputTexture->GetHeight(),InputTexture->GetHeight(),{TextureFormat::RGBA8,TextureFormat::RGBA16},1 };
 	InterMediateFBO = Framebuffer::Create(interMediateFBOspec);
 	m_pipeline_settings = pipeline_setting;
+
+	pingpong_A = Texture2D::Create(InputTexture->GetHeight(), InputTexture->GetHeight(), TextureFormat::RGBA16, 1);
+	pingpong_B = Texture2D::Create(InputTexture->GetHeight(), InputTexture->GetHeight(), TextureFormat::RGBA16, 1);
+
 
 }
 
@@ -23,21 +27,58 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 {
 	//离屏渲染
 	InterMediateFBO->Bind();
-	InterMediateFBO->ClearColorAttachments(0);
-	
+	auto texture1 = InterMediateFBO->GetRenderTexture(0);
+	texture1->Clear();
+	auto texture2 = InterMediateFBO->GetRenderTexture(1);
+	texture2->Clear();
+	/*InterMediateFBO->ClearColorAttachments(0);*/
+
+
+	//blit并提取高亮部分
 	auto quadVAO = m_VAOManager->Get("quad");
+	/*InputTexture = FBO->GetRenderTexture(0);*/
+	auto blit_bloom_shader= m_pipeline_settings.ShaderManager->Get("blit_bloom").get();
+	blit_bloom_shader->Bind();
 	InputTexture->Bind(0);
-	DefaultBlitShader->Bind();
 	quadVAO->Bind();
 	RenderCommand::DrawIndexed(quadVAO);
+
+
 	RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
+
+
+	auto textureA = InterMediateFBO->GetRenderTexture(1);
+	auto textureB = pingpong_B;
+	
+	auto blur_shader = m_pipeline_settings.ShaderManager->Get("blur").get();
+	blur_shader->Bind();
+	ImageBindDesc texture_image_desc;
+	texture_image_desc.binding = 0;
+	texture_image_desc.access = TextureAccess::WriteOnly;
+
+	for (int i = 0; i < 5; i++) {
+		blur_shader->SetInt("vertical", 0);
+		textureB->BindAsImage(texture_image_desc);
+		textureA->Bind(0);
+		RenderCommand::Dispatch(std::ceil(textureA->GetWidth() / 16) + 1, std::ceil(textureA->GetHeight() / 16) + 1, 1);
+		RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToComputeRead);
+		blur_shader->SetInt("vertical", 1);
+		textureA->BindAsImage(texture_image_desc);
+		textureB->Bind(0);
+		RenderCommand::Dispatch(std::ceil(textureA->GetWidth() / 16) + 1, std::ceil(textureA->GetHeight() / 16) + 1, 1);
+		RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToComputeRead);
+	}
+	//RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToGraphicsRead);
+
 
 	auto invert_color_shader = m_pipeline_settings.ShaderManager->Get("invert_color").get();
 	invert_color_shader->Bind();
 	auto interTexture = InterMediateFBO->GetRenderTexture(0);
+	auto bloomTexture = InterMediateFBO->GetRenderTexture(1);
 	interTexture->Bind(0);
+	bloomTexture->Bind(1);
 	// 2. 显式告诉 sampler uniform "u_Input 用的是单元0"
-	invert_color_shader->SetInt("u_Input", 0);
+	//invert_color_shader->SetInt("u_Input", 0);
 	//GLint loc = glGetUniformLocation(invert_color_shader->, "u_Input");
 	//glUniform1i(loc, 0);
 
@@ -47,12 +88,17 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 	output_image_desc.access = TextureAccess::WriteOnly;
 	outputTexture->BindAsImage(output_image_desc);
 
-	uint32_t width = InputTexture->GetWidth();
-	uint32_t height = InputTexture->GetHeight();
-	std::cout << width << " " << height << std::endl;
-	std::cout << outputTexture->GetWidth()<< "   " << outputTexture->GetHeight() << std::endl;
-	
-	RenderCommand::Dispatch(std::ceil(outputTexture->GetWidth()/ 8), std::ceil(outputTexture->GetHeight()/ 8), 1);
+	//uint32_t width = InputTexture->GetWidth();
+	//uint32_t height = InputTexture->GetHeight();
+	//std::cout << width << " " << height << std::endl;
+	//std::cout << outputTexture->GetWidth()<< "   " << outputTexture->GetHeight() << std::endl;
+
+
+
+
+
+
+	RenderCommand::Dispatch(std::ceil(outputTexture->GetWidth()/ 8)+1, std::ceil(outputTexture->GetHeight()/ 8)+1, 1);
 
 	RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToRenderTarget);
 	
@@ -73,5 +119,8 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 void Engine::PostEffectPass::Resize(uint32_t width, uint32_t height)
 {
 	InterMediateFBO->Resize(width, height);
+	pingpong_A = Texture2D::Create(width,height, TextureFormat::RGBA16, 1);
+	pingpong_B = Texture2D::Create(width,height, TextureFormat::RGBA16, 1);
 }
+
 

@@ -91,9 +91,10 @@ namespace Engine
 
 
 		shaderPath_fs= GetShaderPath("PostEffect/defaultBlit_fs.glsl");
-		auto defaultBlitShader = Shader::Create(shaderPath_vs, shaderPath_fs);
-		auto defaultBlitMat = Material::Create(defaultBlitShader);
-		Mat_Manager.Regist("defaultblit", std::move(defaultBlitMat));
+		auto defaultBlitShader = Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
+		Shader_Manager.Regist("blit_bloom", std::move(defaultBlitShader));
+		//auto defaultBlitMat = Material::Create(defaultBlitShader);
+		//Mat_Manager.Regist("blit_bloom", std::move(defaultBlitMat));
 
 		shaderPath_vs = GetShaderPath("skybox/skybox_vs.glsl");
 		shaderPath_fs = GetShaderPath("skybox/skybox_fs.glsl");
@@ -137,10 +138,17 @@ namespace Engine
 		auto depth_shader= Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
 		Shader_Manager.Regist("depth", std::move(depth_shader));
 
+
+		//计算着色器
 		shaderPath = GetShaderPath("compute/invert_color.glsl");
 		ShaderDesc desc { ShaderType::compute };
 		auto invert_color = Shader::CreateUniqueShader(shaderPath,desc);
 		Shader_Manager.Regist("invert_color", std::move(invert_color));
+
+		shaderPath = GetShaderPath("compute/blur.glsl");
+		ShaderDesc desc1{ ShaderType::compute };
+		auto blur = Shader::CreateUniqueShader(shaderPath, desc1);
+		Shader_Manager.Regist("blur", std::move(blur));
 		
 	}
 

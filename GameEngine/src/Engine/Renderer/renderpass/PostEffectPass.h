@@ -29,11 +29,12 @@ namespace Engine {
 		}
 	private:
 		Ref<Texture>InputTexture;
+		Ref<Texture>pingpong_A;
+		Ref<Texture>pingpong_B;
 		Ref<Material>Mat;
 		PostEffectPassSpec Spec;
 		Ref<Framebuffer>InterMediateFBO;
 		Ref<Shader>PostEffectShader;
-		Ref<Shader>DefaultBlitShader;
 		ResourceRegistry<Material>* m_MatManager;
 		ResourceRegistry<VertexArray>* m_VAOManager;
 	};
