@@ -49,10 +49,10 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 
 	uint32_t width = InputTexture->GetWidth();
 	uint32_t height = InputTexture->GetHeight();
-	//std::cout << width << " " << height << std::endl;
-	//std::cout << outputTexture->GetWidth()<< "   " << outputTexture->GetHeight() << std::endl;
+	std::cout << width << " " << height << std::endl;
+	std::cout << outputTexture->GetWidth()<< "   " << outputTexture->GetHeight() << std::endl;
 	
-	RenderCommand::Dispatch(std::ceil(1077 / 8), std::ceil(1018 / 8), 1);
+	RenderCommand::Dispatch(std::ceil(outputTexture->GetWidth()/ 8), std::ceil(outputTexture->GetHeight()/ 8), 1);
 
 	RenderCommand::InsertBarrier(BarrierDomain::ComputeWriteToRenderTarget);
 	
@@ -68,5 +68,10 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 
 
 
+}
+
+void Engine::PostEffectPass::Resize(uint32_t width, uint32_t height)
+{
+	InterMediateFBO->Resize(width, height);
 }
 

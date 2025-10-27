@@ -23,6 +23,7 @@ namespace Engine {
 		};
 		void Init(RenderPipeLineSetting& pipeline_setting)override final;
 		void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)override final;
+		void Resize(uint32_t,uint32_t);
 		inline void SetMat(Ref<Material>mat) {
 			Mat = mat;
 		}

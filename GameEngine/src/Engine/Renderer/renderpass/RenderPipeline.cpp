@@ -41,9 +41,9 @@ namespace Engine
 
 	}
 
-	void RenderPipeLine::Resize() {
-		RenderTarget->Resize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
-		//OffScreenTarget->Resize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+	void RenderPipeLine::Resize(uint32_t width,uint32_t height) {
+        m_Postpass->Resize(width, height);
+
 	}
 
 	void RenderPipeLine::CollectRenderData()

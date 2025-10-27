@@ -119,6 +119,7 @@ namespace Engine {
 			glDeleteTextures(1, &m_DepthAttachment);
 
 			m_ColorAttachments.clear();
+			m_RenderTextures.clear();
 			m_DepthAttachment = 0;
 		}
 

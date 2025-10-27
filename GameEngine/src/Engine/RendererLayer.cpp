@@ -587,6 +587,7 @@ namespace Engine
 	void RendererLayer::ResizeRenderTarget(unsigned int width, unsigned int height)
 	{
 		FBO->Resize(width, height);
+		m_RenderPipeLine->Resize(width, height);
 	}
 
 	void RendererLayer::SetObjectIDForModel(const Ref<Model>& model, int objectID)

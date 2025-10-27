@@ -46,7 +46,7 @@ namespace Engine {
 			m_Postpass->Draw(&m_Batches);
 			
 		};
-		void Resize();
+		void Resize(uint32_t,uint32_t);
 		void DrawEnvMap();
 	private:
 		void CollectRenderData();
