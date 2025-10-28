@@ -30,13 +30,15 @@ namespace Engine{
 	public:
 		void Init(RenderPipeLineSetting& pipeline_setting) {
 			m_pipeline_settings = pipeline_setting;
-			tiled_z = Texture2D::Create(1, 1, TextureFormat::RED32F, 1);
+			tiled_z = Texture2D::Create(1, 1, TextureFormat::RGBA16, 1);
+			visible_lights = ShaderStorageBuffer::Create(1024);
 
 		};
 		void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)override;
 		void Resize(uint32_t width, uint32_t height);
 	protected:
 		Ref<Texture>tiled_z;
+		Scope<ShaderStorageBuffer>visible_lights;
 	};
 
 

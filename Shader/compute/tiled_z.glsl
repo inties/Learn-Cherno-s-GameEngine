@@ -33,5 +33,9 @@ void main() {
     float min_z=uintBitsToFloat(minDepthInt);
     float max_z=uintBitsToFloat(maxDepthInt);
     imageStore(tiled_depth,  ivec2(gl_GlobalInvocationID.xy), vec4(min_z,0,0,0));
+
+
+
+    
     
 }

@@ -19,6 +19,7 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 				if (batchData.instances.empty()) continue;
 				// 设置视图投影矩阵
 				m_shader->SetMat4("u_ViewProjection", viewProjMatrix);
+				
 				batchData.ssbo->Bind(0);
 				// 绑定VAO
 				key.vao->Bind();
@@ -31,15 +32,27 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 			tiled_z->Clear();
 			RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
 			auto depthtexture=FBO->GetDepth();
-			auto tile_depth_shader = m_pipeline_settings.ShaderManager->Get("tile_depth").get();
+			auto tile_depth_shader = m_pipeline_settings.ShaderManager->Get("culling_lights").get();
 			tile_depth_shader->Bind();
 			depthtexture->Bind(0);
 			ImageBindDesc desc;
 			desc.binding = 1;
 			desc.access = TextureAccess::WriteOnly;
 			tiled_z->BindAsImage(desc);
-	
+
+
+			m_pipeline_settings.lights_gpu->Bind(0);
+			visible_lights->Bind(1);
+
+			tile_depth_shader->SetMat4("view", viewMatrix);
 			tile_depth_shader->SetMat4("projection", projMatrix);
+			glm::mat4 inv_VP = glm::inverse(viewProjMatrix);
+			tile_depth_shader->SetMat4("viewProjection", viewProjMatrix);
+			tile_depth_shader->SetMat4("inv_VP_matrix", inv_VP);
+			tile_depth_shader->SetInt("points_light_count", 1000);
+			tile_depth_shader->SetInt("spot_light_count", 100);
+
+
 			RenderCommand::Dispatch(std::ceil(tiled_z->GetWidth() / 16.0f), std::ceil(tiled_z->GetHeight() / 16.0f), 1);
 			
 			
@@ -47,5 +60,6 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 
 void Engine::Pre_Z_Pass::Resize(uint32_t width,uint32_t height)
 {
-	tiled_z = Texture2D::Create(width, height, TextureFormat::RED32F, 1);
+	tiled_z = Texture2D::Create(width, height, TextureFormat::RGBA16,1);
+	visible_lights = ShaderStorageBuffer::Create(std::ceil(width/16.0f)* std::ceil(height / 16.0f)*1024);
 }

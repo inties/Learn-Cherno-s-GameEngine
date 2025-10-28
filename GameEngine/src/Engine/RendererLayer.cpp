@@ -155,6 +155,10 @@ namespace Engine
 		auto depth_tile = Shader::CreateUniqueShader(shaderPath, desc2);
 		Shader_Manager.Regist("tile_depth", std::move(depth_tile));
 
+		shaderPath = GetShaderPath("compute/culling_lights.glsl");
+		ShaderDesc desc3{ ShaderType::compute };
+		auto culling_lights = Shader::CreateUniqueShader(shaderPath, desc3);
+		Shader_Manager.Regist("culling_lights", std::move(culling_lights));
 		
 	}
 

@@ -160,12 +160,12 @@ namespace Engine {
         glm::mat4 projMatrix = camera->GetProjectionMatrix();
         
         glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-               // 打印投影矩阵
+        // 打印投影矩阵
         //// 渲染每个批次
         for (auto& [key, batchData] : *batch_data) {
             if (batchData.instances.empty()) continue;
 
-            //    // 绑定材质和着色器
+            //// 绑定材质和着色器
             key.material->Bind();
             auto shader = key.material->GetShader();
             shader->Bind();
