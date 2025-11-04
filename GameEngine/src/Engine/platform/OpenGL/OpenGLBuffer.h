@@ -50,14 +50,14 @@ namespace Engine
 
 		virtual void Bind(uint8_t slot) const override;
 		virtual void Unbind() const override;
-		
+		uint32_t GetRenderID() const override { return m_RendererID; }
 		virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
 		
 		virtual uint32_t GetSize() const override { return m_Size; }
 
 		
 		virtual void EnsureCapacity(uint32_t requiredSize) override;
-
+		
 	private:
 		uint32_t m_RendererID;
 		uint32_t m_Size;

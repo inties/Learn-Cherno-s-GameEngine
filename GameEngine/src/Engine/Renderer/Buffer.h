@@ -156,7 +156,7 @@ namespace Engine {
 
 		virtual void Bind(uint8_t slot) const = 0;
 		virtual void Unbind() const = 0;
-		 
+		virtual uint32_t GetRenderID()const = 0;
 		// 设置数据到SSBO
 		virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0) = 0;
 		

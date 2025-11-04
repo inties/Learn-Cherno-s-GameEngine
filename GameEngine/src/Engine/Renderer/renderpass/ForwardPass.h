@@ -24,10 +24,15 @@ public:
 	void InitEnvMapPass();
 	void DrawEnvCube();
 	void Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)override;
-	
 	// 设置是否使用实例化渲染
 	void SetUseInstancing(bool useInstancing) { Spec.useInstancing = useInstancing; }
 	bool GetUseInstancing() const { return Spec.useInstancing; }
+
+	
+	void GetCulledLights(ShaderStorageBuffer* culled_lights) {
+		visible_lights_id = culled_lights;
+	};
+	
 
 	private:
 		void CollectRenderData();
@@ -39,6 +44,8 @@ public:
 		void DrawEntitiesInstanced(std::unordered_map<BatchKey, BatchData, BatchKeyHash>*);
 
 		ForwardPassSpec Spec;
+
+		ShaderStorageBuffer* visible_lights_id;
 };
 
 

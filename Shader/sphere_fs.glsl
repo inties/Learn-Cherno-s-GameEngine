@@ -3,6 +3,8 @@
 #define PointLightCount 1000
 #define SpotLightsCount 100
 #define MIN_SPOT_ANGLE 0.5
+#define MAX_LIGHT_COUNT 1024
+#define TILE_SIZE 16
 // 输入
 in vec3 Position_ws;
 in vec3 Normal_ws;
@@ -30,6 +32,9 @@ struct SurfaceData {
 layout(std430, binding = 1) buffer LightData {
     readonly restrict Light lights[];  // 只保留一个不定长数组，并放在最后
 };
+layout(std430, binding = 3) buffer VisibleLights {
+    readonly restrict int visible_lights[];  // 只保留一个不定长数组，并放在最后
+};
 // 材质属性
 layout (binding = 0) uniform sampler2D u_DiffuseTexture;
 layout (binding = 1) uniform sampler2D u_MetalRoughness;
@@ -41,6 +46,7 @@ layout (binding = 4) uniform sampler2D u_brdf_lut;
 uniform float roughness;
 uniform vec3 direct_light_dir;
 uniform vec3 direct_light_strength;
+uniform vec2 screen_size;
 
 
 // 光照
@@ -175,27 +181,49 @@ void main()
     // 初始化光照累积颜色
     vec3 totalLighting = vec3(0.0);
     
-    // 遍历前500个点光源
-    for (int i = 0; i < PointLightCount; i++) {
-        Light light = lights[i];
-        
-        // 计算当前光源的贡献
-        vec3 lightContribution = CalculateLightContribution(light, surface,0);
-        
-        totalLighting += lightContribution;
+    //计算所属tile
+    //计算渲染目标的分辨率
+    ivec2 TileNum =ivec2((screen_size.x+TILE_SIZE-1)/TILE_SIZE, (screen_size.y+TILE_SIZE-1)/TILE_SIZE);
+    ivec2 TileID=ivec2(gl_FragCoord.xy/TILE_SIZE);
+    int tile_idx=TileID.x+TileID.y*TileNum.x;
+    int light_offset=tile_idx*MAX_LIGHT_COUNT;
+    for(int i=0;i<MAX_LIGHT_COUNT;i++){
+        int id=visible_lights[light_offset+i];
+        if(id==-1){
+            break;
+        }
+        Light light = lights[id];
+        if(id<PointLightCount){
+            totalLighting+=CalculateLightContribution(light, surface,0);
+        }else{
+            totalLighting+=CalculateLightContribution(light, surface,2);
+        }    
     }
-     for (int i = 0; i < SpotLightsCount; i++) {
-        Light light = lights[PointLightCount+i];
+    // //平行光
+    // Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
+    // totalLighting += CalculateLightContribution(mainlight, surface, 1);
+//     //遍历点光源
+//     for (int i = 0; i < PointLightCount; i++) {
+//        Light light = lights[i];
         
-        // 计算当前光源的贡献
-        vec3 lightContribution = CalculateLightContribution(light, surface,2);
+//         //计算当前光源的贡献
+//        vec3 lightContribution = CalculateLightContribution(light, surface,0);
         
-        totalLighting += lightContribution;
-    }
-    // 添加主光源（方向光）
+//        totalLighting += lightContribution;
+//    }
+//     //遍历 spotlights
+//     for (int i = 0; i < SpotLightsCount; i++) {
+//        Light light = lights[PointLightCount+i];
+        
+//         //计算当前光源的贡献
+//        vec3 lightContribution = CalculateLightContribution(light, surface,2);
+        
+//        totalLighting += lightContribution;
+//     }
+    //添加主光源（方向光）
     Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
     totalLighting += CalculateLightContribution(mainlight, surface, 1);
-    // 计算环境光照
+    //计算环境光照
     const float MaxLod = 5.0;
     vec2 lut = texture(u_brdf_lut, vec2(NdotV, rough)).xy;
     vec3 kd = (1.0 - F_Schlick(F0, NdotV)) * (1.0 - metal);

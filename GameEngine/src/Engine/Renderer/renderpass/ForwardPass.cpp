@@ -160,8 +160,10 @@ namespace Engine {
         glm::mat4 projMatrix = camera->GetProjectionMatrix();
         
         glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
+        
+        
         // 打印投影矩阵
-        //// 渲染每个批次
+        // 渲染每个批次
         for (auto& [key, batchData] : *batch_data) {
             if (batchData.instances.empty()) continue;
 
@@ -178,13 +180,15 @@ namespace Engine {
             shader->SetFloat3("direct_light_dir", mainLight.GetDirection());
             shader->SetFloat3("direct_light_strength", mainLight.GetStrength());
             shader->SetFloat3("cameraPos_ws", camera->GetPosition());
-            // 绑定SSBO
+            shader->SetFloat2("screen_size", glm::vec2(FBO->GetRenderTexture(0)->GetWidth(), FBO->GetRenderTexture(0)->GetHeight()));
+            // 设置光源
             m_pipeline_settings.lights_gpu->Bind(1);
+            visible_lights_id->Bind(3);
             batchData.ssbo->Bind(2);
             // 绑定VAO
             key.vao->Bind();
 
-            //    // 执行实例化绘制
+            // 执行实例化绘制
             uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
             RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
         }

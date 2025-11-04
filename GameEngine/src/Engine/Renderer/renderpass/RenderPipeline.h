@@ -41,6 +41,7 @@ namespace Engine {
 			CollectRenderData();
 			m_preZpass->Draw(&m_Batches);
 			glDepthFunc(GL_LEQUAL);
+			m_Forwardpass->GetCulledLights(m_preZpass->visible_lights.get());
 			m_Forwardpass->Draw(&m_Batches);
 			m_skyBoxPass->Draw(&m_Batches);
 			m_Postpass->Draw(&m_Batches);

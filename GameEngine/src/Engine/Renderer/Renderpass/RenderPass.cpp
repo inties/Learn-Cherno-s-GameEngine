@@ -29,37 +29,50 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 			}
 			FBO->ColorMask(true);
 
-			tiled_z->Clear();
-			RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
-			auto depthtexture=FBO->GetDepth();
-			auto tile_depth_shader = m_pipeline_settings.ShaderManager->Get("culling_lights").get();
-			tile_depth_shader->Bind();
-			depthtexture->Bind(0);
-			ImageBindDesc desc;
-			desc.binding = 1;
-			desc.access = TextureAccess::WriteOnly;
-			tiled_z->BindAsImage(desc);
-
-
-			m_pipeline_settings.lights_gpu->Bind(0);
-			visible_lights->Bind(1);
-
-			tile_depth_shader->SetMat4("view", viewMatrix);
-			tile_depth_shader->SetMat4("projection", projMatrix);
-			glm::mat4 inv_VP = glm::inverse(viewProjMatrix);
-			tile_depth_shader->SetMat4("viewProjection", viewProjMatrix);
-			tile_depth_shader->SetMat4("inv_VP_matrix", inv_VP);
-			tile_depth_shader->SetInt("points_light_count", 1000);
-			tile_depth_shader->SetInt("spot_light_count", 100);
-
-
-			RenderCommand::Dispatch(std::ceil(tiled_z->GetWidth() / 16.0f), std::ceil(tiled_z->GetHeight() / 16.0f), 1);
+			CullLights();
+			
 			
 			
 }
 
 void Engine::Pre_Z_Pass::Resize(uint32_t width,uint32_t height)
 {
-	tiled_z = Texture2D::Create(width, height, TextureFormat::RGBA16,1);
-	visible_lights = ShaderStorageBuffer::Create(std::ceil(width/16.0f)* std::ceil(height / 16.0f)*1024);
+	debug_texture = Texture2D::Create(width, height, TextureFormat::RED32F,1);
+	visible_lights = ShaderStorageBuffer::Create(std::ceil(width/16.0f)* std::ceil(height / 16.0f)*1024*sizeof(int));
+}
+
+void Engine::Pre_Z_Pass::CullLights()
+{
+	const int minus1 = -1;
+	glClearNamedBufferData(visible_lights->GetRenderID(), GL_R32I, GL_RED_INTEGER, GL_INT, &minus1);
+	MainCamera* camera = MainCamera::GetInstance();
+	glm::mat4 viewMatrix = camera->GetViewMatrix();
+	glm::mat4 projMatrix = camera->GetProjectionMatrix();
+	glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
+	debug_texture->Clear();
+	RenderCommand::InsertBarrier(BarrierDomain::RenderTargetWriteToSample);
+	auto depthtexture = FBO->GetDepth();
+	auto tile_depth_shader = m_pipeline_settings.ShaderManager->Get("culling_lights").get();
+	tile_depth_shader->Bind();
+	depthtexture->Bind(0);
+	ImageBindDesc desc;
+	desc.binding = 1;
+	desc.access = TextureAccess::WriteOnly;
+	debug_texture->BindAsImage(desc);
+
+
+	m_pipeline_settings.lights_gpu->Bind(0);
+	visible_lights->Bind(1);
+
+	tile_depth_shader->SetFloat("max_visible_distance", 100.f);
+	tile_depth_shader->SetMat4("view", viewMatrix);
+	tile_depth_shader->SetMat4("projection", projMatrix);
+	glm::mat4 inv_VP = glm::inverse(viewProjMatrix);
+	tile_depth_shader->SetMat4("viewProjection", viewProjMatrix);
+	tile_depth_shader->SetMat4("inv_VP_matrix", inv_VP);
+	tile_depth_shader->SetInt("points_light_count", 1000);
+	tile_depth_shader->SetInt("spot_light_count", 100);
+
+
+	RenderCommand::Dispatch(std::ceil(debug_texture->GetWidth() / 16.0f), std::ceil(debug_texture->GetHeight() / 16.0f), 1);
 }
