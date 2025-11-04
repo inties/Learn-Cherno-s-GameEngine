@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Engine/Renderer/Material.h"
 #include "Engine/Renderer/VertexArray.h"
+#include "Engine/Renderer/RenderGlobal.h"
 namespace Engine {
 	class ScriptableEntity;
 
@@ -77,12 +78,13 @@ namespace Engine {
 		Ref<Material>Mat = nullptr;
 		std::string GeoMetryName = "";
 		std::string MatName = "";
+		RenderItemLayer renderlayer = RenderItemLayer::Opaque;
 		std::function<void()>Destroy;
 		bool geometryCreated = false;
 		bool materialCreated = false;
 		bool geometryFailed = false;
 		bool materialFailed = false;
-		RenderComponent(const std::string GeoName = "mesh", const std::string MName = "defaultShader") :GeoMetryName(GeoName), MatName(MName) {};
+		RenderComponent(const std::string GeoName = "mesh", const std::string MName = "defaultShader",RenderItemLayer rl=RenderItemLayer::Opaque) :GeoMetryName(GeoName), MatName(MName),renderlayer(rl) {};
 
 		// Resource cleanup callbacks
 		std::function<void()> geometryCleanup;

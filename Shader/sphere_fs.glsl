@@ -237,7 +237,7 @@ void main()
     vec3 color = totalLighting + ambient;
     
     // 输出最终颜色
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(color, 0.5);
     
     // 对象ID用于拾取
     id = v_ObjectID;

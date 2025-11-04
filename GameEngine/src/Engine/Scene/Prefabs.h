@@ -21,4 +21,9 @@ namespace Engine {
 			AddComponent<RenderComponent>("plane", "sphere");
 		}
 	};
+	class TransparentCube :public CubeEntity {
+		TransparentCube(entt::entity handle, Scene* scene) :CubeEntity(handle, scene) {
+			GetComponent<RenderComponent>().renderlayer = RenderItemLayer::Transparent;
+		}
+	};
 }

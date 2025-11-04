@@ -14,12 +14,13 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 			glm::mat4 viewMatrix = camera->GetViewMatrix();
 			glm::mat4 projMatrix = camera->GetProjectionMatrix();
 			glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-			// 渲染每个批次
-			for (auto& [key, batchData] : *batch_data) {
+
+			// 渲染非透明pass
+			for (auto& [key, batchData] : batch_data[(int)RenderItemLayer::Opaque]) {
 				if (batchData.instances.empty()) continue;
 				// 设置视图投影矩阵
 				m_shader->SetMat4("u_ViewProjection", viewProjMatrix);
-				
+
 				batchData.ssbo->Bind(0);
 				// 绑定VAO
 				key.vao->Bind();
@@ -27,8 +28,11 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 				uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
 				RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
 			}
+			
+		
 			FBO->ColorMask(true);
 
+			//光源剔除，生成每个tile的可见光源列表
 			CullLights();
 			
 			

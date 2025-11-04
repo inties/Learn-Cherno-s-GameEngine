@@ -78,9 +78,9 @@ namespace Engine
                     instanceData.extraData = glm::vec4(static_cast<float>(static_cast<int>(entity)), 0.0f, 0.0f, 0.0f);
 
                     // 添加到对应批次
-
+                    
                     BatchKey key{ renderComp.VAO.get(), renderComp.Mat.get() };
-                    m_Batches[key].instances.push_back(instanceData);
+                    m_Batches[(int)renderComp.renderlayer][key].instances.push_back(instanceData);
 
                 }
 
@@ -88,30 +88,33 @@ namespace Engine
         }
         i++;
         // 为每个批次创建SSBO
-        for (auto& [key, batchData] : m_Batches) {
-            uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
+        for (int i = 0; i < (int)RenderItemLayer::Size; i++) {
+            for (auto& [key, batchData] : m_Batches[i]) {
+                uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
 
-            // 确保不超过最大实例数
-            if (instanceCount > MAX_INSTANCES_PER_BATCH) {
-                ENGINE_CORE_WARN("Instance count {} exceeds maximum {}, truncating", instanceCount, MAX_INSTANCES_PER_BATCH);
-                instanceCount = MAX_INSTANCES_PER_BATCH;
-                batchData.instances.resize(instanceCount);
+                // 确保不超过最大实例数
+                if (instanceCount > MAX_INSTANCES_PER_BATCH) {
+                    ENGINE_CORE_WARN("Instance count {} exceeds maximum {}, truncating", instanceCount, MAX_INSTANCES_PER_BATCH);
+                    instanceCount = MAX_INSTANCES_PER_BATCH;
+                    batchData.instances.resize(instanceCount);
+                }
+
+                // 使用固定大小SSBO（与着色器中的数组大小匹配）
+                uint32_t ssboSize = MAX_INSTANCES_PER_BATCH * sizeof(InstanceData);
+
+                // 确保SSBO容量足够
+                if (!batchData.ssbo) {
+                    batchData.ssbo = ShaderStorageBuffer::Create(ssboSize);
+                    // 上传实例数据到SSBO			
+                }
+
+                // 上传实例数据到SSBO
+                uint32_t dataSize = instanceCount * sizeof(InstanceData);
+                batchData.ssbo->SetData(batchData.instances.data(), dataSize);
+                batchData.maxInstances = instanceCount;
             }
-
-            // 使用固定大小SSBO（与着色器中的数组大小匹配）
-            uint32_t ssboSize = MAX_INSTANCES_PER_BATCH * sizeof(InstanceData);
-
-            // 确保SSBO容量足够
-            if (!batchData.ssbo) {
-                batchData.ssbo = ShaderStorageBuffer::Create(ssboSize);
-                // 上传实例数据到SSBO			
-            }
-
-            // 上传实例数据到SSBO
-            uint32_t dataSize = instanceCount * sizeof(InstanceData);
-            batchData.ssbo->SetData(batchData.instances.data(), dataSize);
-            batchData.maxInstances = instanceCount;
         }
+        
 	}
 
 }

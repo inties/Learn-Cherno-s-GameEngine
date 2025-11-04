@@ -160,11 +160,9 @@ namespace Engine {
         glm::mat4 projMatrix = camera->GetProjectionMatrix();
         
         glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-        
-        
-        // 打印投影矩阵
-        // 渲染每个批次
-        for (auto& [key, batchData] : *batch_data) {
+
+       //不透明物体渲染
+        for (auto& [key, batchData] : batch_data[(int)RenderItemLayer::Opaque]) {
             if (batchData.instances.empty()) continue;
 
             //// 绑定材质和着色器
@@ -192,6 +190,55 @@ namespace Engine {
             uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
             RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
         }
+
+        //设置混合参数
+        BlendDesc blend_desc;
+        blend_desc.independentBlendEnable = true;
+        blend_desc.renderTarget[0] = {
+                true,  // blendEnable
+                BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha, BlendOp::Add,
+                BlendFactor::One, BlendFactor::Zero, BlendOp::Add
+        };
+        blend_desc.renderTarget[1] = {
+                false,  // blendEnable
+                BlendFactor::One, BlendFactor::Zero, BlendOp::Add,
+                BlendFactor::One, BlendFactor::Zero, BlendOp::Add
+        };
+        RenderCommand::SetBlendState(blend_desc);
+        //半透明物体绘制
+        for (auto& [key, batchData] : batch_data[(int)RenderItemLayer::Transparent]) {
+            if (batchData.instances.empty()) continue;
+
+            // 绑定材质和着色器
+            key.material->Bind();
+            auto shader = key.material->GetShader();
+            shader->Bind();
+
+            // 设置视图投影矩阵
+            shader->SetMat4("u_ViewProjection", viewProjMatrix);
+
+            // 使用MainLight单例设置光源
+            auto& mainLight = MainLight::GetInstance();
+            shader->SetFloat3("direct_light_dir", mainLight.GetDirection());
+            shader->SetFloat3("direct_light_strength", mainLight.GetStrength());
+            shader->SetFloat3("cameraPos_ws", camera->GetPosition());
+            shader->SetFloat2("screen_size", glm::vec2(FBO->GetRenderTexture(0)->GetWidth(), FBO->GetRenderTexture(0)->GetHeight()));
+            // 设置光源
+            m_pipeline_settings.lights_gpu->Bind(1);
+            visible_lights_id->Bind(3);
+            batchData.ssbo->Bind(2);
+            // 绑定VAO
+            key.vao->Bind();
+
+            // 执行实例化绘制
+            uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
+            RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
+        }
+        //重新设置为不透明绘制
+        auto opaque=BlendDesc::CreateOpaque();
+        RenderCommand::SetBlendState(opaque);
+        
+       
 
     }
 

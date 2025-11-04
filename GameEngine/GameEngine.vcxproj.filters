@@ -245,6 +245,7 @@
     <ClInclude Include="src\Engine\Scene\Light.h" />
     <ClInclude Include="src\Engine\Utils\random.h" />
     <ClInclude Include="src\Engine\Renderer\Renderpass\RenderPipelineSettings.h" />
+    <ClInclude Include="src\Engine\Renderer\RenderGlobal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">

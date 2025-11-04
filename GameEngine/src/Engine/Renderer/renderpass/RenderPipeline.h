@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "pch.h"
+#include "Engine/Renderer/RenderGlobal.h"
 #include "PostEffectPass.h"
 #include "ForwardPass.h"
 #include "SkyBoxPass.h"
@@ -39,12 +40,12 @@ namespace Engine {
 		void Draw() {
 			
 			CollectRenderData();
-			m_preZpass->Draw(&m_Batches);
+			m_preZpass->Draw(m_Batches);
 			glDepthFunc(GL_LEQUAL);
 			m_Forwardpass->GetCulledLights(m_preZpass->visible_lights.get());
-			m_Forwardpass->Draw(&m_Batches);
-			m_skyBoxPass->Draw(&m_Batches);
-			m_Postpass->Draw(&m_Batches);
+			m_Forwardpass->Draw(m_Batches);
+			m_skyBoxPass->Draw(m_Batches);
+			m_Postpass->Draw(m_Batches);
 			
 		};
 		void Resize(uint32_t,uint32_t);
@@ -60,7 +61,7 @@ namespace Engine {
 		RenderPipeLineSetting m_pipeline_setting;
 
 		// 批次映射
-		std::unordered_map<BatchKey, BatchData, BatchKeyHash> m_Batches;
+		std::unordered_map<BatchKey, BatchData, BatchKeyHash> m_Batches[(int)RenderItemLayer::Size];
 		// 最大实例数（必须与着色器中的数组大小匹配）
 		static constexpr uint32_t MAX_INSTANCES_PER_BATCH = 10240;
 	};

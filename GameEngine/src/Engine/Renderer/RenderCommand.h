@@ -26,7 +26,9 @@ namespace Engine
 		{
 			s_RendererAPI->SetClearColor(color);
 		}
-
+		static void SetBlendState(const BlendDesc& desc) {
+			s_RendererAPI->SetBlendState(desc);
+		}
 		static void Clear()
 		{
 			s_RendererAPI->Clear();
@@ -54,14 +56,14 @@ namespace Engine
 			s_RendererAPI->DrawArrays(vertexArray, vertexCount);
 		}
 
-		// 偏移绘制的方法
+		// 鍋忕Щ缁樺埗鐨勬柟娉?
 		static void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
 		{
 			s_RendererAPI->DrawIndexedWithOffset(vertexArray, indexOffset, indexCount, vertexOffset);
 		}
 
-		// 实例化绘制
+		// 瀹炰緥鍖栫粯鍒?
 		static void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexCount, uint32_t instanceCount)
 		{
