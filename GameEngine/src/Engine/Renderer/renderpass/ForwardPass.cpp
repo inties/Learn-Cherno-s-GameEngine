@@ -205,6 +205,9 @@ namespace Engine {
                 BlendFactor::One, BlendFactor::Zero, BlendOp::Add
         };
         RenderCommand::SetBlendState(blend_desc);
+
+        //仅深度测试，不深度写入
+        RenderCommand::SetDepthStencilState(DepthStencilDesc::ReadOnly());
         //半透明物体绘制
         for (auto& [key, batchData] : batch_data[(int)RenderItemLayer::Transparent]) {
             if (batchData.instances.empty()) continue;
@@ -237,7 +240,8 @@ namespace Engine {
         //重新设置为不透明绘制
         auto opaque=BlendDesc::CreateOpaque();
         RenderCommand::SetBlendState(opaque);
-        
+        RenderCommand::SetDepthStencilState(DepthStencilDesc::Default());
+
        
 
     }

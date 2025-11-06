@@ -5,6 +5,7 @@
 #define MIN_SPOT_ANGLE 0.5
 #define MAX_LIGHT_COUNT 1024
 #define TILE_SIZE 16
+#define CULL_LIGHT
 // 输入
 in vec3 Position_ws;
 in vec3 Normal_ws;
@@ -183,6 +184,7 @@ void main()
     
     //计算所属tile
     //计算渲染目标的分辨率
+#ifdef CULL_LIGHT
     ivec2 TileNum =ivec2((screen_size.x+TILE_SIZE-1)/TILE_SIZE, (screen_size.y+TILE_SIZE-1)/TILE_SIZE);
     ivec2 TileID=ivec2(gl_FragCoord.xy/TILE_SIZE);
     int tile_idx=TileID.x+TileID.y*TileNum.x;
@@ -199,27 +201,29 @@ void main()
             totalLighting+=CalculateLightContribution(light, surface,2);
         }    
     }
+#else
     // //平行光
     // Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
     // totalLighting += CalculateLightContribution(mainlight, surface, 1);
-//     //遍历点光源
-//     for (int i = 0; i < PointLightCount; i++) {
-//        Light light = lights[i];
+    //遍历点光源
+    for (int i = 0; i < PointLightCount; i++) {
+       Light light = lights[i];
         
-//         //计算当前光源的贡献
-//        vec3 lightContribution = CalculateLightContribution(light, surface,0);
+        //计算当前光源的贡献
+       vec3 lightContribution = CalculateLightContribution(light, surface,0);
         
-//        totalLighting += lightContribution;
-//    }
-//     //遍历 spotlights
-//     for (int i = 0; i < SpotLightsCount; i++) {
-//        Light light = lights[PointLightCount+i];
+       totalLighting += lightContribution;
+   }
+    //遍历 spotlights
+    for (int i = 0; i < SpotLightsCount; i++) {
+       Light light = lights[PointLightCount+i];
         
-//         //计算当前光源的贡献
-//        vec3 lightContribution = CalculateLightContribution(light, surface,2);
+        //计算当前光源的贡献
+       vec3 lightContribution = CalculateLightContribution(light, surface,2);
         
-//        totalLighting += lightContribution;
-//     }
+       totalLighting += lightContribution;
+    }
+#endif
     //添加主光源（方向光）
     Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
     totalLighting += CalculateLightContribution(mainlight, surface, 1);

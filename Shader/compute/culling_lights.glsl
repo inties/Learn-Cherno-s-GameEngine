@@ -17,7 +17,7 @@ struct Light {
 	float spot_power;
 };
 layout(binding = 0)uniform sampler2D u_depth;
-layout(binding = 1,r32f) writeonly uniform image2D debug_num;      
+layout(binding = 1,rgba16f) writeonly uniform image2D debug_num;      
 layout(std430, binding = 0) buffer LightData {
     readonly restrict Light lights[];  // 只保留一个不定长数组，并放在最后
 }; 
@@ -30,17 +30,20 @@ uniform int points_light_count;
 uniform int spot_light_count;
 
 
-
 shared uint minDepthInt;
 shared uint maxDepthInt;
+shared float min_z;
+shared float max_z;
 shared vec3 tile_frustum[8];
+shared vec4 tile_frustum_plane[6];
 shared uint light_group_count;
+shared uint light_count;
 shared uint tile_visible_light_count;
 shared uint tile_visible_light[MAX_LIGHT_COUNT];   
 
 bool cullPointsLight(vec3 position,float falloff_end);
 bool cullSpotLight(vec3 position,vec3 direction,float falloff_end);
-
+bool cullPointsLight2(vec3 position,float falloff_end);
 layout(local_size_x = TILESIZE, local_size_y = TILESIZE) in;
 void main() {
    	if (gl_LocalInvocationIndex == 0) {
@@ -53,8 +56,11 @@ void main() {
     ivec2 size = textureSize(u_depth, 0);
     ivec2 sampleCoord = clamp(ivec2(gl_GlobalInvocationID.xy),ivec2(0),size-ivec2(1));
     float depth = texelFetch(u_depth, sampleCoord,0).r;
-    //min_z和max_z是共享内存，原子操作比较大小和写入    
-    //depth = (0.5 * projection[3][2]) / (depth + 0.5 * projection[2][2] - 0.5);
+    //min_z和max_z是共享内存，原子操作比较大小和写入  
+    //计算线性深度  
+    //使用线性深度后，不再出现tile之间剔除结果差异巨大的问题
+    //距离远的光源自动被剔除，无法理解
+    depth = (0.5 * projection[3][2]) / (depth + 0.5 * projection[2][2] - 0.5);
 
     //记录最小和最大原始深度
     uint depthInt = floatBitsToUint(depth);
@@ -64,8 +70,10 @@ void main() {
     
     //计算tile的frustum顶点
     if(gl_LocalInvocationIndex==0){
-        float min_z=uintBitsToFloat(minDepthInt);
-        float max_z=uintBitsToFloat(maxDepthInt);
+        min_z=uintBitsToFloat(minDepthInt);
+        max_z=uintBitsToFloat(maxDepthInt);
+        // min_z=0.5*projection[3][2]/min_z-0.5*projection[2][2]+0.5;
+        // max_z=0.5*projection[3][2]/max_z-0.5*projection[2][2]+0.5;
         vec2 tileID= vec2(gl_WorkGroupID);
         vec2 tileNum=vec2(gl_NumWorkGroups);
 
@@ -78,6 +86,29 @@ void main() {
         tile_frustum[5]=vec3((tileID+vec2(1.0,0.0))/tileNum,max_z);
         tile_frustum[6]=vec3((tileID+vec2(0.0,1.0))/tileNum,max_z);
         tile_frustum[7]=vec3((tileID+vec2(1.0,1.0))/tileNum,max_z);
+
+        tile_frustum_plane[0]=vec4(0.0,0.0,-1.0,0.0);
+        tile_frustum_plane[1]=vec4(-1.0,0.0,0.0,0.0);
+        tile_frustum_plane[2]=vec4(0.0,1.0,0.0,0.0);
+        tile_frustum_plane[3]=vec4(1.0,0.0,0.0,0.0);
+        tile_frustum_plane[4]=vec4(0.0,-1.0,0.0,0.0);
+        tile_frustum_plane[5]=vec4(0.0,0.0,1.0,0.0);
+
+        tile_frustum_plane[0].w=-dot(tile_frustum_plane[0].xyz,tile_frustum[0]);
+        tile_frustum_plane[1].w=-dot(tile_frustum_plane[1].xyz,tile_frustum[0]);
+        tile_frustum_plane[2].w=-dot(tile_frustum_plane[2].xyz,tile_frustum[0]);
+        tile_frustum_plane[3].w=-dot(tile_frustum_plane[3].xyz,tile_frustum[7]);
+        tile_frustum_plane[4].w=-dot(tile_frustum_plane[4].xyz,tile_frustum[7]);
+        tile_frustum_plane[5].w=-dot(tile_frustum_plane[5].xyz,tile_frustum[7]);
+
+        //使用逆转置矩阵变换？？？，正确
+        mat4 T=inverse(inv_VP_matrix);
+        T=transpose(T);
+        for(int i=0;i<6;i++){
+            tile_frustum_plane[i]=T*tile_frustum_plane[i];
+            float invLen = inversesqrt(dot(tile_frustum_plane[i].xyz, tile_frustum_plane[i].xyz));
+            tile_frustum_plane[i] *= invLen;
+        }
         //从屏幕空间到世界空间
         for(int i=0;i<8;i++){
             vec3 ndc=2*tile_frustum[i]-vec3(1.0);
@@ -87,11 +118,11 @@ void main() {
 
     }
     barrier();
-    uint light_count;
+    
     //光源剔除，每256个光源为一组
     if(gl_LocalInvocationIndex==0){
         uint thread_count=TILESIZE*TILESIZE;
-        uint light_count=uint(points_light_count)+uint(spot_light_count);
+        light_count=uint(points_light_count)+uint(spot_light_count);
         light_count=min(light_count,MAX_LIGHT_COUNT);
         light_group_count=(light_count+thread_count-1)/thread_count;
         tile_visible_light_count=0;
@@ -101,17 +132,21 @@ void main() {
         uint idx=i*TILESIZE*TILESIZE+gl_LocalInvocationIndex;
         if(idx>=light_count)
             break;
-        if(idx<points_light_count){
-           if(cullPointsLight(lights[idx].position,lights[idx].falloff_end)){
-              uint visible_idx=atomicAdd(tile_visible_light_count,1);
+        // if(idx<points_light_count){
+        //    if(cullPointsLight2(lights[idx].position,lights[idx].falloff_end)){
+        //       uint visible_idx=atomicAdd(tile_visible_light_count,1);
+        //       tile_visible_light[visible_idx]=idx;
+        //    }
+        // }
+        // else{
+        //     if(cullSpotLight(lights[idx].position,lights[idx].direction,lights[idx].falloff_end)){
+        //       uint visible_idx=atomicAdd(tile_visible_light_count,1);
+        //       tile_visible_light[visible_idx]=idx;
+        //    }
+        // }
+        if(cullPointsLight2(lights[idx].position,lights[idx].falloff_end)){
+                uint visible_idx=atomicAdd(tile_visible_light_count,1);
               tile_visible_light[visible_idx]=idx;
-           }
-        }
-        else{
-            if(cullSpotLight(lights[idx].position,lights[idx].direction,lights[idx].falloff_end)){
-              uint visible_idx=atomicAdd(tile_visible_light_count,1);
-              tile_visible_light[visible_idx]=idx;
-           }
         }
     }
     //保证组内光源剔除完成，接下来将剔除结果输出到SSBO中
@@ -128,7 +163,7 @@ void main() {
         }
     }
     barrier();
-    imageStore(debug_num,ivec2(gl_GlobalInvocationID.xy),vec4(tile_visible_light_count));
+    imageStore(debug_num,ivec2(gl_GlobalInvocationID.xy),vec4(min_z,max_z,tile_visible_light_count,0.0f));
 
 
 
@@ -144,6 +179,13 @@ bool cullPointsLight(vec3 position,float falloff_end){
     }
     return false;
 }
+bool cullPointsLight2(vec3 position,float falloff_end){ 
+    for(int i=0;i<6;i++){
+        if(dot(tile_frustum_plane[i],vec4(position,1.0f))>falloff_end)   
+        return false;     
+    }
+    return true;
+}
 bool cullSpotLight(vec3 position,vec3 direction,float falloff_end){ 
     for(int i=0;i<8;i++){
         if(dist2(tile_frustum[i],position)<falloff_end*falloff_end&&dot(tile_frustum[i]-position,direction)>0.5)
@@ -151,3 +193,4 @@ bool cullSpotLight(vec3 position,vec3 direction,float falloff_end){
     }
     return false;
 }
+

@@ -41,7 +41,7 @@ void Engine::Pre_Z_Pass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 
 void Engine::Pre_Z_Pass::Resize(uint32_t width,uint32_t height)
 {
-	debug_texture = Texture2D::Create(width, height, TextureFormat::RED32F,1);
+	debug_texture = Texture2D::Create(width, height, TextureFormat::RGBA16,1);
 	visible_lights = ShaderStorageBuffer::Create(std::ceil(width/16.0f)* std::ceil(height / 16.0f)*1024*sizeof(int));
 }
 

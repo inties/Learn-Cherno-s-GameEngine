@@ -29,6 +29,9 @@ namespace Engine
 		static void SetBlendState(const BlendDesc& desc) {
 			s_RendererAPI->SetBlendState(desc);
 		}
+		static void SetDepthStencilState(const DepthStencilDesc&desc) {
+			s_RendererAPI->SetDepthStencilState(desc);
+		}
 		static void Clear()
 		{
 			s_RendererAPI->Clear();
