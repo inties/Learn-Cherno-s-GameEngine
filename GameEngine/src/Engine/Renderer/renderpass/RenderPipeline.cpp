@@ -16,16 +16,23 @@ namespace Engine
 			ENGINE_CORE_ERROR("renderpipeline:ScreenFBO can't be null!!!");
 		}
 		RenderTarget = renderPipeLineSetting.ScreenFBO;
-
+        
+        FramebufferSpecification spec = { initW,initH,{format::RGBA16,format::RED_INTEGER,format::RED32F,format::DEPTH24STENCIL8},1 };
+        m_transparent_pass_RT = Framebuffer::CreateScope(spec);
+        
+        
 		////创建离屏渲染目标
 
         m_preZpass = CreateScope<Pre_Z_Pass>();
         m_preZpass->SetFBO(RenderTarget);
         m_preZpass->SetShader(renderPipeLineSetting.ShaderManager->Get("depth").get());
 		//创建pass并附加渲染目标
-		ForwardPass::ForwardPassSpec forwardPassSpec = {renderPipeLineSetting.MatManager,renderPipeLineSetting.VAOManager,renderPipeLineSetting.Scene };
-		m_Forwardpass = CreateScope<ForwardPass>(forwardPassSpec);
-		m_Forwardpass->SetFBO(RenderTarget);
+		
+		m_opaque_pass = CreateScope<OpaqueForwardPass>();
+		m_opaque_pass->SetFBO(RenderTarget);
+
+        m_transparent_pass = CreateScope<TransparentForwardPass>();
+        m_transparent_pass->SetFBO(m_transparent_pass_RT.get());
 
 		PostEffectPass::PostEffectPassSpec postpassSpec = { "posteffect",renderPipeLineSetting.MatManager,renderPipeLineSetting.VAOManager,renderPipeLineSetting.Scene };
 		m_Postpass = CreateScope<PostEffectPass>(postpassSpec);
@@ -44,6 +51,7 @@ namespace Engine
 	void RenderPipeLine::Resize(uint32_t width,uint32_t height) {
         m_Postpass->Resize(width, height);
         m_preZpass->Resize(width, height);
+        m_transparent_pass_RT->Resize(width, height);
 
 	}
 

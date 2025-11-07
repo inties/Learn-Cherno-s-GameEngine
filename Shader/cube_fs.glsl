@@ -14,9 +14,14 @@ uniform float roughness;
 // 光照
 uniform vec3 lightDir;
 uniform vec3 cameraPos_ws;
+
+//是否是透明物体
+uniform int transparent;
+
 // 输出
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out int id; 
+layout (location = 2) out float alpha; 
 
 float GGX(float dot,float k){
     return dot/(dot*(1-k)+k);
@@ -72,9 +77,23 @@ void main()
     vec3 ambient = vec3(0.1) * albedo;
     vec3 color= diffuse + specular+ambient;
     // 输出最终颜色 - 显示lightDir的值用于调试
-    FragColor = vec4(specular, 1.0);
+    if(bool(transparent)){
+        float depth=gl_FragCoord.z;
+        float m_alpha = 0.5f;
+
+        float weight = m_alpha * max(pow((1-depth),3)*3000,0.01);
+        FragColor = vec4(color*weight,1-m_alpha);
+        alpha = m_alpha*weight;
+
+    }
+    else{
+        FragColor = vec4(color,1.0);
+
+    }
+   
     
     
     // 对象ID用于拾取
     id = v_ObjectID;
+    
 }

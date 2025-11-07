@@ -32,14 +32,16 @@ namespace Engine
 		static void SetDepthStencilState(const DepthStencilDesc&desc) {
 			s_RendererAPI->SetDepthStencilState(desc);
 		}
-		static void Clear()
+		static void Clear(const ClearDesc& desc)
 		{
-			s_RendererAPI->Clear();
+			s_RendererAPI->Clear(desc);
 		}
 		static void Dispatch(uint32_t x, uint32_t y, uint32_t z) {
 			s_RendererAPI->Dispatch(x,y,z);
 		}
-		
+		static void BlitFramebuffer(Framebuffer* scr,Framebuffer* des,bool color,bool depth) {
+			s_RendererAPI->BlitFramebuffer(scr, des, color, depth);
+		}
 		static void InsertBarrier(const BarrierDomain& barrier){
 			s_RendererAPI->InsertBarrier(barrier);
 		}
@@ -59,14 +61,14 @@ namespace Engine
 			s_RendererAPI->DrawArrays(vertexArray, vertexCount);
 		}
 
-		// 鍋忕Щ缁樺埗鐨勬柟娉?
+	
 		static void DrawIndexedWithOffset(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexOffset, uint32_t indexCount, uint32_t vertexOffset)
 		{
 			s_RendererAPI->DrawIndexedWithOffset(vertexArray, indexOffset, indexCount, vertexOffset);
 		}
 
-		// 瀹炰緥鍖栫粯鍒?
+
 		static void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexCount, uint32_t instanceCount)
 		{

@@ -1,6 +1,7 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "OpenGLRendererAPI.h"
 #include "Engine/Renderer/Buffer.h"
+#include "Engine/platform/OpenGL/OpenGLFrameBuffer.h"
 #include <glad/glad.h>
 
 namespace Engine
@@ -109,11 +110,6 @@ namespace Engine
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
 	{
 		glClearColor(color.r, color.g, color.b, color.a);
-	}
-
-	void OpenGLRendererAPI::Clear()
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGLRendererAPI::SetWildFrame(bool enable)
@@ -309,4 +305,102 @@ namespace Engine
 			glDisable(GL_STENCIL_TEST);
 		}
 	}
+
+	//void OpenGLRendererAPI::BlitFramebuffer(const class Framebuffer* src,
+	//	const class Framebuffer* dst,
+	//	bool copyColor,
+	//	bool copyDepth)
+	//{
+	//	ENGINE_CORE_ASSERT(src && dst, "BlitFramebuffer requires non-null src/dst");
+	//	const OpenGLFramebuffer* srcGL = dynamic_cast<const OpenGLFramebuffer*>(src);
+	//	const OpenGLFramebuffer* dstGL = dynamic_cast<const OpenGLFramebuffer*>(dst);
+	//	ENGINE_CORE_ASSERT(srcGL && dstGL, "BlitFramebuffer expects OpenGLFramebuffer instances");
+
+	//	const auto& sSpec = src->GetSpecification();
+	//	const auto& dSpec = dst->GetSpecification();
+
+	//	glBindFramebuffer(GL_READ_FRAMEBUFFER, srcGL->GetFramebufferID());
+	//	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dstGL->GetFramebufferID());
+
+	//	GLbitfield mask = 0;
+	//	if (copyColor) mask |= GL_COLOR_BUFFER_BIT;
+	//	if (copyDepth) mask |= GL_DEPTH_BUFFER_BIT; // 如需模板可另行加入
+
+	//	glBlitFramebuffer(
+	//		0, 0, (GLint)sSpec.Width, (GLint)sSpec.Height,
+	//		0, 0, (GLint)dSpec.Width, (GLint)dSpec.Height,
+	//		mask,
+	//		GL_NEAREST);
+
+	//	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	//	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//}
+	void OpenGLRendererAPI::BlitFramebuffer(Framebuffer* src, Framebuffer* dst, bool copyColor, bool copyDepth)
+	{
+		if (!(copyColor || copyDepth)) return;
+
+		// Downcast to OpenGL-specific framebuffer to access FBO IDs
+		auto* srcGL = dynamic_cast<OpenGLFramebuffer*>(src);
+		auto* dstGL = dynamic_cast<OpenGLFramebuffer*>(dst);
+		if (!srcGL || !dstGL) {
+			ENGINE_CORE_ERROR("BlitFramebuffer requires OpenGLFramebuffer instances");
+			return;
+		}
+
+		const auto& sSpec = srcGL->GetSpecification();
+		const auto& dSpec = dstGL->GetSpecification();
+
+		// Bind read/draw framebuffers
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, srcGL->GetFramebufferID());
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dstGL->GetFramebufferID());
+
+		// Compose blit mask and filter
+		GLbitfield mask = 0;
+		if (copyColor) mask |= GL_COLOR_BUFFER_BIT;
+		if (copyDepth) mask |= GL_DEPTH_BUFFER_BIT;
+
+		GLenum filter = GL_NEAREST; // safe for depth; if only color, use LINEAR
+		if (copyColor && !copyDepth) {
+			filter = GL_LINEAR;
+		}
+
+		// Perform blit across full extents
+		glBlitFramebuffer(
+			0, 0, static_cast<GLint>(sSpec.Width), static_cast<GLint>(sSpec.Height),
+			0, 0, static_cast<GLint>(dSpec.Width), static_cast<GLint>(dSpec.Height),
+			mask, filter);
+
+		// Restore default binding (optional)
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLRendererAPI::Clear(const ClearDesc& desc)
+	{
+		GLbitfield mask = 0;
+		if (desc.ClearColor) mask |= GL_COLOR_BUFFER_BIT;
+		if (desc.ClearDepth) mask |= GL_DEPTH_BUFFER_BIT;
+		if (desc.ClearStencil) mask |= GL_STENCIL_BUFFER_BIT;
+
+		// Set color, depth, stencil values as needed
+		if (desc.ClearColor) {
+			glClearColor(desc.Color.r, desc.Color.g, desc.Color.b, desc.Color.a);
+		}
+		if (desc.ClearDepth) {
+			// glClearDepth takes double; use glClearDepthf if available, otherwise cast
+			glClearDepth(static_cast<double>(desc.Depth));
+			//glDepthMask(GL_TRUE); // ensure depth write enabled for clear
+		}
+		if (desc.ClearStencil) {
+			glClearStencil(desc.Stencil);
+			// ensure stencil write mask allows clearing
+			//glStencilMask(0xFF);
+		}
+
+		if (mask != 0)
+			glClear(mask);
+
+		// restore some state assumptions if needed (not changing depth write/stencil mask back here)
+	}
 } 
+

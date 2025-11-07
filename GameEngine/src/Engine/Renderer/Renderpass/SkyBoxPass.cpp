@@ -31,8 +31,10 @@ void Engine::SkyBoxPass::Init(RenderPipeLineSetting& pipeline_setting)
 
 void Engine::SkyBoxPass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)
 {
-
-	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	DepthStencilDesc depthdesc = DepthStencilDesc::Default();
+	depthdesc.depthCompare = CompareOp::LessEqual;
+	RenderCommand::SetDepthStencilState(depthdesc);
+	
 	m_cubeVAO->Bind();
 	//m_TextureCube->Bind(0);
 	envMap->Bind(0);
@@ -46,5 +48,5 @@ void Engine::SkyBoxPass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHa
 	m_shader->SetMat4("u_ViewProjection", viewProjMatrix);
 	FBO->Bind();
 	RenderCommand::DrawIndexed(m_cubeVAO);
-	glDepthFunc(GL_LESS);  // change depth function so depth test passes when values are equal to depth buffer's content
+	RenderCommand::SetDepthStencilState(DepthStencilDesc::Default());
 }

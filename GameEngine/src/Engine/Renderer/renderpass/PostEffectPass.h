@@ -27,9 +27,12 @@ namespace Engine {
 		inline void SetMat(Ref<Material>mat) {
 			Mat = mat;
 		}
+		void SetTransparentFBO(Framebuffer* fbo) {
+			m_transparent_fbo = fbo;
+		}
 	private:
 		void Bloom();
-		
+		Framebuffer* m_transparent_fbo;
 		Ref<Texture>InputTexture;
 		Ref<Texture>pingpong_A;
 		Ref<Texture>pingpong_B;

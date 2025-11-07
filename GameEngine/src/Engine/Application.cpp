@@ -81,8 +81,8 @@ namespace Engine {
 			}
 			
 			// 在开始 ImGui 帧之前，清理默认帧缓冲，避免 UI 拖动产生残影
-			RenderCommand::SetClearColor(glm::vec4(0.10f, 0.10f, 0.10f, 1.0f));
-			RenderCommand::Clear();
+			//RenderCommand::SetClearColor(glm::vec4(0.10f, 0.10f, 0.10f, 1.0f));
+			RenderCommand::Clear(ClearDesc::Default());
 			
 			m_ImGuiLayer->Begin();
 			for (auto layer : m_LayerStack.m_Layers) {

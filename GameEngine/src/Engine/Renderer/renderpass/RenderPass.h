@@ -18,6 +18,9 @@ namespace Engine{
 		inline void SetFBO(Framebuffer* fbo) {
 			FBO = fbo;
 		}
+		Framebuffer* GetFBO() {
+			return FBO;
+		}
 		inline void SetShader(Shader* shader) {
 			m_shader = shader;
 		}

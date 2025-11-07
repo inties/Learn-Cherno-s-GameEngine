@@ -474,9 +474,8 @@ namespace Engine
 		//glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
 		 
 		// 设置清屏颜色并清屏
-		RenderCommand::SetClearColor(glm::vec4(0.0f,0.0f,0.0f, 1.0f));
-		RenderCommand::Clear();
-		FBO->ClearColorAttachments(0);
+		//RenderCommand::SetClearColor(glm::vec4(0.0f,0.0f,0.0f, 1.0f));
+		RenderCommand::Clear(ClearDesc::Default());
 
 		// 开始场景
 		Renderer::BeginScene();

@@ -21,17 +21,20 @@ namespace Engine {
 
 		void ClearAttachment(uint32_t attachmentIndex, int value) override;
 		
-		void ClearColorAttachments(int value)override;
+		void ClearAttachments(int value)override;
 		void ColorMask(bool = true) override;
 		//获取指定序号的纹理附件
 		uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { ENGINE_CORE_ASSERT(index < m_ColorAttachments.size(),"Can't get ColorAttachment Out of Range"); return m_ColorAttachments[index]; }
 		Ref<Texture>GetRenderTexture(uint32_t index = 0)const override {
-			ENGINE_CORE_ASSERT(index < m_ColorAttachments.size(), "Can't get ColorAttachment Out of Range");
+			ENGINE_CORE_ASSERT(index < m_RenderTextures.size(), "Can't get RenderTexture Out of Range");
 			return m_RenderTextures[index];
 		}
 		Ref<Texture>GetDepth()const override {
 			return m_RenderTextures.back();
 		}
+
+		// 获取底层FBO对象ID，便于READ/DRAW绑定
+		uint32_t GetFramebufferID() const { return m_FBOID; }
 		const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 	private:
 		uint32_t m_FBOID = 0;
@@ -41,7 +44,7 @@ namespace Engine {
 		FramebufferTextureSpecification m_DepthAttachmentSpecification = TextureFormat::None;
 
 		std::vector<uint32_t> m_ColorAttachments;
-		std::vector<Ref<Texture>>m_RenderTextures;
+		std::vector<Ref<Texture>>m_RenderTextures;//包括深度模板缓冲
 		uint32_t m_DepthAttachment = 0;
 	};
 
@@ -88,7 +91,7 @@ namespace Engine {
 		int ReadPixel(uint32_t attachmentIndex, int x, int y) override { return -1; }
 
 		void ClearAttachment(uint32_t attachmentIndex, int value) override {}
-		void ClearColorAttachments(int value) override {}
+		void ClearAttachments(int value) override {}
 
 		uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { return 0; }
 

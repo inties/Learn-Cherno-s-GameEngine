@@ -20,4 +20,19 @@ Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	}
 	return Engine::Ref<Framebuffer>();
 }
+Scope<Framebuffer> Framebuffer::CreateScope(const FramebufferSpecification& spec)
+{
+	auto renderAPI = Renderer::GetAPI();
+	switch (renderAPI)
+	{
+	case RendererAPI::API::OpenGL:
+		return ::Engine::CreateScope<OpenGLFramebuffer>(spec);
+	case RendererAPI::API::None:
+		ENGINE_CORE_ASSERT(false, "RenderAPI not set!");
+		return nullptr;
+	default:
+		break;
+	}
+	return Scope<Framebuffer>();
+}
 }

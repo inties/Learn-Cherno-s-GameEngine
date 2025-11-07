@@ -7,6 +7,7 @@
 
 namespace Engine
 {
+    class Framebuffer; // forward declaration for blit API
 	enum class BarrierDomain
 	{
 		ComputeWriteToComputeRead, // compute writes SSBO/image, next compute reads it
@@ -180,6 +181,25 @@ namespace Engine
 		}
 	};
 
+	// New: clear descriptor allowing callers to specify which buffers to clear and values
+	struct ClearDesc {
+		glm::vec4 Color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		float Depth = 1.0f;
+		int Stencil = 0;
+		bool ClearColor = true;
+		bool ClearDepth = true;
+		bool ClearStencil = false;
+		static ClearDesc Default() {
+			ClearDesc d;
+			return d;
+		}
+		static ClearDesc OnlyColor() {
+			ClearDesc d;
+			d.ClearDepth = false;
+			return d;
+		}
+	};
+
 	class RendererAPI
 	{
 	public:
@@ -195,7 +215,9 @@ namespace Engine
 		virtual void Init() =0;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) =0;
 		virtual void SetClearColor(const glm::vec4& color) =0;
-		virtual void Clear() =0;
+		// Primary clearing entry: derived implementations provide behavior based on ClearDesc
+		virtual void Clear(const ClearDesc& desc) = 0;
+		// Convenience overload that clears with default ClearDesc
 		virtual void SetWildFrame(bool enable) =0;
 		virtual void Dispatch(uint32_t x, uint32_t y, uint32_t z) =0;
 		virtual void InsertBarrier(const BarrierDomain& barrier)const =0;
@@ -213,9 +235,18 @@ namespace Engine
 		virtual void DrawIndexedInstanced(const VertexArray* vertexArray, 
 			uint32_t indexCount, uint32_t instanceCount) =0;
 
+		// Framebuffer blit: copy color/depth from src to dst
+		virtual void BlitFramebuffer(Framebuffer* src, Framebuffer* dst, bool copyColor, bool copyDepth) = 0;
+
+		//// 在不同帧缓冲之间进行拷贝（blit），提供颜色/深度选项
+		//virtual void BlitFramebuffer(const class Framebuffer* src,
+		//	const class Framebuffer* dst,
+		//	bool copyColor,
+		//	bool copyDepth) =0;
+
 		static API GetAPI() { return s_API; }
 		static std::unique_ptr<RendererAPI> Create();
 	private:
 		static API s_API;
 	};
-} 
+}

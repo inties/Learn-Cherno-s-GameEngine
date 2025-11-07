@@ -49,12 +49,17 @@ uniform vec3 direct_light_dir;
 uniform vec3 direct_light_strength;
 uniform vec2 screen_size;
 
+uniform int transparent;
+
 
 // 光照
 uniform vec3 cameraPos_ws;
 // 输出
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out int id; 
+layout (location = 2) out float alpha; 
+
+
 
 float GGX(float dot,float k){
     return dot/(dot*(1-k)+k);
@@ -240,9 +245,20 @@ void main()
     // 最终颜色 = 直接光照 + 环境光照
     vec3 color = totalLighting + ambient;
     
-    // 输出最终颜色
-    FragColor = vec4(color, 0.5);
+    if(bool(transparent)){
+        float depth=gl_FragCoord.z;
+        float m_alpha = 0.3;
+        float weight = m_alpha * max(pow((1-depth),3)*3000,0.01);
+        FragColor = vec4(color*weight,1-m_alpha);
+        alpha = m_alpha*weight;
+    }
+    else{
+        FragColor = vec4(color, 1.0);
+    }
+   
+
     
     // 对象ID用于拾取
     id = v_ObjectID;
+    
 }

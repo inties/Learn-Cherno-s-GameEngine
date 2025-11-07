@@ -10,7 +10,7 @@ namespace Engine
 		void Init() override;
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 		void SetClearColor(const glm::vec4& color) override;
-		void Clear() override;
+		void Clear(const ClearDesc& desc) override;
 		void SetWildFrame (bool enable)override;
 		void Dispatch(uint32_t x, uint32_t y, uint32_t z)override;
 		void InsertBarrier(const BarrierDomain& barrier)const override;
@@ -21,11 +21,19 @@ namespace Engine
 		void DrawIndexed(const VertexArray* vertexArray, uint32_t indexCount = 0)override;
 		void SetBlendState(const BlendDesc& desc)override;
 		// 深度/模板设置
+        // 帧缓冲区Blit拷贝，支持颜色/深度的选择性复制
+        void BlitFramebuffer(Framebuffer* src, Framebuffer* dst, bool copyColor, bool copyDepth) override;
 		void SetDepthStencilState(const DepthStencilDesc& desc) override;
 		// 实例化绘制
 		void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, 
 			uint32_t indexCount, uint32_t instanceCount) override;
 		void DrawIndexedInstanced(const VertexArray* vertexArray, 
 			uint32_t indexCount, uint32_t instanceCount) override;
+
+		//// FBO之间blit拷贝（颜色/深度）
+		//void BlitFramebuffer(const class Framebuffer* src,
+		//	const class Framebuffer* dst,
+		//	bool copyColor,
+		//	bool copyDepth) override;
 	};
-} 
+}

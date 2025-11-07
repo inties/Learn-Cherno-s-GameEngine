@@ -209,18 +209,20 @@ namespace Engine {
 
 	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 	{
-		ENGINE_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Can't read frameAttachment out of range");
+		ENGINE_CORE_ASSERT(attachmentIndex < m_RenderTextures.size(), "Can't read frameAttachment out of range");
 
-		auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
+		/*auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
+		
 		glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
-			GLTextureFormat(spec.TextureFormat), GL_INT, &value);
+			GLTextureFormat(spec.TextureFormat), GL_INT, &value);*/
+		auto color_texture=GetRenderTexture(attachmentIndex);
+		color_texture->Clear();
 	}
-	void OpenGLFramebuffer::ClearColorAttachments(int value)
+	void OpenGLFramebuffer::ClearAttachments(int value)
 	{
-		for(uint32_t i=0;i< m_ColorAttachments.size();i++){
-			auto& spec = m_ColorAttachmentSpecifications[i];
-			glClearTexImage(m_ColorAttachments[i], 0,
-				GLTextureFormat(spec.TextureFormat), GL_INT, &value);
+		for(uint32_t i=0;i< m_RenderTextures.size();i++){
+			auto render_texture = GetRenderTexture(i);
+			render_texture->Clear();
 		}
 	
 	}

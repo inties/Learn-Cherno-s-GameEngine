@@ -187,7 +187,7 @@ namespace Engine {
 		{
 		case TextureFormat::RGBA8:
 		{
-			static const GLubyte clearColor[4] = { 0,0,0,0 };
+			static const GLubyte clearColor[4] = { 0,0,0,1 };
 			params = { GL_RGBA, GL_UNSIGNED_BYTE, clearColor };
 		} break;
 
@@ -199,7 +199,7 @@ namespace Engine {
 
 		case TextureFormat::SRGBA: // GL_SRGB8_ALPHA8
 		{
-			static const GLubyte clearColor[4] = { 0,0,0,0 };
+			static const GLubyte clearColor[4] = { 0,0,0,1 };
 			params = { GL_RGBA, GL_UNSIGNED_BYTE, clearColor };
 		} break;
 
@@ -212,7 +212,7 @@ namespace Engine {
 		case TextureFormat::RGBA16: // GL_RGBA16F
 		case TextureFormat::RGBA32: // GL_RGBA32F
 		{
-			static const GLfloat clearColor[4] = { 0.f,0.f,0.f,0.f };
+			static const GLfloat clearColor[4] = { 0.f,0.f,0.f,1.0f };
 			params = { GL_RGBA, GL_FLOAT, clearColor };
 		} break;
 
@@ -249,7 +249,6 @@ namespace Engine {
 
 		if (!supported)
 		{
-			// 这里你可以断言或打日志
 			
 			return;
 		}

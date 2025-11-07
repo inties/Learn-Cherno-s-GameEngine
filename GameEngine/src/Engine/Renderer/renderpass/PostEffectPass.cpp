@@ -25,11 +25,11 @@ void Engine::PostEffectPass::Init(RenderPipeLineSetting& pipeline_setting)
 
 void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchKeyHash>* batch_data)
 {
-	//离屏渲染
+	//将渲染目标颜色纹理blit到中间渲染目标，并提取其中的高亮部分
 	InterMediateFBO->Bind();
-	auto texture1 = InterMediateFBO->GetRenderTexture(0);
+	auto texture1 = InterMediateFBO->GetRenderTexture(0);//主渲染目标颜色
 	texture1->Clear();
-	auto texture2 = InterMediateFBO->GetRenderTexture(1);
+	auto texture2 = InterMediateFBO->GetRenderTexture(1);//高亮部分
 	texture2->Clear();
 	/*InterMediateFBO->ClearColorAttachments(0);*/
 
@@ -40,6 +40,9 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 	auto blit_bloom_shader= m_pipeline_settings.ShaderManager->Get("blit_bloom").get();
 	blit_bloom_shader->Bind();
 	InputTexture->Bind(0);
+	m_transparent_fbo->GetRenderTexture(0)->Bind(1);
+	m_transparent_fbo->GetRenderTexture(2)->Bind(2);
+
 	quadVAO->Bind();
 	RenderCommand::DrawIndexed(quadVAO);
 
@@ -50,7 +53,7 @@ void Engine::PostEffectPass::Draw(std::unordered_map<BatchKey, BatchData, BatchK
 	Bloom();
 
 
-	//色调映射和gamma映射校正
+	//叠加bloom高亮部分颜色，并进行色调映射和gamma映射校正
 	auto invert_color_shader = m_pipeline_settings.ShaderManager->Get("tonemapping_gamma").get();
 	invert_color_shader->Bind();
 	auto interTexture = InterMediateFBO->GetRenderTexture(0);
