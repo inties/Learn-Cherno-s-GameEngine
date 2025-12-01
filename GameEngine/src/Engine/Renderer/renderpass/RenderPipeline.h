@@ -46,8 +46,10 @@ namespace Engine {
 			m_opaque_pass->GetCulledLights(m_preZpass->visible_lights.get());
 			m_opaque_pass->Draw(m_Batches);
 			m_skyBoxPass->Draw(m_Batches);
+			DrawUI();
+
 			// 在透明pass之前，将主渲染目标的深度拷贝到透明RT，以便正确深度测试
-			RenderCommand::BlitFramebuffer(RenderTarget, m_transparent_pass_RT.get(), /*copyColor*/false, /*copyDepth*/true);
+			RenderCommand::BlitFramebuffer(RenderTarget, m_transparent_pass_RT.get(), false,true);
 			m_transparent_pass->GetCulledLights(m_preZpass->visible_lights.get());
 			m_transparent_pass->Draw(m_Batches);
 
@@ -60,6 +62,7 @@ namespace Engine {
 		void DrawEnvMap();
 	private:
 		void CollectRenderData();
+		void DrawUI();
 	private:
 		Scope<OpaqueForwardPass>m_opaque_pass;
 		Scope<TransparentForwardPass>m_transparent_pass;
@@ -72,6 +75,7 @@ namespace Engine {
 
 		// 批次映射
 		std::unordered_map<BatchKey, BatchData, BatchKeyHash> m_Batches[(int)RenderItemLayer::Size];
+		Scope<ShaderStorageBuffer> light_ssbo;//存储光源信息
 		// 最大实例数（必须与着色器中的数组大小匹配）
 		static constexpr uint32_t MAX_INSTANCES_PER_BATCH = 10240;
 	};
@@ -80,3 +84,5 @@ namespace Engine {
 
 
 
+
+////

@@ -208,8 +208,8 @@ void main()
     }
 #else
     // //平行光
-    // Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
-    // totalLighting += CalculateLightContribution(mainlight, surface, 1);
+    Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
+    totalLighting += CalculateLightContribution(mainlight, surface, 1);
     //遍历点光源
     for (int i = 0; i < PointLightCount; i++) {
        Light light = lights[i];
@@ -229,9 +229,9 @@ void main()
        totalLighting += lightContribution;
     }
 #endif
-    //添加主光源（方向光）
-    Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
-    totalLighting += CalculateLightContribution(mainlight, surface, 1);
+    // //添加主光源（方向光）
+    // Light mainlight = Light(direct_light_strength, 0.0, direct_light_dir, 0.0, vec3(0.0), 0.0);
+    // totalLighting += CalculateLightContribution(mainlight, surface, 1);
     //计算环境光照
     const float MaxLod = 5.0;
     vec2 lut = texture(u_brdf_lut, vec2(NdotV, rough)).xy;

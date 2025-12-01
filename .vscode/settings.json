@@ -87,7 +87,10 @@
         "future": "cpp",
         "memory_resource": "cpp",
         "ranges": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "any": "cpp",
+        "numeric": "cpp",
+        "valarray": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}",
     "files.autoGuessEncoding": true,

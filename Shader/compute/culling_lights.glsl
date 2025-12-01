@@ -60,6 +60,7 @@ void main() {
     //计算线性深度  
     //使用线性深度后，不再出现tile之间剔除结果差异巨大的问题
     //距离远的光源自动被剔除，无法理解
+    //转为线性深度
     depth = (0.5 * projection[3][2]) / (depth + 0.5 * projection[2][2] - 0.5);
 
     //记录最小和最大原始深度
@@ -105,6 +106,7 @@ void main() {
         mat4 T=inverse(inv_VP_matrix);
         T=transpose(T);
         for(int i=0;i<6;i++){
+
             tile_frustum_plane[i]=T*tile_frustum_plane[i];
             float invLen = inversesqrt(dot(tile_frustum_plane[i].xyz, tile_frustum_plane[i].xyz));
             tile_frustum_plane[i] *= invLen;

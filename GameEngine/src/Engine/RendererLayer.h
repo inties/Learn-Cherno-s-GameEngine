@@ -57,6 +57,10 @@ namespace Engine
 		// 外部设置场景
 		void SetScene(Scene* scene) { m_Scene = scene; }
 
+		ShaderStorageBuffer* GetLightsData() {
+			return lights_gpu.get();
+		}
+
 	private:
 		void Setup_gpu_resources();
 		// void SetupModel(); // 已移除：不再使用硬编码模型

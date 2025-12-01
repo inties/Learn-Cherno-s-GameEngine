@@ -3,6 +3,7 @@
 #include "Engine/Application.h"
 #include  "Engine/Scene/Scene.h"
 #include "Engine/Scene/Component.h"
+#include "Engine/RendererLayer.h"
 namespace Engine
 {
 	RenderPipeLine::RenderPipeLine(RenderPipeLineSetting& renderPipeLineSetting)
@@ -58,7 +59,7 @@ namespace Engine
 	void RenderPipeLine::CollectRenderData()
 	{
 
-           // 获取场景的registry
+        // 获取场景的registry
         auto& registry = m_pipeline_setting.Scene->GetRegistry();
 
         // 使用entt的view方法遍历有RenderComponent和TransformComponent的实体
@@ -95,8 +96,8 @@ namespace Engine
                 });
         }
         i++;
-        // 为每个批次创建SSBO
-        for (int i = 0; i < (int)RenderItemLayer::Size; i++) {
+        // 只为Transparent和opaque创建SSBO
+        for (int i = 0; i <= (int)RenderItemLayer::Transparent; i++) {
             for (auto& [key, batchData] : m_Batches[i]) {
                 uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
 
@@ -124,5 +125,32 @@ namespace Engine
         }
         
 	}
+
+    //UI绘制，暂时只绘制光源代理网格
+    void RenderPipeLine::DrawUI()
+    {
+        for (auto& [key, batchData] : m_Batches[(int)RenderItemLayer::Other]) {
+            m_pipeline_setting.lights_gpu->Bind(2);
+            key.material->Bind();
+            MainCamera* camera = MainCamera::GetInstance();
+            if (!camera) {
+                ENGINE_CORE_ERROR("No camera available for instanced rendering");
+                return;
+            }
+
+            glm::mat4 viewMatrix = camera->GetViewMatrix();
+            glm::mat4 projMatrix = camera->GetProjectionMatrix();
+
+            glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
+            // 设置视图投影矩阵
+            key.material->SetMat4("u_ViewProjection", viewProjMatrix);
+            // 绑定VAO
+            key.vao->Bind();
+
+            // 执行实例化绘制
+            uint32_t instanceCount = static_cast<uint32_t>(batchData.instances.size());
+            RenderCommand::DrawIndexedInstanced(key.vao, 0, instanceCount);
+        }
+    }
 
 }

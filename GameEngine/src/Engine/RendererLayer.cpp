@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 #include "Scene/Component.h"
 #include "Engine/Utils/Timer.h"
+#include <cstddef>
+
 namespace Engine
 {
 	RendererLayer::RendererLayer()
@@ -16,19 +18,15 @@ namespace Engine
 		// 初始化渲染器
 		Renderer::Init();
 
-		
 		// 设置默认几何体
 		if (m_model) {
 			std::cout << "加载成功" << std::endl;
 		}
 
-		
-
 		// 创建离屏渲染目标（使用当前窗口尺寸作为初始尺寸）
 		unsigned int initW = Application::Get().GetWindow().GetWidth();
 		unsigned int initH = Application::Get().GetWindow().GetHeight();
 		ENGINE_CORE_INFO("窗口初始 x,y,{},{}", initW, initH);
-		//CreateRenderTarget(initW, initH);
 		typedef TextureFormat format;
 		FramebufferSpecification spec = { initW,initH,{format::RGBA16,format::RED_INTEGER,format::DEPTH24STENCIL8},1 };
 		FBO = Framebuffer::Create(spec);
@@ -40,9 +38,7 @@ namespace Engine
 	void RendererLayer::Init(Scene* scene)
 	{
 		SetScene(scene);
-
 	}
-
 
 	std::string RendererLayer::GetShaderPath(const std::string& filename)
 	{
@@ -50,13 +46,11 @@ namespace Engine
 		std::vector<std::string> possiblePaths = {
 			"Shader/" + filename,
 		};
-		
 		for (const auto& path : possiblePaths) {
 			if (std::filesystem::exists(path)) {
 				return path;
 			}
 		}
-		
 		ENGINE_CORE_ERROR("Could not find shader file: {}", filename);
 		return "GameEngine/Shader/" + filename; // 回退到默认路径
 	}
@@ -89,12 +83,9 @@ namespace Engine
 		auto postEffectMat = Material::Create(postEffectShader);
 		Mat_Manager.Regist("posteffect",std::move(postEffectMat));
 
-
 		shaderPath_fs= GetShaderPath("PostEffect/defaultBlit_fs.glsl");
 		auto defaultBlitShader = Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
 		Shader_Manager.Regist("blit_bloom", std::move(defaultBlitShader));
-		//auto defaultBlitMat = Material::Create(defaultBlitShader);
-		//Mat_Manager.Regist("blit_bloom", std::move(defaultBlitMat));
 
 		shaderPath_vs = GetShaderPath("skybox/skybox_vs.glsl");
 		shaderPath_fs = GetShaderPath("skybox/skybox_fs.glsl");
@@ -115,18 +106,14 @@ namespace Engine
 
 		Shader_Manager.Regist("skybox", std::move(skybox_shader));
 
-
 		shaderPath_fs = GetShaderPath("sphere_fs.glsl");
-
 		auto SphereShader = Shader::Create(shaderPath_vs, shaderPath_fs);
-
 		auto SphereDefaultMat = Material::Create(SphereShader);
 		SphereDefaultMat->SetTexture("u_DiffuseTexture", Texture_Manager.Get("iron"), 0);
 		SphereDefaultMat->SetTexture("u_MetalRoughness", Texture_Manager.Get("iron_metal_roughness"), 1);
 		SphereDefaultMat->SetTexture("u_envMap_irradiance", Texture_Manager.Get("env_irradiance"), 2);
 		SphereDefaultMat->SetTexture("u_envMap_radiance", Texture_Manager.Get("env_radiance"), 3);
 		SphereDefaultMat->SetTexture("u_brdf_lut", Texture_Manager.Get("brdf_lut"), 4);
-
 
 		SphereDefaultMat->SetFloat("roughness", 0.9);
 		SphereDefaultMat->SetFloat3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
@@ -138,6 +125,11 @@ namespace Engine
 		auto depth_shader= Shader::CreateUniqueShader(shaderPath_vs, shaderPath_fs);
 		Shader_Manager.Regist("depth", std::move(depth_shader));
 
+		shaderPath_vs = GetShaderPath("light_vs.glsl");
+		shaderPath_fs = GetShaderPath("light_fs.glsl");
+		auto light_shader = Shader::Create(shaderPath_vs, shaderPath_fs);
+		auto light_mat = Material::Create(light_shader);
+		Mat_Manager.Regist("light", std::move(light_mat));
 
 		//计算着色器
 		shaderPath = GetShaderPath("compute/invert_color.glsl");
@@ -159,7 +151,6 @@ namespace Engine
 		ShaderDesc desc3{ ShaderType::compute };
 		auto culling_lights = Shader::CreateUniqueShader(shaderPath, desc3);
 		Shader_Manager.Regist("culling_lights", std::move(culling_lights));
-		
 	}
 
 	void RendererLayer::SetupCube()
@@ -167,32 +158,26 @@ namespace Engine
 		// 立方体顶点数据：位置(x,y,z) + 法线(nx,ny,nz,w) + uv(u,v)
 		// 6 个面，每面 4 顶点，共 24 顶点
 		float cubeVertices[] = {
-			// 前面 (+Z) - 法线指向 +Z 方向
 			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
 			 0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
 			 0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
 			-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
-			// 后面 (-Z) - 法线指向 -Z 方向
 			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   1.0f, 0.0f,
 			 0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   0.0f, 0.0f,
 			 0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   0.0f, 1.0f,
 			-0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f,   1.0f, 1.0f,
-			// 左面 (-X) - 法线指向 -X 方向
 			-0.5f, -0.5f, -0.5f,   -1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
 			-0.5f, -0.5f,  0.5f,   -1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
 			-0.5f,  0.5f,  0.5f,   -1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
 			-0.5f,  0.5f, -0.5f,   -1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-			// 右面 (+X) - 法线指向 +X 方向
 			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
 			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
 			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
 			 0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-			// 下面 (-Y) - 法线指向 -Y 方向
 			-0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f,   0.0f, 0.0f,
 			 0.5f, -0.5f, -0.5f,   0.0f, -1.0f, 0.0f,   1.0f, 0.0f,
 			 0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f,   1.0f, 1.0f,
 			-0.5f, -0.5f,  0.5f,   0.0f, -1.0f, 0.0f,   0.0f, 1.0f,
-			// 上面 (+Y) - 法线指向 +Y 方向
 			-0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
 			 0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
 			 0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
@@ -295,13 +280,13 @@ namespace Engine
 		// 创建VBO
 		auto SphereVBO = VertexBuffer::Create(vertexs.size() * sizeof(Vertice));
 		SphereVBO->SetData(vertexs.data(), vertexs.size() * sizeof(Vertice));
-		BufferLayout layout = {
+		BufferLayout layoutSphere = {
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float3, "a_Normal" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		};
 
-		SphereVBO->SetLayout(layout);
+		SphereVBO->SetLayout(layoutSphere);
 		SphereVAO->SetVertexBuffer(SphereVBO);
 
 		// 创建IBO
@@ -367,12 +352,12 @@ namespace Engine
 
 		// 创建VBO
 		auto planeVBO = VertexBuffer::Create(planeVertices, sizeof(planeVertices));
-		BufferLayout layout = {
+		BufferLayout layoutPlane = {
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float3, "a_Normal" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		};
-		planeVBO->SetLayout(layout);
+		planeVBO->SetLayout(layoutPlane);
 		planeVAO->SetVertexBuffer(planeVBO);
 
 		// 创建IBO
@@ -413,13 +398,10 @@ namespace Engine
 		Texture_Manager.Regist("env_radiance", std::move(hdr_env_house_radiance));
 		auto brdf_lut = Texture2D::CreateTexScope("resources/textures/brdf_lut.png", TextureFormat::RGB8, false, false);
 		Texture_Manager.Regist("brdf_lut", std::move(brdf_lut));
-
-
 	}
 
 	void RendererLayer::SetupLights()
 	{
-		
 		int pointsLightNum = 1000;
 		int spotLightsNum = 100;
 		int directLightNum = 1;
@@ -430,14 +412,18 @@ namespace Engine
 			lights_cpu.push_back(PointLight(strength, position));
 		}
 		for (int i = 0; i < spotLightsNum; i++) {
-			glm::vec3 position = glm::vec3(random01() * 100.f - 50.0f, 10.0f, random01() * 50.0 - 25.0f);
+			glm::vec3 position = glm::vec3(random01() * 100.f - 50.0f, 10.0f, random01() * 50.0f - 25.0f);
 			glm::vec3 strength = glm::vec3(5.0f)*random_vector3();
 			lights_cpu.push_back(SpotLight(strength, position));
 		}
-		//lights_cpu.push_back(DirectionalLight(glm::vec3(5.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+		for (int i = 0; i < lights_cpu.size(); i++) {
+			auto cube = m_Scene->CreatePrefab(PrefabTypes::Cube);
+			cube.GetComponent<TransformComponent>().Translate(lights_cpu[i].position);
+			cube.GetComponent<TransformComponent>().Scale(glm::vec3(0.1f,0.1f,0.1f));
+			cube.GetComponent<RenderComponent>().MatName = "light";
+			cube.GetComponent<RenderComponent>().renderlayer = RenderItemLayer::Other;
+		}
 
-		
-		
 		uint32_t dataSize = lights_cpu.size() * sizeof(Light);
 		lights_gpu = std::move(ShaderStorageBuffer::Create(dataSize));
 		lights_gpu->SetData(lights_cpu.data(), dataSize);
@@ -461,6 +447,7 @@ namespace Engine
 
 	void RendererLayer::OnUpdate()
 	{
+
 		// 设置线框模式
 		if (m_Settings.wireframe) {
 			RenderCommand::SetWildFrame(true);
@@ -468,13 +455,7 @@ namespace Engine
 			RenderCommand::SetWildFrame(false);
 		}
 		FBO->Bind();
-		// 绑定离屏帧缓冲并设置视口
-		//glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
 		RenderCommand::SetViewport(0, 0, GetRenderWidth(), GetRenderHeight());
-		//glViewport(0, 0, (GLint)m_RTWidth, (GLint)m_RTHeight);
-		 
-		// 设置清屏颜色并清屏
-		//RenderCommand::SetClearColor(glm::vec4(0.0f,0.0f,0.0f, 1.0f));
 		RenderCommand::Clear(ClearDesc::Default());
 
 		// 开始场景
@@ -483,34 +464,41 @@ namespace Engine
 		Renderer::EndScene();
 
 		// 解绑帧缓冲，恢复到默认帧缓冲，并将视口还原为窗口大小，供 ImGui 使用
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		FBO->Unbind();
 		unsigned int winW = Application::Get().GetWindow().GetWidth();
 		unsigned int winH = Application::Get().GetWindow().GetHeight();
-		//glViewport(0, 0, (GLint)winW, (GLint)winH);
 		RenderCommand::SetViewport(0, 0, (GLint)winW, (GLint)winH);
 
 		GameTimer::Tick();
 
-		
+		static int count = 0;
+		count++;
+		static float FPS = 0;
+		FPS += GameTimer::GetFPB();
+		if (count == 360) {
+			std::cout << "FPS:" << FPS / 360 << std::endl;
+		}
+		////动态光源：让所有 light 的 position 每帧平移一个小增量，并只更新 SSBO 中的 position 字段
+		//if (lights_gpu && !lights_cpu.empty()) {
+		//	glm::vec3 shift(0.01f, 0.0f, 0.0f); // 每帧向 +X 平移
+		//	for (size_t i = 0; i < lights_cpu.size(); ++i) {
+		//		lights_cpu[i].position += shift;
+		//		uint32_t elementOffset = static_cast<uint32_t>(i * sizeof(Light));
+		//		uint32_t posOffset = static_cast<uint32_t>(offsetof(Light, position));
+		//		lights_gpu->SetData(&lights_cpu[i].position, sizeof(glm::vec3), elementOffset + posOffset);
+		//	}
+		//}
 	}
 
 	void RendererLayer::OnImGuiRender()
 	{
-		// 创建渲染器设置窗口
 		if (ImGui::Begin("RenderInfo"))
 		{
 			ImGui::Text("Renderer Layer Properties");
 			ImGui::Separator();
-			
-			// 基本渲染设置
 			ImGui::Text("Basic Settings:");
 			ImGui::Checkbox("Wireframe", &m_Settings.wireframe);
-
-			
 			ImGui::Separator();
-			
-			// 相机信息
 			ImGui::Text("Camera Info:");
 			MainCamera* camera = MainCamera::GetInstance();
 			if (camera) {
@@ -521,12 +509,9 @@ namespace Engine
 			} else {
 				ImGui::Text("Camera: Not initialized");
 			}
-			
 			ImGui::Separator();
-				ImGui::Text("FPS: %.2f", GameTimer::GetFPB());
+			ImGui::Text("FPS: %.2f", GameTimer::GetFPB());
 			ImGui::Separator();
-
-			
 		}
 		ImGui::End();
 	}
@@ -542,64 +527,34 @@ namespace Engine
 	bool RendererLayer::OnWindowResize(WindowResizeEvent& e)
 	{
 		ENGINE_CORE_INFO("RendererLayer: Updating projection matrix for {}x{}", e.GetWindowWidth(), e.GetWindowHeight());
-		
-		// 更新纵横比（窗口尺寸变化时，仅更新投影矩阵；渲染目标由 Editor 控制）
-		//m_AspectRatio = static_cast<float>(e.GetWindowWidth()) / static_cast<float>(e.GetWindowHeight());
-		
-		// 不拦截事件，让其他层也能处理
 		return false;
 	}
 
-
-
-	
-
-
-
 	void RendererLayer::DrawRenderItems()
 	{
-		// 使用ECS系统渲染有RenderComponent的实体
 		if (!m_Scene) return;
-		// 获取场景的registry
 		auto& registry = m_Scene->GetRegistry();
-
-		// 使用entt的view方法遍历有RenderComponent和TransformComponent的实体
 		auto view = registry.view<RenderComponent, TransformComponent>();
-
 		for (auto& [entity, renderComp, TransComp] : view.each()) {
-
-			// 绑定资源（如果还未绑定）
 			if (!renderComp.IsValid()) {
 				renderComp.BindResources(VAO_Manager, Mat_Manager);
 			}
-
-			// 如果资源绑定成功，进行渲染
 			if (renderComp.IsValid()) {
-				// 创建变换矩阵
 				glm::mat4 modelMatrix = TransComp.GetTransform();
-
-				// 获取视图矩阵
 				MainCamera* camera = MainCamera::GetInstance();
-				/*ENGINE_CORE_INFO("{}Zoom", camera->Zoom);*/
 				glm::mat4 viewMatrix = camera->GetViewMatrix();
 				glm::mat4 projMatrix = camera->GetProjectionMatrix();
 				glm::mat4 viewProjMatrix = projMatrix * viewMatrix;
-
-				// 绑定着色器并设置uniforms
 				auto shader = renderComp.Mat->GetShader();
 				shader->Bind();
 				shader->SetMat4("u_Model", modelMatrix);
 				shader->SetMat4("u_ViewProjection", viewProjMatrix);
 				shader->SetInt("u_ObjectID", static_cast<int>(entity));
-				// 绑定VAO并渲染
 				renderComp.VAO->Bind();
 				RenderCommand::DrawIndexed(renderComp.VAO);
 			}
 		}
-		
-
 	}
-
 
 	void RendererLayer::ResizeRenderTarget(unsigned int width, unsigned int height)
 	{
@@ -613,6 +568,7 @@ namespace Engine
 			model->SetObjectID(objectID);
 		}
 	}
+
 	void RendererLayer::UpdateLights()
 	{
 		/*auto lights=m_Scene->GetLights();

@@ -17,7 +17,6 @@ namespace Engine {
             Entity cube=CreatePrefab(PrefabTypes::Cube);
             glm::vec3 position = 100.0f*random_vector3()-50.0f;
             cube.GetComponent<TransformComponent>().Translate(position);
-
         }
         for (int i = 0; i < 1000; i++) {
             auto sphere= CreatePrefab(PrefabTypes::Sphere);
@@ -29,17 +28,15 @@ namespace Engine {
             glm::vec3 position = 100.0f * random_vector3() - 50.0f;
             sphere.GetComponent<TransformComponent>().Translate(position);
             sphere.GetComponent<RenderComponent>().renderlayer = RenderItemLayer::Transparent;
-
         }
         Entity cube = CreatePrefab(PrefabTypes::Cube);
         glm::vec3 position = glm::vec3(2.0f, 0.0f, 0.0f);
         cube.GetComponent<TransformComponent>().Translate(position);
-
         cube.GetComponent<RenderComponent>().renderlayer = RenderItemLayer::Transparent;
         auto plane= CreatePrefab(PrefabTypes::Plane);
         plane.GetComponent<TransformComponent>().Scale(glm::vec3(1000.0f,1.0f,1000.0f));
         plane.GetComponent<TransformComponent>().Translate(glm::vec3(0, -20.0f, 0));
-        //plane.GetComponent<RenderComponent>().renderlayer = RenderItemLayer::Transparent;
+        plane.GetComponent<RenderComponent>().renderlayer = RenderItemLayer::Transparent;
 
 
 
@@ -222,3 +219,4 @@ namespace Engine {
         ENGINE_CORE_INFO("Cleared GameObject selection");
     }
 }
+////////////
