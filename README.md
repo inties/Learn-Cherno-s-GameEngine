@@ -4,7 +4,7 @@
 
 更多文档参考：
 
-[跨平台API抽象文档](doc/跨图形 API 抽象设计文档.md)
+[跨平台API抽象文档](doc/RHI.md)
 
 [Forward+](doc/Forward+.md)
 
@@ -14,7 +14,7 @@
 
 ##### 现代图形 API 使用
 
-- 使用 Direct State Access（DSA）管理 GPU 资源，避免全局状态污染。
+- 使用 Direct State Access（参考[OpenGL DSA](doc/OpenGLDSA.md)）管理 GPU 资源，避免全局状态污染。
 - 使用 SSBO 及 bindless textures 实现动态索引与高效材质访问。
 - 使用 memory barrier 确保 GPU 阶段间的数据可见性与执行顺序。
 - 使用 compute shader 实现 Forward+ 光源剔除与部分后处理效果。
@@ -23,7 +23,7 @@
 
 ##### 系统架构与工程设计
 
-- 设计了跨平台渲染后端抽象，统一封装 Texture、Buffer、Shader、Framebuffer 等资源类型，并可扩展 DX12/Vulkan 等 API。参考[跨平台API抽象文档](doc/跨图形 API 抽象设计文档.md)
+- 设计了跨平台渲染后端抽象，统一封装 Texture、Buffer、Shader、Framebuffer 等资源类型，并可扩展 DX12/Vulkan 等 API。参考[跨平台API抽象文档](doc/RHI.md)
 - 集成 entt 实现 ECS 架构，渲染组件与渲染器模块解耦。
 - 构建资源注册表，用于统一加载、缓存和管理 GPU 资源。
 
@@ -57,6 +57,6 @@
 
 - 增加DX12后端
 - 性能优化：引入多线程渲染，GPU-driven pipeline
-- 渲染效果：集成全局光照算法
+- 资源生命周期管理：管理资源加载和卸载，添加并行加载资源逻辑
 
 - 继续集成 RSM、SSDO 等全局光照算法。
